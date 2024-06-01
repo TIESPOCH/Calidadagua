@@ -1,26 +1,227 @@
- /* Estilo para el contenedor principal */
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
+/* Estilos Generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
 
-        /* Estilo para el área de la imagen satelital */
-        .satellite-image {
-            width: 60%;
-        }
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
 
-        /* Estilo para la cuadrícula de datos */
-        .data-grid {
-            width: 30%;
-            border: 1px solid #ddd;
-            padding: 10px;
-        }
+/* Proximidad - Agrupar elementos relacionados */
+.satellite-image,
+.data-grid,
+.info-area {
+    margin-bottom: 20px;
+}
 
-        /* Estilo para el área de información */
-        .info-area {
-            width: 100%;
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
+h2 {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #004d00; /* Verde oscuro para los títulos */
+}
+
+/* Similitud - Usar estilos similares para elementos similares */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    color: #333; /* Color de texto */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: 14px; /* Tamaño de letra reducido */
+}
+
+th {
+    background-color: #f2c200; /* Color amarillo para los encabezados de la tabla */
+    color: #004d00; /* Texto en verde oscuro */
+}
+
+tr:nth-child(even) {
+    background-color: #eaf5ea; /* Color verde claro para filas pares */
+}
+
+/* Continuidad - Guiar la vista a través del contenido suavemente */
+.container > div {
+    transition: transform 0.3s;
+}
+
+.container > div:hover {
+    transform: scale(1.02);
+}
+
+/* Cierre - Crear bordes y fondos que ayuden a definir áreas */
+.satellite-image {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+}
+
+/* Figura-Fondo - Crear contraste entre el texto y el fondo */
+.info-area p {
+    background-color: #f4f4f9;
+    padding: 10px;
+    border-left: 4px solid #f2c200; /* Borde amarillo */
+    line-height: 1.6;
+}
+
+.info-area p:before {
+    content: "ℹ️";
+    font-size: 24px;
+    color: #004d00; /* Icono en verde oscuro */
+    margin-right: 10px;
+}
+
+.info-area {
+    background-color: #fafafa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para las pestañas */
+.tabs {
+    overflow: hidden;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.tablink {
+    background-color: #ddd; /* Color amarillo */
+    color: #004d00; /* Verde oscuro */
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    font-size: 17px;
+    width: 50%; /* Dos pestañas, cada una ocupa la mitad del ancho */
+    text-align: center;
+}
+
+.tablink:hover {
+    background-color: #f2c200;
+}
+
+.tabcontent {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-top: none;
+    overflow-x: auto; /* Agrega desplazamiento horizontal si la tabla es demasiado ancha */
+}
+
+/* Estilo para hacer el contenedor del mapa más pequeño */
+.satellite-image {
+    width: 45%;
+    height: 20%; /* Reducido a la mitad del tamaño original */
+}
+
+/* Estilo para hacer el mapa más pequeño */
+#map {
+    width: 100%;
+    height: 500px;
+}
+
+/* Estilo para hacer la tabla más grande */
+#table1,
+#table2 {
+    width: 100%;
+    max-width: 600px; /* Ajustado según sea necesario */
+}
+
+/* Estilo para el área de la cuadrícula de datos */
+.data-grid {
+    width: 50%; /* Ajusta el ancho según sea necesario */
+    border: 1px solid #ddd;
+    padding: 10px;
+    float: right; /* Sitúa el contenedor a la derecha */
+}
+
+/* Mejoras adicionales */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        flex-direction: column;
+    }
+
+    .satellite-image,
+    .data-grid,
+    .info-area {
+        width: 100%;
+    }
+
+    .tablink {
+        width: 100%;
+    }
+
+    #map {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .tablink {
+        font-size: 15px;
+        padding: 12px 14px;
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    #map {
+        height: 200px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .satellite-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .data-grid {
+        width: 100%;
+        float: none;
+        margin-bottom: 20px;
+    }
+
+    .info-area p {
+        font-size: 14px;
+    }
+
+    .info-area {
+        padding: 10px;
+    }
+}
