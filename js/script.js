@@ -40,12 +40,12 @@ function abrirPestania(evento, nombrePestania) {
 
   // Si se abre la pestaña "Parámetros Biológicos", cargar los datos relevantes
   if (nombrePestania === 'tab1') {
-    cargarDatosCSV('https://raw.githubusercontent.com/EdisonFlores/parametrosbiologicos/main/bIO.csv','tabla1');
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv','tabla1');
   }
 
   // Si se abre la pestaña "Parámetros Fisicoquímicos", cargar los datos relevantes
   if (nombrePestania === 'tab2') {
-    cargarDatosCSV('https://raw.githubusercontent.com/EdisonFlores/parametrosbiologicos/05f6910aa5df6f08f3e1d92a81f8c04e2f8b38ac/Parametrosfisio.csv', 'tabla2');
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
   }
 }
 
