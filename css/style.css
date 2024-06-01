@@ -1,0 +1,26 @@
+ /* Estilo para el contenedor principal */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        /* Estilo para el área de la imagen satelital */
+        .satellite-image {
+            width: 60%;
+        }
+
+        /* Estilo para la cuadrícula de datos */
+        .data-grid {
+            width: 30%;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        /* Estilo para el área de información */
+        .info-area {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
