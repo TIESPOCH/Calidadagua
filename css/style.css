@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background-color: #609f69;
     color: #333;
 }
 
@@ -39,11 +39,14 @@ table {
     border-collapse: collapse;
     margin-bottom: 20px;
     color: #333; /* Color de texto */
+    max-height: 400px;
+    overflow-y: auto; /* Agregar scroll vertical */
+    display: block;
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 4px; /* Reducir el padding para disminuir la altura de las celdas */
     text-align: left;
     font-size: 14px; /* Tamaño de letra reducido */
 }
@@ -68,7 +71,7 @@ tr:nth-child(even) {
 
 /* Cierre - Crear bordes y fondos que ayuden a definir áreas */
 .satellite-image {
-    border: 2px solid #ddd;
+    border: 2px solid #254d19;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -84,6 +87,7 @@ tr:nth-child(even) {
     padding: 10px;
     border-left: 4px solid #f2c200; /* Borde amarillo */
     line-height: 1.6;
+    border: 2px solid #254d19;
 }
 
 .info-area p:before {
@@ -154,7 +158,7 @@ tr:nth-child(even) {
 /* Estilo para el área de la cuadrícula de datos */
 .data-grid {
     width: 50%; /* Ajusta el ancho según sea necesario */
-    border: 1px solid #ddd;
+    border: 2px solid #254d19;
     padding: 10px;
     float: right; /* Sitúa el contenedor a la derecha */
 }
@@ -193,35 +197,78 @@ tr:nth-child(even) {
         width: 100%;
     }
 
-    th, td {
-        font-size: 12px;
-        padding: 6px;
-    }
-
     #map {
         height: 200px;
     }
+}
 
-    h2 {
-        font-size: 18px;
-    }
+/* Popup de error */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 300px;
+    padding: 20px;
+    border: 2px solid #254d19;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+}
 
-    .satellite-image {
-        width: 100%;
-        height: auto;
-    }
+.popup-text {
+    margin-bottom: 20px;
+}
 
-    .data-grid {
-        width: 100%;
-        float: none;
-        margin-bottom: 20px;
-    }
+.popup button {
+    padding: 10px 20px;
+    background-color: #254d19;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-    .info-area p {
-        font-size: 14px;
-    }
+.popup button:hover {
+    background-color: #609f69;
+}
 
-    .info-area {
-        padding: 10px;
-    }
+/* Estilos para el dropdown y el botón de búsqueda */
+#dropdown-container {
+    margin: 10px 0;
+    text-align: center;
+    display: none; /* Oculto inicialmente */
+}
+
+#rio-select {
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+#buscar-btn {
+    padding: 5px 10px;
+    background-color: #004d00;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#buscar-btn:hover {
+    background-color: #f2c200;
+    color: #004d00;
+}
+
+/* Estilo para la fila seleccionada */
+.selected {
+    background-color: rgba(60, 255, 0, 0.803);
 }
