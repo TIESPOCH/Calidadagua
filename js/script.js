@@ -106,11 +106,11 @@ function abrirPestania(evento, nombrePestania) {
     evento.currentTarget.classList.add("active");
 
     if (nombrePestania === 'tab1') {
-        cargarDatosCSV('https://raw.githubusercontent.com/EdisonFlores/parametrosbiologicos/main/bIO.csv', 'tabla1');
+        cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
     }
 
     if (nombrePestania === 'tab2') {
-        cargarDatosCSV('https://raw.githubusercontent.com/EdisonFlores/parametrosbiologicos/05f6910aa5df6f08f3e1d92a81f8c04e2f8b38ac/Parametrosfisio.csv', 'tabla2');
+        cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
     }
 }
 
@@ -197,12 +197,18 @@ window.onload = function() {
     inicializarMapa();
 
     const rios = [
-        "RIO CHIWIAS", "rio Tuna Chiguaza", "río Palora", "RIO LUSHIN", "RIO  SANGAY",
-        "RIO1 Namangoza", "RIO2 Paute", "RIO yaapi", "RIO Huambiaz", "RIO1 Tzurin",
-        "RIO2 Mangosiza", "RIO Puchimi", "RIO El Churo", "RIO MACUMA", "RIO PANGUIETZA",
-        "RIO PASTAZA", "RIO PALORA", "TUNA", "WAWAIM GRANDE"
+        "RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
+        "RIO KALAGLAS", "RIO YUQUIPA", "RIO  PAN DE AZÚCAR", "RIO  JIMBITONO", "RIO DOMONO",
+        "RIO RIO BLANCO", "RIO ARAPICOS", "RIO KUSUIM", "RIO TUNANZA", "RIO COPUENZA",
+        "RIO YANAYACU", "RIO  GUANGANZA", "RIO  TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
+        "RIO YUNGANZA", "RIO INDANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
+        "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
+        "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
+        "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
+        "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
+        "RIO WAWAIM GRANDE"
     ];
-
+    
     // Llenar el dropdown con los ríos
     const rioSelect = document.getElementById('rio-select');
     rios.forEach(rio => {
@@ -216,6 +222,6 @@ window.onload = function() {
     const buscarBtn = document.getElementById('buscar-btn');
     buscarBtn.addEventListener('click', filtrarPorRio);
 
-    cargarDatosCSV('https://raw.githubusercontent.com/EdisonFlores/parametrosbiologicos/main/bIO.csv', 'tabla1');
-    cargarDatosCSV('https://raw.githubusercontent.com/EdisonFlores/parametrosbiologicos/05f6910aa5df6f08f3e1d92a81f8c04e2f8b38ac/Parametrosfisio.csv', 'tabla2');
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
 };
