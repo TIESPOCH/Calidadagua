@@ -131,7 +131,7 @@ function poblarTabla(idTabla, datos) {
     const tabla = document.getElementById(idTabla).getElementsByTagName('tbody')[0];
     tabla.innerHTML = '';
 
-    const columnasAMostrarBiologicos = ['RIO','COORD-X','COORD-Y','PUNTO','FECHA','DIVERSIDAD SEGÚN SHANNON','CALIDAD DEL AGUA SEGÚN SHANNON'];
+    const columnasAMostrarBiologicos = ['RIO','COORD- X','COORD- Y','PUNTO','FECHA','DIVERSIDAD SEGÚN SHANNON','CALIDAD DEL AGUA SEGÚN SHANNON'];
     const columnasAMostrarFisicoquimicos = ['RIO','COORD- X','COORD- Y','PUNTO','FECHA','CALIDAD AGUA NSF','Clasificacion'];
 
     let columnasAMostrar;
@@ -197,7 +197,7 @@ window.onload = function() {
     inicializarMapa();
 
     const rios = [
-        "RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
+        "RIO HUASAGA", "RIO  CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
         "RIO KALAGLAS", "RIO YUQUIPA", "RIO  PAN DE AZÚCAR", "RIO  JIMBITONO", "RIO DOMONO",
         "RIO RIO BLANCO", "RIO ARAPICOS", "RIO KUSUIM", "RIO TUNANZA", "RIO COPUENZA",
         "RIO YANAYACU", "RIO  GUANGANZA", "RIO  TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
