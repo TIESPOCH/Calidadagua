@@ -19,10 +19,12 @@
         </div>
         <div class="data-grid">
             <h2><i class="fas fa-table"></i> Datos</h2>
-            <select id="rio-select">
-                <option value="">Seleccione un río</option>
-            </select>
-            <button id="buscar-btn">Buscar</button>
+            <div id="dropdown-container">
+                <select id="rio-select">
+                    <option value="">Seleccione un río</option>
+                </select>
+                <button id="buscar-btn">Buscar</button>
+            </div>
             <div class="tabs">
                 <button id="biological-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab1')">Parámetros Biológicos</button>
                 <button id="physicochemical-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab2')">Parámetros Fisicoquímicos</button>

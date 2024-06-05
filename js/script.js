@@ -131,8 +131,8 @@ function poblarTabla(idTabla, datos) {
     const tabla = document.getElementById(idTabla).getElementsByTagName('tbody')[0];
     tabla.innerHTML = '';
 
-    const columnasAMostrarBiologicos = ['RIO','COORD- X','COORD- Y','PUNTO','FECHA','DIVERSIDAD SEGÚN SHANNON','CALIDAD DEL AGUA SEGÚN SHANNON'];
-    const columnasAMostrarFisicoquimicos = ['RIO','COORD- X','COORD- Y','PUNTO','FECHA','CALIDAD AGUA NSF','Clasificacion'];
+    const columnasAMostrarBiologicos = ['RIO', 'COORD- X', 'COORD- Y', 'PUNTO', 'FECHA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON'];
+    const columnasAMostrarFisicoquimicos = ['RIO', 'COORD- X', 'COORD- Y', 'PUNTO', 'FECHA', 'CALIDAD AGUA NSF', 'Clasificacion'];
 
     let columnasAMostrar;
 
@@ -225,3 +225,17 @@ window.onload = function() {
     cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
     cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
 };
+
+// Función para mostrar el popup de error
+function mostrarPopup(mensaje) {
+    const popup = document.getElementById('error-popup');
+    const popupText = document.getElementById('error-popup-text');
+    popupText.textContent = mensaje;
+    popup.style.display = 'block';
+}
+
+// Función para cerrar el popup de error
+function cerrarPopup() {
+    const popup = document.getElementById('error-popup');
+    popup.style.display = 'none';
+}

@@ -149,8 +149,8 @@ tr:nth-child(even) {
 }
 
 /* Estilo para hacer la tabla más grande */
-#table1,
-#table2 {
+#tabla1,
+#tabla2 {
     width: 100%;
     max-width: 600px; /* Ajustado según sea necesario */
 }
@@ -218,8 +218,6 @@ tr:nth-child(even) {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     text-align: center;
-    font-size: 16px;
-    color: #333;
 }
 
 .popup-text {
@@ -227,48 +225,16 @@ tr:nth-child(even) {
 }
 
 .popup button {
+    background-color: #004d00; /* Verde oscuro */
+    color: white;
     padding: 10px 20px;
-    background-color: #254d19;
-    color: #fff;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 .popup button:hover {
-    background-color: #609f69;
-}
-
-/* Estilos para el dropdown y el botón de búsqueda */
-#dropdown-container {
-    margin: 10px 0;
-    text-align: center;
-    display: none; /* Oculto inicialmente */
-}
-
-#rio-select {
-    margin-right: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-#buscar-btn {
-    padding: 5px 10px;
-    background-color: #004d00;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#buscar-btn:hover {
-    background-color: #f2c200;
-    color: #004d00;
-}
-
-/* Estilo para la fila seleccionada */
-.selected {
-    background-color: rgba(60, 255, 0, 0.803);
+    background-color: #f2c200; /* Amarillo */
+    color: #004d00; /* Verde oscuro */
 }
