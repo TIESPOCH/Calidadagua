@@ -222,19 +222,21 @@ tr:nth-child(even) {
 
 .popup-text {
     margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
 }
 
 .popup button {
-    background-color: #004d00; /* Verde oscuro */
-    color: white;
-    padding: 10px 20px;
+    background-color: #004d00;
+    color: #fff;
     border: none;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 5px;
 }
 
 .popup button:hover {
-    background-color: #f2c200; /* Amarillo */
-    color: #004d00; /* Verde oscuro */
+    background-color: #f2c200;
+    color: #004d00;
 }
+

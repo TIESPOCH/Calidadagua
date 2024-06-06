@@ -1,236 +1,233 @@
 // Variables globales
 let map;
-let vectorSource;
-let vectorLayer;
+let marker;
 let filaSeleccionada = null;
 let datosCSV = [];
+let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
+    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR", "RIO JIMBITONO", "RIO DOMONO",
+    "RIO RIO BLANCO", "RIO ARAPICOS", "RIO KUSUIM", "RIO TUNANZA", "RIO COPUENZA",
+    "RIO YANAYACU", "RIO GUANGANZA", "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
+    "RIO YUNGANZA", "RIO INDANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
+    "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
+    "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
+    "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
+    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
+    "RIO WAWAIM GRANDE"];
 
-// Función para inicializar el mapa con OpenLayers
-function inicializarMapa() {
-    vectorSource = new ol.source.Vector();
+    function inicializarMapa() {
+        map = L.map('map').setView([-2.278875, -78.141926], 14); // Ajustar si es necesario
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    }
+    
 
-    vectorLayer = new ol.layer.Vector({
-        source: vectorSource,
-        style: new ol.style.Style({
-            image: new ol.style.Circle({
-                radius: 5,
-                fill: new ol.style.Fill({color: 'red'}),
-                stroke: new ol.style.Stroke({
-                    color: [255, 0, 0], width: 2
-                })
-            })
-        })
-    });
+// Función para convertir coordenadas UTM a latitud/longitud
+function utmToLatLng(utmX, utmY, zoneNumber, zoneLetter) {
+    const a = 6378137.0; // Radio ecuatorial
+    const f = 1 / 298.257223563; // Aplanamiento
+    const k0 = 0.9996; // Factor de escala
+    const e = Math.sqrt(f * (2 - f)); // Excentricidad
+    const e1sq = e * e / (1 - e * e); // Excentricidad al cuadrado
 
-    map = new ol.Map({
-        target: 'map',
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
-            }),
-            vectorLayer
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([-78.141926, -2.278875]),
-            zoom: 14
-        })
-    });
+    const x = utmX - 500000.0; // Coordenada este relativa
+    const y = zoneLetter < 'N' ? utmY - 10000000.0 : utmY; // Coordenada norte relativa
+
+    const m = y / k0;
+    const mu = m / (a * (1 - Math.pow(e, 2) / 4 - 3 * Math.pow(e, 4) / 64 - 5 * Math.pow(e, 6) / 256));
+
+    const phi1Rad = mu +
+        (3 * e1sq / 2 - 27 * Math.pow(e1sq, 3) / 32) * Math.sin(2 * mu) +
+        (21 * e1sq / 16 - 55 * Math.pow(e1sq, 4) / 32) * Math.sin(4 * mu) +
+        (151 * Math.pow(e1sq, 3) / 96) * Math.sin(6 * mu);
+
+    const n1 = a / Math.sqrt(1 - Math.pow(e * Math.sin(phi1Rad), 2));
+    const t1 = Math.pow(Math.tan(phi1Rad), 2);
+    const c1 = e1sq * Math.pow(Math.cos(phi1Rad), 2);
+    const r1 = a * (1 - Math.pow(e, 2)) / Math.pow(1 - Math.pow(e * Math.sin(phi1Rad), 2), 3 / 2);
+    const d = x / (n1 * k0);
+
+    const latitude = phi1Rad - (n1 * Math.tan(phi1Rad) / r1) *
+        (Math.pow(d, 2) / 2 - (5 + 3 * t1 + 10 * c1 - 4 * Math.pow(c1, 2) - 9 * e1sq) * Math.pow(d, 4) / 24 +
+        (61 + 90 * t1 + 298 * c1 + 45 * Math.pow(t1, 2) - 252 * e1sq - 3 * Math.pow(c1, 2)) * Math.pow(d, 6) / 720);
+    const longitude = (d - (1 + 2 * t1 + c1) * Math.pow(d, 3) / 6 +
+        (5 - 2 * c1 + 28 * t1 - 3 * Math.pow(c1, 2) + 8 * e1sq + 24 * Math.pow(t1, 2)) * Math.pow(d, 5) / 120) / Math.cos(phi1Rad);
+
+    const lat = latitude * (180 / Math.PI);
+    const lon = longitude * (180 / Math.PI) + (zoneNumber - 1) * 6 - 180 + 3;
+
+    return { latitude: lat, longitude: lon };
 }
 
 // Función para mover el marcador en el mapa a las coordenadas especificadas
 function mostrarEnMapa(registro, fila) {
-    const lat = parseFloat(registro['COORD-Y'] || registro['COORD- Y']);
-    const lng = parseFloat(registro['COORD-X'] || registro['COORD- X']);
+    const utmX = parseFloat(registro['COORD- X']);
+    const utmY = parseFloat(registro['COORD- Y']);
+    const lat = parseFloat(registro['LAT']);
+    const lon = parseFloat(registro['LON']);
+    const utmZone = 18; // Zona fija: 18
 
-    if (!isNaN(lat) && !isNaN(lng)) {
-        const coord = ol.proj.fromLonLat([lng, lat]);
-
-        // Limpiar los marcadores anteriores
-        vectorSource.clear();
-
-        // Crear un nuevo marcador con un punto rojo
-        const marker = new ol.Feature({
-            geometry: new ol.geom.Point(coord)
-        });
-        marker.setStyle(new ol.style.Style({
-            image: new ol.style.Circle({
-                radius: 5,
-                fill: new ol.style.Fill({color: 'red'}),
-                stroke: new ol.style.Stroke({
-                    color: [255, 0, 0], width: 2
-                })
-            })
-        }));
-
-        // Añadir el nuevo marcador al vectorSource
-        vectorSource.addFeature(marker);
-
-        // Centrar el mapa en la nueva coordenada
-        map.getView().animate({
-            center: coord,
-            duration: 1000
-        });
-
-        // Obtener el índice de la fila seleccionada en la tabla
-        const filas = fila.parentNode.children;
-        const indiceFilaSeleccionada = Array.from(filas).indexOf(fila);
-
-        // Mostrar el punto en la consola
-        console.log(`Punto seleccionado: ${registro['PUNTO']} (Fila ${indiceFilaSeleccionada + 1} en la tabla)`);
-    } else {
-        mostrarPopupError("Coordenadas inválidas. Por favor, verifique los datos.");
+    let coordenadas;
+    try {
+        if (!isNaN(utmX) && !isNaN(utmY)) {
+            coordenadas = utmToLatLng(utmX, utmY, utmZone, 'S');
+        } else if (!isNaN(lat) && !isNaN(lon)) {
+            coordenadas = { latitude: lat, longitude: lon };
+        } else {
+            throw new Error("Las coordenadas no son válidas.");
+        }
+    } catch (error) {
+        mostrarPopupError(error.message);
+        return;
     }
 
-    // Resaltar la fila seleccionada
     if (filaSeleccionada) {
         filaSeleccionada.classList.remove('selected');
     }
     fila.classList.add('selected');
     filaSeleccionada = fila;
+
+    if (marker) {
+        marker.setLatLng([coordenadas.latitude, coordenadas.longitude]);
+    } else {
+        marker = L.marker([coordenadas.latitude, coordenadas.longitude]).addTo(map);
+    }
+    map.setView([coordenadas.latitude, coordenadas.longitude], 15);
 }
 
-// Función para abrir y cerrar las pestañas
-function abrirPestania(evento, nombrePestania) {
-    const contenidoPestanias = document.getElementsByClassName("tabcontent");
-    const enlaces = document.getElementsByClassName("tablink");
-
-    for (let i = 0; i < contenidoPestanias.length; i++) {
-        contenidoPestanias[i].style.display = "none";
+// Función para abrir una pestaña específica
+function abrirPestania(evt, tabName) {
+    const tabcontent = document.getElementsByClassName('tabcontent');
+    for (let i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = 'none';
     }
 
-    for (let i = 0; i < enlaces.length; i++) {
-        enlaces[i].classList.remove("active");
+    const tablinks = document.getElementsByClassName('tablink');
+    for (let i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(' active', '');
     }
 
-    document.getElementById(nombrePestania).style.display = "block";
-    evento.currentTarget.classList.add("active");
-
-    if (nombrePestania === 'tab1') {
-        cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
-    }
-
-    if (nombrePestania === 'tab2') {
-        cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
-    }
+    document.getElementById(tabName).style.display = 'block';
+    evt.currentTarget.className += ' active';
 }
 
-// Función para cargar un archivo CSV desde una URL
-function cargarDatosCSV(urlCSV, idTabla) {
-    Papa.parse(urlCSV, {
+// Función para cargar datos CSV y mostrarlos en las tablas
+function cargarDatosCSV(url, tablaId) {
+    Papa.parse(url, {
         download: true,
         header: true,
-        complete: function(resultados) {
-            datosCSV = resultados.data;
-            poblarTabla(idTabla, datosCSV);
+        complete: function(results) {
+            const datos = results.data;
+            if (tablaId === 'tabla1') {
+                datosCSV = datos;
+            }
+            actualizarTabla(datos, tablaId);
+            if (tablaId === 'tabla1') {
+                cargarNombresRios();
+            }
+        },
+        error: function(error) {
+            mostrarPopupError("Error al cargar el archivo CSV: " + error.message);
         }
     });
 }
 
-// Función para insertar los datos del archivo CSV en la tabla HTML
-function poblarTabla(idTabla, datos) {
-    const tabla = document.getElementById(idTabla).getElementsByTagName('tbody')[0];
+// Función para actualizar la tabla con los datos cargados
+function actualizarTabla(datos, tablaId) {
+    const tabla = document.getElementById(tablaId).getElementsByTagName('tbody')[0];
+    const thead = document.getElementById(tablaId).getElementsByTagName('thead')[0].getElementsByTagName('tr')[0];
     tabla.innerHTML = '';
+    thead.innerHTML = '';
 
-    const columnasAMostrarBiologicos = ['RIO', 'COORD- X', 'COORD- Y', 'PUNTO', 'FECHA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON'];
-    const columnasAMostrarFisicoquimicos = ['RIO', 'COORD- X', 'COORD- Y', 'PUNTO', 'FECHA', 'CALIDAD AGUA NSF', 'Clasificacion'];
+    if (tablaId === 'tabla1') {
+        // Campos que se mostrarán en la tabla de parámetros biológicos
+        const camposAMostrar = ['ID', 'RIO', 'COORD- X', 'COORD- Y', 'LAT', 'LON', 'PUNTO', 'FECHA',
+            'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON',
+            'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
 
-    let columnasAMostrar;
+        // Crear encabezados de tabla para parámetros biológicos
+        camposAMostrar.forEach(campo => {
+            const th = document.createElement('th');
+            th.textContent = campo;
+            thead.appendChild(th);
+        });
 
-    if (idTabla === 'tabla1') {
-        columnasAMostrar = columnasAMostrarBiologicos;
-    } else {
-        columnasAMostrar = columnasAMostrarFisicoquimicos;
+        // Llenar la tabla de parámetros biológicos
+        datos.forEach(registro => {
+            const fila = tabla.insertRow();
+
+            camposAMostrar.forEach(campo => {
+                const celda = fila.insertCell();
+                celda.textContent = registro[campo];
+            });
+
+            fila.onclick = () => mostrarEnMapa(registro, fila);
+        });
+    } else if (tablaId === 'tabla2') {
+        // Crear encabezados de tabla para parámetros fisicoquímicos
+        const headers = Object.keys(datos[0]);
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            thead.appendChild(th);
+        });
+
+        // Llenar la tabla de parámetros fisicoquímicos
+        datos.forEach(registro => {
+            const fila = tabla.insertRow();
+
+            headers.forEach(campo => {
+                const celda = fila.insertCell();
+                celda.textContent = registro[campo];
+            });
+
+            fila.onclick = () => mostrarEnMapa(registro, fila);
+        });
+    }
+}
+
+// Función para buscar datos y filtrarlos según el río seleccionado
+function buscarDatos() {
+    const selectRios = document.getElementById('rio-select');
+    const nombreRioSeleccionado = selectRios.value;
+    const tabla1 = document.getElementById('tabla1');
+    const tabla2 = document.getElementById('tabla2');
+
+    if (!nombreRioSeleccionado) {
+        mostrarPopupError("Por favor, seleccione un río.");
+        return;
     }
 
-    const filaEncabezados = tabla.insertRow();
-    columnasAMostrar.forEach(columna => {
-        const encabezado = document.createElement('th');
-        encabezado.textContent = columna;
-        filaEncabezados.appendChild(encabezado);
+    const filasTabla1 = Array.from(tabla1.getElementsByTagName('tbody')[0].rows);
+    const filasTabla2 = Array.from(tabla2.getElementsByTagName('tbody')[0].rows);
+
+    filasTabla1.forEach(fila => {
+        fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
     });
 
-    datos.forEach((registro) => {
-        const filaNueva = tabla.insertRow();
-
-        columnasAMostrar.forEach((columna) => {
-            const celdaNueva = filaNueva.insertCell();
-            celdaNueva.textContent = registro[columna];
-        });
-
-        // Agregar evento de clic a cada fila
-        filaNueva.addEventListener('click', function() {
-            mostrarEnMapa(registro, this);
-        });
+    filasTabla2.forEach(fila => {
+        fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
     });
 }
 
-// Función para mostrar datos en la tabla
-function mostrarDatosEnTabla(idTabla, data) {
-    poblarTabla(idTabla, data);
-}
+// Función para cargar los nombres de los ríos en el menú desplegable
+function cargarNombresRios() {
+    const selectRios = document.getElementById('rio-select');
+    selectRios.innerHTML = '<option value="">Seleccione un río</option>'; // Limpiar opciones previas
 
-// Función para mostrar popup de error
-function mostrarPopupError(mensaje) {
-    const popup = document.getElementById('error-popup');
-    const popupText = document.getElementById('error-popup-text');
-    popupText.textContent = mensaje;
-    popup.style.display = 'block';
-}
-
-// Función para cerrar popup de error
-function cerrarPopup() {
-    const popup = document.getElementById('error-popup');
-    popup.style.display = 'none';
-    location.reload(); // Recargar la página
-}
-
-// Función para filtrar y mostrar datos por río
-function filtrarPorRio() {
-    const selectedRio = document.getElementById('rio-select').value;
-    const filteredData = datosCSV.filter(row => row.RIO === selectedRio);
-    mostrarDatosEnTabla('tabla1', filteredData);
-    mostrarDatosEnTabla('tabla2', filteredData);
-}
-
-// Inicializar el mapa cuando la ventana se carga y cargar datos adicionales
-window.onload = function() {
-    inicializarMapa();
-
-    const rios = [
-        "RIO HUASAGA", "RIO  CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
-        "RIO KALAGLAS", "RIO YUQUIPA", "RIO  PAN DE AZÚCAR", "RIO  JIMBITONO", "RIO DOMONO",
-        "RIO RIO BLANCO", "RIO ARAPICOS", "RIO KUSUIM", "RIO TUNANZA", "RIO COPUENZA",
-        "RIO YANAYACU", "RIO  GUANGANZA", "RIO  TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
-        "RIO YUNGANZA", "RIO INDANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
-        "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
-        "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
-        "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
-        "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
-        "RIO WAWAIM GRANDE"
-    ];
-    
-    // Llenar el dropdown con los ríos
-    const rioSelect = document.getElementById('rio-select');
-    rios.forEach(rio => {
-        const option = document.createElement('option');
-        option.value = rio;
-        option.textContent = rio;
-        rioSelect.appendChild(option);
+    rios.forEach(nombreRio => {
+        const opcion = document.createElement('option');
+        opcion.value = nombreRio;
+        opcion.textContent = nombreRio;
+        selectRios.appendChild(opcion);
     });
-
-    // Añadir el botón de búsqueda y su evento
-    const buscarBtn = document.getElementById('buscar-btn');
-    buscarBtn.addEventListener('click', filtrarPorRio);
-
-    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
-    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
-};
+}
 
 // Función para mostrar el popup de error
-function mostrarPopup(mensaje) {
+function mostrarPopupError(mensaje) {
     const popup = document.getElementById('error-popup');
-    const popupText = document.getElementById('error-popup-text');
-    popupText.textContent = mensaje;
+    const textoPopup = document.getElementById('error-popup-text');
+    textoPopup.textContent = mensaje;
     popup.style.display = 'block';
 }
 
@@ -238,4 +235,39 @@ function mostrarPopup(mensaje) {
 function cerrarPopup() {
     const popup = document.getElementById('error-popup');
     popup.style.display = 'none';
+}
+
+// Inicialización del mapa y carga de datos al cargar la página
+window.onload = function() {
+    inicializarMapa();
+    abrirPestania({currentTarget: document.getElementById('biological-parameters-tab')}, 'tab1');
+    document.getElementById('buscar-btn').addEventListener('click', buscarDatos);
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
+};
+
+// Nuevo código para llenar el menú desplegable con ríos y buscar datos
+document.addEventListener("DOMContentLoaded", function () {
+    const selectRio = document.getElementById('rio-select');
+    rios.forEach(rio => {
+        const option = document.createElement('option');
+        option.value = rio;
+        option.text = rio;
+        selectRio.add(option);
+    });
+
+    const buscarBtn = document.getElementById('buscar-btn');
+    buscarBtn.addEventListener('click', function () {
+        const selectedRio = selectRio.value;
+        if (!selectedRio) {
+            mostrarPopupError("Por favor seleccione un río.");
+            return;
+        }
+        cargarDatos(selectedRio);
+    });
+});
+
+// Cargar datos del río seleccionado
+function cargarDatos(rio) {
+    console.log(`Cargando datos para ${rio}`);
 }
