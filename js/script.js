@@ -3,83 +3,29 @@ let map;
 let marker;
 let filaSeleccionada = null;
 let datosCSV = [];
-let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
-    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR", "RIO JIMBITONO", "RIO DOMONO",
-    "RIO RIO BLANCO", "RIO ARAPICOS", "RIO KUSUIM", "RIO TUNANZA", "RIO COPUENZA",
-    "RIO YANAYACU", "RIO GUANGANZA", "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
-    "RIO YUNGANZA", "RIO INDANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
-    "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
-    "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
-    "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
-    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
-    "RIO WAWAIM GRANDE"];
 
-    function inicializarMapa() {
-        map = L.map('map').setView([-2.278875, -78.141926], 14); // Ajustar si es necesario
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-    }
-    
-
-// Función para convertir coordenadas UTM a latitud/longitud
-function utmToLatLng(utmX, utmY, zoneNumber, zoneLetter) {
-    const a = 6378137.0; // Radio ecuatorial
-    const f = 1 / 298.257223563; // Aplanamiento
-    const k0 = 0.9996; // Factor de escala
-    const e = Math.sqrt(f * (2 - f)); // Excentricidad
-    const e1sq = e * e / (1 - e * e); // Excentricidad al cuadrado
-
-    const x = utmX - 500000.0; // Coordenada este relativa
-    const y = zoneLetter < 'N' ? utmY - 10000000.0 : utmY; // Coordenada norte relativa
-
-    const m = y / k0;
-    const mu = m / (a * (1 - Math.pow(e, 2) / 4 - 3 * Math.pow(e, 4) / 64 - 5 * Math.pow(e, 6) / 256));
-
-    const phi1Rad = mu +
-        (3 * e1sq / 2 - 27 * Math.pow(e1sq, 3) / 32) * Math.sin(2 * mu) +
-        (21 * e1sq / 16 - 55 * Math.pow(e1sq, 4) / 32) * Math.sin(4 * mu) +
-        (151 * Math.pow(e1sq, 3) / 96) * Math.sin(6 * mu);
-
-    const n1 = a / Math.sqrt(1 - Math.pow(e * Math.sin(phi1Rad), 2));
-    const t1 = Math.pow(Math.tan(phi1Rad), 2);
-    const c1 = e1sq * Math.pow(Math.cos(phi1Rad), 2);
-    const r1 = a * (1 - Math.pow(e, 2)) / Math.pow(1 - Math.pow(e * Math.sin(phi1Rad), 2), 3 / 2);
-    const d = x / (n1 * k0);
-
-    const latitude = phi1Rad - (n1 * Math.tan(phi1Rad) / r1) *
-        (Math.pow(d, 2) / 2 - (5 + 3 * t1 + 10 * c1 - 4 * Math.pow(c1, 2) - 9 * e1sq) * Math.pow(d, 4) / 24 +
-        (61 + 90 * t1 + 298 * c1 + 45 * Math.pow(t1, 2) - 252 * e1sq - 3 * Math.pow(c1, 2)) * Math.pow(d, 6) / 720);
-    const longitude = (d - (1 + 2 * t1 + c1) * Math.pow(d, 3) / 6 +
-        (5 - 2 * c1 + 28 * t1 - 3 * Math.pow(c1, 2) + 8 * e1sq + 24 * Math.pow(t1, 2)) * Math.pow(d, 5) / 120) / Math.cos(phi1Rad);
-
-    const lat = latitude * (180 / Math.PI);
-    const lon = longitude * (180 / Math.PI) + (zoneNumber - 1) * 6 - 180 + 3;
-
-    return { latitude: lat, longitude: lon };
+function inicializarMapa() {
+    map = L.map('map').setView([-2.278875, -78.141926], 14); // Ajustar si es necesario
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 }
 
 // Función para mover el marcador en el mapa a las coordenadas especificadas
 function mostrarEnMapa(registro, fila) {
-    const utmX = parseFloat(registro['COORD- X']);
-    const utmY = parseFloat(registro['COORD- Y']);
-    const lat = parseFloat(registro['LAT']);
-    const lon = parseFloat(registro['LON']);
-    const utmZone = 18; // Zona fija: 18
+    const lat = parseFloat(registro['COORD- X']);
+    const lon = parseFloat(registro['COORD- Y']);
 
-    let coordenadas;
-    try {
-        if (!isNaN(utmX) && !isNaN(utmY)) {
-            coordenadas = utmToLatLng(utmX, utmY, utmZone, 'S');
-        } else if (!isNaN(lat) && !isNaN(lon)) {
-            coordenadas = { latitude: lat, longitude: lon };
-        } else {
-            throw new Error("Las coordenadas no son válidas.");
-        }
-    } catch (error) {
-        mostrarPopupError(error.message);
+    // Log para debug
+    console.log("Registro seleccionado:", registro);
+    console.log("Latitud:", lat, "Longitud:", lon);
+
+    if (isNaN(lat) || isNaN(lon)) {
+        mostrarPopupError("Las coordenadas no son válidas.");
         return;
     }
+
+    const coordenadas = { latitude: lat, longitude: lon };
 
     if (filaSeleccionada) {
         filaSeleccionada.classList.remove('selected');
@@ -117,14 +63,12 @@ function cargarDatosCSV(url, tablaId) {
         download: true,
         header: true,
         complete: function(results) {
-            const datos = results.data;
+            const datos = results.data.filter(registro => registro['RIO'] === 'RIO HUASAGA');
+            console.log("Datos filtrados para RIO HUASAGA:", datos); // Log para debug
             if (tablaId === 'tabla1') {
                 datosCSV = datos;
             }
             actualizarTabla(datos, tablaId);
-            if (tablaId === 'tabla1') {
-                cargarNombresRios();
-            }
         },
         error: function(error) {
             mostrarPopupError("Error al cargar el archivo CSV: " + error.message);
@@ -186,43 +130,6 @@ function actualizarTabla(datos, tablaId) {
     }
 }
 
-// Función para buscar datos y filtrarlos según el río seleccionado
-function buscarDatos() {
-    const selectRios = document.getElementById('rio-select');
-    const nombreRioSeleccionado = selectRios.value;
-    const tabla1 = document.getElementById('tabla1');
-    const tabla2 = document.getElementById('tabla2');
-
-    if (!nombreRioSeleccionado) {
-        mostrarPopupError("Por favor, seleccione un río.");
-        return;
-    }
-
-    const filasTabla1 = Array.from(tabla1.getElementsByTagName('tbody')[0].rows);
-    const filasTabla2 = Array.from(tabla2.getElementsByTagName('tbody')[0].rows);
-
-    filasTabla1.forEach(fila => {
-        fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
-    });
-
-    filasTabla2.forEach(fila => {
-        fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
-    });
-}
-
-// Función para cargar los nombres de los ríos en el menú desplegable
-function cargarNombresRios() {
-    const selectRios = document.getElementById('rio-select');
-    selectRios.innerHTML = '<option value="">Seleccione un río</option>'; // Limpiar opciones previas
-
-    rios.forEach(nombreRio => {
-        const opcion = document.createElement('option');
-        opcion.value = nombreRio;
-        opcion.textContent = nombreRio;
-        selectRios.appendChild(opcion);
-    });
-}
-
 // Función para mostrar el popup de error
 function mostrarPopupError(mensaje) {
     const popup = document.getElementById('error-popup');
@@ -241,33 +148,6 @@ function cerrarPopup() {
 window.onload = function() {
     inicializarMapa();
     abrirPestania({currentTarget: document.getElementById('biological-parameters-tab')}, 'tab1');
-    document.getElementById('buscar-btn').addEventListener('click', buscarDatos);
     cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
     cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
 };
-
-// Nuevo código para llenar el menú desplegable con ríos y buscar datos
-document.addEventListener("DOMContentLoaded", function () {
-    const selectRio = document.getElementById('rio-select');
-    rios.forEach(rio => {
-        const option = document.createElement('option');
-        option.value = rio;
-        option.text = rio;
-        selectRio.add(option);
-    });
-
-    const buscarBtn = document.getElementById('buscar-btn');
-    buscarBtn.addEventListener('click', function () {
-        const selectedRio = selectRio.value;
-        if (!selectedRio) {
-            mostrarPopupError("Por favor seleccione un río.");
-            return;
-        }
-        cargarDatos(selectedRio);
-    });
-});
-
-// Cargar datos del río seleccionado
-function cargarDatos(rio) {
-    console.log(`Cargando datos para ${rio}`);
-}
