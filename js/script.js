@@ -16,11 +16,12 @@ let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMB
 
 // Función para inicializar el mapa
 function inicializarMapa() {
-    map = L.map('map').setView([-2.278875, -78.141926], 14); // Ajustar si es necesario
+    map = L.map('map').setView([-1.831239, -78.183406],6.60); // Coordenadas y zoom para ver Ecuador
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 }
+
 
 // Función para mover el marcador en el mapa a las coordenadas especificadas
 function mostrarEnMapa(registro, fila) {
