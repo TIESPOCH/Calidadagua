@@ -1,242 +1,433 @@
 /* Estilos Generales */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #609f69;
-    color: #333;
+    font-family: Arial, sans-serif; /* Fuente y tipo de fuente para el cuerpo del documento */
+    margin: 0; /* Elimina el margen predeterminado */
+    padding: 0; /* Elimina el relleno predeterminado */
+    background-color: #1e5226; /* Color de fondo del cuerpo */
+    color: #333; /* Color de texto */
+    height: 100vh; /* Altura del cuerpo igual a la altura de la ventana */
+    overflow: hidden; /* Oculta el desbordamiento del contenido que excede la altura de la ventana */
 }
 
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 80%;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    display: flex; /* Contenedor de flexbox para el diseño */
+    height: 100vh; /* Altura igual a la altura de la ventana */
+    width: 100%; /* Ancho completo del contenedor */
+    overflow: hidden; /* Oculta el desbordamiento del contenido */
 }
 
-/* Proximidad - Agrupar elementos relacionados */
+/* Estilos para el sidebar similar a Bootstrap */
+
+.sidebar {
+    background-color: #6fb98f; /* Color de fondo del sidebar */
+    color: #fff; /* Color de texto del sidebar */
+    width: 250px; /* Ancho del sidebar */
+    position: fixed; /* Posición fija para el sidebar */
+    height: 100%; /* Altura del sidebar igual al 100% de la ventana */
+    overflow-y: auto; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra en el sidebar */
+    transition: width 0.3s ease; /* Transición suave del ancho del sidebar */
+}
+
+.sidebar:hover {
+    width: 260px; /* Ancho ampliado del sidebar al pasar el mouse sobre él */
+}
+
+.sidebar .logo {
+    font-family: 'Times New Roman', Times, serif; /* Fuente y tipo de fuente para el logo */
+    margin: 20px 0; /* Margen superior e inferior del logo */
+    text-align: center; /* Alineación del texto en el centro */
+}
+
+.sidebar .logo img {
+    max-width: 80%; /* Ancho máximo de la imagen del logo */
+    height: auto; /* Altura automática para mantener la proporción */
+    margin-bottom: 10px; /* Margen inferior de la imagen */
+}
+
+.sidebar .icon {
+    margin: 20px 0; /* Margen superior e inferior de los iconos */
+    text-align: center; /* Alineación del texto en el centro */
+}
+
+.sidebar .icon a {
+    color: #fff; /* Color de texto de los enlaces */
+    text-decoration: none; /* Sin subrayado en los enlaces */
+    font-size: 18px; /* Tamaño de fuente de los enlaces */
+    display: block; /* Mostrar los enlaces como bloques */
+    padding: 10px 20px; /* Relleno interior de los enlaces */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+.sidebar .icon a:hover {
+    background-color: #a5d6a7; /* Color de fondo al pasar el mouse sobre los enlaces */
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+.sidebar .active {
+    background-color: #a5d6a7; /* Color de fondo del enlace activo */
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+.sidebar .separator {
+    border-bottom: 1px solid #fff; /* Separador entre elementos del sidebar */
+    margin: 10px 0; /* Margen superior e inferior del separador */
+}
+
+.sidebar .collapse-btn {
+    background-color: #5cb85c; /* Color de fondo del botón de colapso */
+    border: none; /* Sin borde en el botón de colapso */
+    color: #fff; /* Color de texto del botón de colapso */
+    font-size: 16px; /* Tamaño de fuente del botón de colapso */
+    cursor: pointer; /* Cursor al pasar sobre el botón de colapso */
+    padding: 10px 15px; /* Relleno interior del botón de colapso */
+    display: block; /* Mostrar el botón de colapso como bloque */
+    width: 100%; /* Ancho completo del botón de colapso */
+    text-align: left; /* Alineación del texto a la izquierda */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+.sidebar .collapse-btn:hover {
+    background-color: #449d44; /* Color de fondo al pasar el mouse sobre el botón de colapso */
+}
+
+.sidebar .submenu {
+    padding-left: 20px; /* Relleno izquierdo del submenu */
+    display: none; /* Ocultar submenu por defecto */
+}
+
+.sidebar .submenu.active {
+    display: block; /* Mostrar submenu activo */
+}
+
+/* Estilos para el contenido principal */
+
+.content {
+    margin-left: 250px; /* Margen izquierdo igual al ancho del sidebar */
+    transition: margin-left 0.3s ease; /* Transición suave del margen izquierdo */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0; /* Ancho cero para ocultar el sidebar en dispositivos pequeños */
+    }
+
+    .content {
+        margin-left: 0; /* Margen izquierdo cero cuando el sidebar está oculto */
+    }
+}
+
+
+.content {
+    flex-grow: 1; /* Permite que el contenido crezca dentro del contenedor flex */
+    background-color: #ece119d4; /* Color de fondo del contenido */
+    display: flex; /* Contenedor de flexbox para el diseño */
+    flex-direction: column; /* Dirección de los elementos secundarios en columna */
+    overflow-y: auto; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
+}
+
+.top-content {
+    display: flex; /* Contenedor de flexbox para el diseño */
+    flex: 1; /* Ocupa todo el espacio disponible */
+    overflow: hidden; /* Oculta el desbordamiento del contenido */
+}
+
 .satellite-image,
-.data-grid,
-.info-area {
-    margin-bottom: 20px;
+.data-grid {
+    flex: 1; /* Ocupa todo el espacio disponible dentro del contenedor */
+    margin: 10px; /* Margen exterior de los elementos */
+    overflow: hidden; /* Oculta el desbordamiento del contenido */
 }
 
-h2 {
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: #004d00; /* Verde oscuro para los títulos */
-}
-
-/* Similitud - Usar estilos similares para elementos similares */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    color: #333; /* Color de texto */
-    max-height: 400px;
-    overflow-y: auto; /* Agregar scroll vertical */
-    display: block;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 4px; /* Reducir el padding para disminuir la altura de las celdas */
-    text-align: left;
-    font-size: 14px; /* Tamaño de letra reducido */
-}
-
-th {
-    background-color: #f2c200; /* Color amarillo para los encabezados de la tabla */
-    color: #004d00; /* Texto en verde oscuro */
-}
-
-tr:nth-child(even) {
-    background-color: #eaf5ea; /* Color verde claro para filas pares */
-}
-
-/* Continuidad - Guiar la vista a través del contenido suavemente */
-.container > div {
-    transition: transform 0.3s;
-}
-
-.container > div:hover {
-    transform: scale(1.02);
-}
-
-/* Cierre - Crear bordes y fondos que ayuden a definir áreas */
 .satellite-image {
-    border: 2px solid #254d19;
-    border-radius: 8px;
-    overflow: hidden;
+    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Oculta el desbordamiento del contenido */
+    display: flex; /* Contenedor de flexbox para el diseño */
+    flex-direction: column; /* Dirección de los elementos secundarios en columna */
 }
 
 #map {
-    width: 100%;
-    height: 400px;
+    flex: 1; /* Ocupa todo el espacio disponible dentro del contenedor */
+    width: 100%; /* Ancho completo del mapa */
 }
 
-/* Figura-Fondo - Crear contraste entre el texto y el fondo */
-.info-area p {
-    background-color: #f4f4f9;
-    padding: 10px;
-    border-left: 4px solid #f2c200; /* Borde amarillo */
-    line-height: 1.6;
-    border: 2px solid #254d19;
+.data-grid {
+    display: flex; /* Contenedor de flexbox para el diseño */
+    flex-direction: column; /* Dirección de los elementos secundarios en columna */
+    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Oculta el desbordamiento del contenido */
 }
 
-.info-area p:before {
-    content: "ℹ️";
-    font-size: 24px;
-    color: #004d00; /* Icono en verde oscuro */
-    margin-right: 10px;
-}
-
-.info-area {
-    background-color: #fafafa;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-/* Estilos para las pestañas */
 .tabs {
-    overflow: hidden;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 20px;
+    display: flex; /* Contenedor de flexbox para el diseño */
 }
 
 .tablink {
-    background-color: #ddd; /* Color amarillo */
-    color: #004d00; /* Verde oscuro */
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    font-size: 17px;
-    width: 50%; /* Dos pestañas, cada una ocupa la mitad del ancho */
-    text-align: center;
+    background-color: #ddd; /* Color de fondo de los botones */
+    color: #004d00; /* Color de texto de los botones */
+    float: left; /* Flotar los botones a la izquierda */
+    border: none; /* Sin borde en los botones */
+    outline: none; /* Sin contorno al enfocar los botones */
+    cursor: pointer; /* Cursor al pasar sobre los botones */
+    padding: 14px 16px; /* Relleno interior de los botones */
+    font-size: 17px; /* Tamaño de fuente de los botones */
+    width: 50%; /* Ancho de los botones */
+    text-align: center; /* Alineación del texto en el centro */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    border-radius: 50px; /* Bordes redondeados */
 }
 
 .tablink:hover {
-    background-color: #f2c200;
+    background-color: #f2c200; /* Color de fondo al pasar el mouse */
+    border-radius: 50px; /* Bordes redondeados */
 }
 
 .tabcontent {
-    display: none;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-top: none;
-    overflow-x: auto; /* Agrega desplazamiento horizontal si la tabla es demasiado ancha */
+    flex: 1; /* Ocupa todo el espacio disponible dentro del contenedor */
+    overflow-y: auto; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
 }
 
-/* Estilo para hacer el contenedor del mapa más pequeño */
-.satellite-image {
-    width: 45%;
-    height: 20%; /* Reducido a la mitad del tamaño original */
+.info-area {
+    margin: 10px; /* Margen exterior de la información adicional */
+    padding: 20px; /* Relleno interior de la información adicional */
+    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia */
+    border-radius: 8px; /* Bordes redondeados */
+    background-color: rgba(250, 250, 250, 0.9); /* Color de fondo de la información adicional con transparencia */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); /* Sombra de la información adicional */
+    overflow-y: auto
+    ; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
 }
 
-/* Estilo para hacer el mapa más pequeño */
-#map {
-    width: 100%;
-    height: 500px;
+.info-area p {
+    background-color: #f4f4f9; /* Color de fondo del párrafo */
+    padding: 10px; /* Relleno interior del párrafo */
+    border-left: 4px solid #f2c200; /* Borde izquierdo del párrafo */
+    line-height: 1.6; /* Altura de línea del párrafo */
 }
 
-/* Estilo para hacer la tabla más grande */
-#tabla1,
-#tabla2 {
-    width: 100%;
-    max-width: 600px; /* Ajustado según sea necesario */
+.info-area p:before {
+    content: "ℹ️"; /* Contenido antes del párrafo */
+    font-size: 24px; /* Tamaño de fuente del contenido antes del párrafo */
+    color: #004d00; /* Color del contenido antes del párrafo */
+    margin-right: 10px; /* Margen derecho del contenido antes del párrafo */
 }
 
-/* Estilo para el área de la cuadrícula de datos */
-.data-grid {
-    width: 50%; /* Ajusta el ancho según sea necesario */
-    border: 2px solid #254d19;
-    padding: 10px;
-    float: right; /* Sitúa el contenedor a la derecha */
+h2 {
+    border-bottom: 2px solid #ddd; /* Borde inferior del título */
+    padding-bottom: 10px; /* Relleno inferior del título */
+    margin-bottom: 20px; /* Margen inferior del título */
+    color: #004d00; /* Color del texto del título */
 }
 
-/* Mejoras adicionales */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        flex-direction: column;
-    }
-
-    .satellite-image,
-    .data-grid,
-    .info-area {
-        width: 100%;
-    }
-
-    .tablink {
-        width: 100%;
-    }
-
-    #map {
-        height: 300px;
-    }
+table {
+    width: 100%; /* Ancho completo de la tabla */
+    border-collapse: collapse; /* Colapsar bordes de la tabla */
+    margin-bottom: 20px; /* Margen inferior de la tabla */
+    color: #333; /* Color de texto de la tabla */
+    background-color: rgba(255, 255, 255, 0.9); /* Color de fondo de la tabla con transparencia */
 }
 
-@media (max-width: 480px) {
-    .container {
-        width: 100%;
-        padding: 10px;
-    }
-
-    .tablink {
-        font-size: 15px;
-        padding: 12px 14px;
-        width: 100%;
-    }
-
-    #map {
-        height: 200px;
-    }
+th, td {
+    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia para celdas de tabla */
+    padding: 4px; /* Relleno interior de celdas de tabla */
+    text-align: left; /* Alineación del texto a la izquierda en celdas de tabla */
+    font-size: 12px; /* Tamaño de fuente para celdas de tabla */
 }
 
-/* Popup de error */
+th {
+    background-color: #f2c200; /* Color de fondo para encabezados de tabla */
+    color: #004d00; /* Color de texto para encabezados de tabla */
+}
+
+tr:nth-child(even) {
+    background-color: #eaf5ea; /* Color de fondo para filas pares de tabla */
+}
+
+tr.selected {
+    background-color: #00ff00; /* Color de fondo para fila seleccionada de tabla */
+}
+
+.tabs {
+    overflow: hidden; /* Oculta el desbordamiento de los elementos dentro de la pestaña */
+    border-bottom: 1px solid #ccc; /* Borde inferior de la pestaña */
+    margin-bottom: 20px; /* Margen inferior de la pestaña */
+}
+
+.tablink {
+    background-color: #ddd; /* Color de fondo de los botones de pestaña */
+    color: #004d00; /* Color de texto de los botones de pestaña */
+    float: left; /* Flotar los botones a la izquierda */
+    border: none; /* Sin borde en los botones de pestaña */
+    outline: none; /* Sin contorno al enfocar los botones de pestaña */
+    cursor: pointer; /* Cursor al pasar sobre los botones de pestaña */
+    padding: 10px 12px; /* Relleno interior de los botones de pestaña */
+    font-size: 14px; /* Tamaño de fuente de los botones de pestaña */
+    width: 50%; /* Ancho de los botones de pestaña */
+    text-align: center; /* Alineación del texto en el centro */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    border-radius: 50px; /* Bordes redondeados */
+}
+
+.tablink:hover {
+    background-color: #a59557; /* Color de fondo al pasar el mouse sobre los botones de pestaña */
+    border-radius: 50px; /* Bordes redondeados */
+}
+
+.tabcontent {
+    display: none; /* Ocultar el contenido de la pestaña por defecto */
+    padding: 10px; /* Relleno interior del contenido de la pestaña */
+    border-top: none; /* Sin borde superior en el contenido de la pestaña */
+}
+
+#dropdown-container {
+    margin: 10px 0; /* Margen superior e inferior del contenedor de desplegable */
+    display: flex; /* Contenedor de flexbox para el diseño */
+    align-items: center; /* Alineación de los elementos secundarios en el centro vertical */
+}
+
+#dropdown-container select,
+#dropdown-container button {
+    padding: 8px; /* Relleno interior de select y botón */
+    font-size: 14px; /* Tamaño de fuente de select y botón */
+    margin-right: 10px; /* Margen derecho de select y botón */
+    cursor: pointer; /* Cursor al pasar sobre select y botón */
+}
+
+#buscar-btn {
+    background-color: #004d00; /* Color de fondo del botón de búsqueda */
+    color: white; /* Color de texto del botón de búsqueda */
+    border: none; /* Sin borde en el botón de búsqueda */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    border-radius: 50px; /* Bordes redondeados */
+}
+
+#buscar-btn:hover {
+    background-color: #1c601a; /* Color de fondo al pasar el mouse sobre el botón de búsqueda */
+    color: black; /* Color de texto al pasar el mouse sobre el botón de búsqueda */
+}
+
+/* Estilos para los botones específicos */
+#biological-parameters-tab,
+#physicochemical-parameters-tab {
+    background-color: #218e26; /* Color de fondo de los botones específicos */
+    color: white; /* Color de texto de los botones específicos */
+    border-radius: 50px; /* Bordes redondeados */
+}
+
+#biological-parameters-tab:hover,
+#physicochemical-parameters-tab:hover {
+    background-color: #8a8e21; /* Color de fondo al pasar el mouse sobre los botones específicos */
+    border-radius: 50px; /* Bordes redondeados */
+}
+
+/* Estilos para el botón Home */
+.icon a[href="#home"] {
+    background-color: #007bff; /* Color de fondo del botón Home */
+    color: white; /* Color de texto del botón Home */
+}
+
+.icon a[href="#home"]:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el mouse sobre el botón Home */
+}
+
+/* Estilos para el popup */
 .popup {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 300px;
-    padding: 20px;
-    border: 2px solid #254d19;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    text-align: center;
+    display: none; /* Ocultar el popup por defecto */
+    position: fixed; /* Posición fija para el popup */
+    top: 50%; /* Ubicación vertical del popup */
+    left:
+    50%; /* Ubicación horizontal del popup */
+    transform: translate(-50%, -50%); /* Centrar el popup horizontal y verticalmente */
+    background-color: white; /* Color de fondo delpopup */
+    border: 1px solid #ccc; /* Borde del popup */
+    padding: 20px; /* Relleno interior del popup */
+    z-index: 1000; /* Índice z para la superposición del popup */
 }
 
 .popup-text {
-    margin-bottom: 20px;
-    font-size: 16px;
-    color: #333;
+    margin-bottom: 20px; /* Margen inferior del texto del popup */
 }
 
 .popup button {
-    background-color: #004d00;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
+    padding: 10px 20px; /* Relleno interior del botón dentro del popup */
+    background-color: #004d00; /* Color de fondo del botón dentro del popup */
+    color: white; /* Color de texto del botón dentro del popup */
+    border: none; /* Sin borde en el botón dentro del popup */
+    cursor: pointer; /* Cursor al pasar sobre el botón dentro del popup */
 }
 
-.popup button:hover {
-    background-color: #f2c200;
-    color: #004d00;
+/* Principios Gestaltistas */
+
+.sidebar {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra en el sidebar */
 }
 
+.sidebar .icon a i {
+    transition: transform 0.3s ease; /* Transición suave en los íconos dentro de los enlaces */
+}
+
+.sidebar .icon a i:hover {
+    transform: scale(1.2); /* Escala al pasar el mouse sobre los íconos dentro de los enlaces */
+}
+
+/* Teoría del Color */
+
+.sidebar {
+    background-color: #295e40; /* Color de fondo del sidebar */
+    color: #fff; /* Color de texto del sidebar */
+    
+}
+
+.top-content {
+    background-color: #ece119d4;; /* Color de fondo del contenido superior */
+}
+
+.satellite-image,
+.data-grid {
+    background-color: #e6e6e6; /* Color de fondo de los elementos */
+}
+
+.tabs {
+    border-bottom: 2px solid #fff; /* Borde inferior de la pestaña */
+}
+
+.tablink {
+    background-color: #a5d6a7; /* Color de fondo de los botones de pestaña */
+    color: #004d00; /* Color de texto de los botones de pestaña */
+}
+
+.tablink:hover {
+    background-color: #81c784; /* Color de fondo al pasar el mouse sobre los botones de pestaña */
+}
+
+.tabcontent {
+    background-color: #f0f0f0; /* Color de fondo del contenido de la pestaña */
+}
+
+/* Diseño Centrado en el Usuario */
+
+.info-area {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra en la información adicional */
+}
+
+.info-area p {
+    background-color: #fafafa; /* Color de fondo del párrafo */
+    border-left: 4px solid #2196f3; /* Borde izquierdo del párrafo */
+}
+
+.info-area p:before {
+    content: "ℹ️"; /* Contenido antes del párrafo */
+    color: #2196f3; /* Color del contenido antes del párrafo */
+}
+
+.popup {
+    background-color: #fff; /* Color de fondo del popup */
+    border: 1px solid #ccc; /* Borde del popup */
+}
+
+.popup button {
+    background-color: #2196f3; /* Color de fondo del botón dentro del popup */
+    color: #fff; /* Color de texto del botón dentro del popup */
+}

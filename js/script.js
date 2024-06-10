@@ -4,8 +4,8 @@ let marker;
 let filaSeleccionada = null;
 let datosCSV = [];
 let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
-    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR", "RIO JIMBITONO", "RIO DOMONO",
-    "RIO BLANCO", "RIO ARAPICOS", "RIO KUSUIM", 
+    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR", "RIO JIMBITONO",
+    "RIO BLANCO", "RIO ARAPICOS", 
     "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
     "RIO YUNGANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
     "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
@@ -14,15 +14,13 @@ let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMB
     "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
     "RIO WAWAIM GRANDE","RIO LUSHIN"];
 
-    function inicializarMapa() {
-        map = L.map('map').setView([-2.278875, -78.141926], 14); // Ajustar si es necesario
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-    }
-    
-
-
+// Función para inicializar el mapa
+function inicializarMapa() {
+    map = L.map('map').setView([-2.278875, -78.141926], 14); // Ajustar si es necesario
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+}
 
 // Función para mover el marcador en el mapa a las coordenadas especificadas
 function mostrarEnMapa(registro, fila) {
@@ -53,6 +51,7 @@ function mostrarEnMapa(registro, fila) {
     }
     map.setView([coordenadas.latitude, coordenadas.longitude], 15);
 }
+
 // Función para abrir una pestaña específica
 function abrirPestania(evt, tabName) {
     const tabcontent = document.getElementsByClassName('tabcontent');
@@ -67,6 +66,9 @@ function abrirPestania(evt, tabName) {
 
     document.getElementById(tabName).style.display = 'block';
     evt.currentTarget.className += ' active';
+
+    // Mostrar el contenedor del dropdown cuando se hace clic en un tab
+    document.getElementById("dropdown-container").style.display = "flex";
 }
 
 // Función para cargar datos CSV y mostrarlos en las tablas
@@ -99,7 +101,7 @@ function actualizarTabla(datos, tablaId) {
 
     if (tablaId === 'tabla1') {
         // Campos que se mostrarán en la tabla de parámetros biológicos
-        const camposAMostrar = ['ID', 'RIO', 'COORD- X', 'COORD- Y', 'LAT', 'LON', 'PUNTO', 'FECHA',
+        const camposAMostrar = ['ID', 'RIO', 'COORD- X', 'COORD- Y', 'PUNTO', 'FECHA',
             'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON',
             'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
 
@@ -145,6 +147,7 @@ function actualizarTabla(datos, tablaId) {
 }
 
 // Función para buscar datos y filtrarlos según el río seleccionado
+// Función para buscar datos y filtrarlos según el río seleccionado
 function buscarDatos() {
     const selectRios = document.getElementById('rio-select');
     const nombreRioSeleccionado = selectRios.value;
@@ -156,17 +159,19 @@ function buscarDatos() {
         return;
     }
 
+    // Filtrar y mostrar las filas en tabla1
     const filasTabla1 = Array.from(tabla1.getElementsByTagName('tbody')[0].rows);
-    const filasTabla2 = Array.from(tabla2.getElementsByTagName('tbody')[0].rows);
-
     filasTabla1.forEach(fila => {
         fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
     });
 
+    // Filtrar y mostrar las filas en tabla2
+    const filasTabla2 = Array.from(tabla2.getElementsByTagName('tbody')[0].rows);
     filasTabla2.forEach(fila => {
         fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
     });
 }
+
 
 // Función para cargar los nombres de los ríos en el menú desplegable
 function cargarNombresRios() {
