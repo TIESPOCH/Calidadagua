@@ -120,7 +120,7 @@ body {
 
 .content {
     flex-grow: 1; /* Permite que el contenido crezca dentro del contenedor flex */
-    background-color: #ece119d4; /* Color de fondo del contenido */
+    background-color: #ffffff; /* Color de fondo del contenido */
     display: flex; /* Contenedor de flexbox para el diseño */
     flex-direction: column; /* Dirección de los elementos secundarios en columna */
     overflow-y: auto; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
@@ -381,7 +381,7 @@ tr.selected {
 }
 
 .top-content {
-    background-color: #ece119d4;; /* Color de fondo del contenido superior */
+    background-color: #ffffff;; /* Color de fondo del contenido superior */
 }
 
 .satellite-image,
@@ -430,4 +430,18 @@ tr.selected {
 .popup button {
     background-color: #2196f3; /* Color de fondo del botón dentro del popup */
     color: #fff; /* Color de texto del botón dentro del popup */
+}
+/* CSS para hacer que los encabezados sean pegajosos */
+thead th {
+    position: sticky;
+    top: 0;
+    background: #f2c200; /* Color amarillo para los encabezados de la tabla */
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Asegurar que la tabla se desplace dentro del contenedor */
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
 }

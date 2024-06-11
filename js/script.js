@@ -4,8 +4,8 @@ let marker;
 let filaSeleccionada = null;
 let datosCSV = [];
 let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
-    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR", "RIO JIMBITONO",
-    "RIO BLANCO", "RIO ARAPICOS", 
+    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR",
+    "RIO BLANCO", 
     "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
     "RIO YUNGANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
     "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
@@ -16,12 +16,11 @@ let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMB
 
 // Función para inicializar el mapa
 function inicializarMapa() {
-    map = L.map('map').setView([-1.831239, -78.183406],6.60); // Coordenadas y zoom para ver Ecuador
+    map = L.map('map').setView([-1.831239, -78.183406], 6.60); // Coordenadas y zoom para ver Ecuador
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 }
-
 
 // Función para mover el marcador en el mapa a las coordenadas especificadas
 function mostrarEnMapa(registro, fila) {
@@ -45,10 +44,31 @@ function mostrarEnMapa(registro, fila) {
     fila.classList.add('selected');
     filaSeleccionada = fila;
 
-    if (marker) {
-        marker.setLatLng([coordenadas.latitude, coordenadas.longitude]);
+    // Determinar el contenido del pop-up utilizando las funciones generadoras
+    let popupContent = '';
+    if (registro.hasOwnProperty('�NDICE BMWP/Col.1')) {
+        popupContent = generarContenidoPopupBiologicos(registro);
+    } else if (registro.hasOwnProperty('Clasificacion ')) {
+        popupContent = generarContenidoPopupFisicoquimicos(registro);
     } else {
-        marker = L.marker([coordenadas.latitude, coordenadas.longitude]).addTo(map);
+        popupContent = `
+            <div>
+                <strong>Río:</strong> ${registro['RIO']}<br>
+                <strong>Punto:</strong> ${registro['PUNTO']}<br>
+                <strong>Información no disponible</strong>
+            </div>
+        `;
+    }
+
+    if (marker) {
+        marker.setLatLng([coordenadas.latitude, coordenadas.longitude])
+              .setPopupContent(popupContent)
+              .openPopup();
+    } else {
+        marker = L.marker([coordenadas.latitude, coordenadas.longitude])
+                  .addTo(map)
+                  .bindPopup(popupContent)
+                  .openPopup();
     }
     map.setView([coordenadas.latitude, coordenadas.longitude], 15);
 }
@@ -100,54 +120,31 @@ function actualizarTabla(datos, tablaId) {
     tabla.innerHTML = '';
     thead.innerHTML = '';
 
-    if (tablaId === 'tabla1') {
-        // Campos que se mostrarán en la tabla de parámetros biológicos
-        const camposAMostrar = ['ID', 'RIO', 'COORD- X', 'COORD- Y', 'PUNTO', 'FECHA',
-            'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON',
-            'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
+    if (datos.length === 0) return;
 
-        // Crear encabezados de tabla para parámetros biológicos
+    // Obtener todos los campos de los datos
+    const camposAMostrar = Object.keys(datos[0]);
+
+    // Crear encabezados de tabla
+    camposAMostrar.forEach(campo => {
+        const th = document.createElement('th');
+        th.textContent = campo;
+        thead.appendChild(th);
+    });
+
+    // Llenar la tabla con los datos
+    datos.forEach(registro => {
+        const fila = tabla.insertRow();
+
         camposAMostrar.forEach(campo => {
-            const th = document.createElement('th');
-            th.textContent = campo;
-            thead.appendChild(th);
+            const celda = fila.insertCell();
+            celda.textContent = registro[campo];
         });
 
-        // Llenar la tabla de parámetros biológicos
-        datos.forEach(registro => {
-            const fila = tabla.insertRow();
-
-            camposAMostrar.forEach(campo => {
-                const celda = fila.insertCell();
-                celda.textContent = registro[campo];
-            });
-
-            fila.onclick = () => mostrarEnMapa(registro, fila);
-        });
-    } else if (tablaId === 'tabla2') {
-        // Crear encabezados de tabla para parámetros fisicoquímicos
-        const headers = Object.keys(datos[0]);
-        headers.forEach(header => {
-            const th = document.createElement('th');
-            th.textContent = header;
-            thead.appendChild(th);
-        });
-
-        // Llenar la tabla de parámetros fisicoquímicos
-        datos.forEach(registro => {
-            const fila = tabla.insertRow();
-
-            headers.forEach(campo => {
-                const celda = fila.insertCell();
-                celda.textContent = registro[campo];
-            });
-
-            fila.onclick = () => mostrarEnMapa(registro, fila);
-        });
-    }
+        fila.onclick = () => mostrarEnMapa(registro, fila);
+    });
 }
 
-// Función para buscar datos y filtrarlos según el río seleccionado
 // Función para buscar datos y filtrarlos según el río seleccionado
 function buscarDatos() {
     const selectRios = document.getElementById('rio-select');
@@ -172,7 +169,6 @@ function buscarDatos() {
         fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
     });
 }
-
 
 // Función para cargar los nombres de los ríos en el menú desplegable
 function cargarNombresRios() {
@@ -206,7 +202,7 @@ window.onload = function() {
     inicializarMapa();
     abrirPestania({currentTarget: document.getElementById('biological-parameters-tab')}, 'tab1');
     document.getElementById('buscar-btn').addEventListener('click', buscarDatos);
-    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosbio.csv', 'tabla1');
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/tablabio.csv', 'tabla1');
     cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
 };
 
@@ -227,11 +223,36 @@ document.addEventListener("DOMContentLoaded", function () {
             mostrarPopupError("Por favor seleccione un río.");
             return;
         }
-        cargarDatos(selectedRio);
+        buscarDatos();
     });
 });
 
-// Cargar datos del río seleccionado
-function cargarDatos(rio) {
-    console.log(`Cargando datos para ${rio}`);
+// Función para generar el contenido del popup para parámetros biológicos
+function generarContenidoPopupBiologicos(registro) {
+    const nombreRio = registro['RIO'];
+    const puntoRio = registro['PUNTO'];
+    const indiceBMWP = registro['�NDICE BMWP/Col.1'];
+
+    return `
+        <div>
+            <strong>Río:</strong> ${nombreRio}<br>
+            <strong>Punto:</strong> ${puntoRio}<br>
+            <strong>�NDICE BMWP/Col.1:</strong> ${indiceBMWP}
+        </div>
+    `;
+}
+
+// Función para generar el contenido del popup para parámetros fisicoquímicos
+function generarContenidoPopupFisicoquimicos(registro) {
+    const nombreRio = registro['RIO'];
+    const puntoRio = registro['PUNTO'];
+    const clasificacion = registro['Clasificacion '];
+
+    return `
+        <div>
+            <strong>Río:</strong> ${nombreRio}<br>
+            <strong>Punto:</strong> ${puntoRio}<br>
+            <strong>Clasificación de calidad del agua:</strong> ${clasificacion}
+        </div>
+    `;
 }
