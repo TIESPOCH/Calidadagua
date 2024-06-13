@@ -11,6 +11,9 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- D3 -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
     <script src="js/script.js" defer></script>
 </head>
 <body>
@@ -28,52 +31,57 @@
             </div>
             <!-- Icono Ver Gráficos Infografía -->
             <div class="icon">
-                <a href="infografia/infografia.html"><i class="fas fa-chart-bar"></i> Ver Gráficos Infografía</a>
+                <a href="fisicoquimico/infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Fisicoquímicos</a>
+                <div class="icon">
+                    <a href="biologico/infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Biológicos</a>
+                </div>
             </div>
         </div>
         <!-- Contenido Principal -->
         <div class="content">
-            <div class="top-content">
-                <!-- Imagen Satelital -->
-                <div class="satellite-image">
-                    <h2><i class="fas fa-globe-americas"></i> Mapa Satelital</h2>
-                    <div id="map"></div>
+            <div class="main-content">
+                <div class="top-content">
+                    <!-- Imagen Satelital -->
+                    <div class="satellite-image">
+                        <h2><i class="fas fa-globe-americas"></i> Mapa Satelital</h2>
+                        <div id="map"></div>
+                    </div>
+                    <!-- Cuadrícula de Datos -->
+                    <div class="data-grid">
+                        <h2><i class="fas fa-table"></i> Datos</h2>
+                        <div class="tabs">
+                            <button id="biological-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab1')">Parámetros Biológicos</button>
+                            <button id="physicochemical-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab2')">Parámetros Fisicoquímicos</button>
+                        </div>
+                        <div id="dropdown-container">
+                            <select id="rio-select">
+                                <option value="">Seleccione un río</option>
+                            </select>
+                            <button id="buscar-btn">Buscar</button>
+                        </div>
+                        <div id="tab1" class="tabcontent">
+                            <table id="tabla1">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div id="tab2" class="tabcontent" style="display:none">
+                            <table id="tabla2">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <!-- Cuadrícula de Datos -->
-                <div class="data-grid">
-                    <h2><i class="fas fa-table"></i> Datos</h2>
-                    <div class="tabs">
-                        <button id="biological-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab1')">Parámetros Biológicos</button>
-                        <button id="physicochemical-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab2')">Parámetros Fisicoquímicos</button>
-                    </div>
-                    <div id="dropdown-container">
-                        <select id="rio-select">
-                            <option value="">Seleccione un río</option>
-                        </select>
-                        <button id="buscar-btn">Buscar</button>
-                    </div>
-                    <div id="tab1" class="tabcontent">
-                        <table id="tabla1">
-                            <thead>
-                                <tr></tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    <div id="tab2" class="tabcontent" style="display:none">
-                        <table id="tabla2">
-                            <thead>
-                                <tr></tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                <!-- Información Adicional -->
+                <div class="info-area">
+                    <h2><i class="fas fa-info-circle"></i> Información Adicional</h2>
+                    <p>Aquí puedes agregar información adicional relacionada con la imagen satelital y los datos mostrados en la cuadrícula. Esto podría incluir descripciones, análisis o cualquier otro contenido relevante.</p>
                 </div>
-            </div>
-            <!-- Información Adicional -->
-            <div class="info-area">
-                <h2><i class="fas fa-info-circle"></i> Información Adicional</h2>
-                <p>Aquí puedes agregar información adicional relacionada con la imagen satelital y los datos mostrados en la cuadrícula. Esto podría incluir descripciones, análisis o cualquier otro contenido relevante.</p>
             </div>
         </div>
     </div>

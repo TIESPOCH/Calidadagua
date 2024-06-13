@@ -6,13 +6,14 @@ let datosCSV = [];
 let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
     "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR",
     "RIO BLANCO", 
-    "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI",
+    "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI ",
     "RIO YUNGANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
     "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
     "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
     "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
     "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
     "RIO WAWAIM GRANDE","RIO LUSHIN"];
+
 
 // Función para inicializar el mapa
 function inicializarMapa() {
@@ -22,6 +23,7 @@ function inicializarMapa() {
     }).addTo(map);
 }
 
+// Función para mover el marcador en el mapa a las coordenadas especificadas
 // Función para mover el marcador en el mapa a las coordenadas especificadas
 function mostrarEnMapa(registro, fila) {
     const lat = parseFloat(registro['COORD- X']);
@@ -46,10 +48,11 @@ function mostrarEnMapa(registro, fila) {
 
     // Determinar el contenido del pop-up utilizando las funciones generadoras
     let popupContent = '';
-    if (registro.hasOwnProperty('�NDICE BMWP/Col.1')) {
+    if (registro.hasOwnProperty('ÍNDICE BMWP/Col.1')) {
         popupContent = generarContenidoPopupBiologicos(registro);
     } else if (registro.hasOwnProperty('Clasificacion ')) {
         popupContent = generarContenidoPopupFisicoquimicos(registro);
+        generarGraficosFisicoquimicos(registro); // Llamada para generar gráficos
     } else {
         popupContent = `
             <div>
@@ -70,6 +73,15 @@ function mostrarEnMapa(registro, fila) {
                   .bindPopup(popupContent)
                   .openPopup();
     }
+
+    // Añadir eventos para mostrar el popup al pasar el mouse
+    marker.on('mouseover', function() {
+        marker.openPopup();
+    });
+
+    marker.on('mouseout', function() {
+        marker.closePopup();
+    });
     map.setView([coordenadas.latitude, coordenadas.longitude], 15);
 }
 
@@ -231,13 +243,13 @@ document.addEventListener("DOMContentLoaded", function () {
 function generarContenidoPopupBiologicos(registro) {
     const nombreRio = registro['RIO'];
     const puntoRio = registro['PUNTO'];
-    const indiceBMWP = registro['�NDICE BMWP/Col.1'];
+    const indiceBMWP = registro['ÍNDICE BMWP/Col.1'];
 
     return `
         <div>
             <strong>Río:</strong> ${nombreRio}<br>
             <strong>Punto:</strong> ${puntoRio}<br>
-            <strong>�NDICE BMWP/Col.1:</strong> ${indiceBMWP}
+            <strong>ÍNDICE BMWP/Col.1:</strong> ${indiceBMWP}
         </div>
     `;
 }
@@ -256,3 +268,32 @@ function generarContenidoPopupFisicoquimicos(registro) {
         </div>
     `;
 }
+
+// Función para generar gráficos comparativos utilizando D3.js
+const valoresExcelentes = {
+    'Temperatura': 25,
+    'Ph': 8.5,
+    'Oxigeno disuelto': 7,
+    'Sólidos Totales Disueltos': 500,
+    'Nitratos': 10,
+    'Fosfatos': 0.1,
+    'Turbiedad': 1,
+    'DBO5': 3,
+    'Coliformes Fecales': 200,
+    'Calidad del Agua NSF': 100
+};
+
+const rangosEscalas = {
+    'Temperatura': [5, 25],
+    'Ph': [6.5, 8.5],
+    'Oxigeno disuelto': [0, 7],
+    'Sólidos Totales Disueltos': [0, 500],
+    'Nitratos': [0, 10],
+    'Fosfatos': [0, 0.5],
+    'Turbiedad': [0, 1],
+    'DBO5': [0, 3],
+    'Coliformes Fecales': [0, 200],
+    'Calidad del Agua NSF': [90, 100]
+};
+
+

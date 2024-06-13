@@ -1,447 +1,425 @@
 /* Estilos Generales */
 body {
-    font-family: Arial, sans-serif; /* Fuente y tipo de fuente para el cuerpo del documento */
-    margin: 0; /* Elimina el margen predeterminado */
-    padding: 0; /* Elimina el relleno predeterminado */
-    background-color: #1e5226; /* Color de fondo del cuerpo */
-    color: #333; /* Color de texto */
-    height: 100vh; /* Altura del cuerpo igual a la altura de la ventana */
-    overflow: hidden; /* Oculta el desbordamiento del contenido que excede la altura de la ventana */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1e5226;
+    color: #333;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .container {
-    display: flex; /* Contenedor de flexbox para el diseño */
-    height: 100vh; /* Altura igual a la altura de la ventana */
-    width: 100%; /* Ancho completo del contenedor */
-    overflow: hidden; /* Oculta el desbordamiento del contenido */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
-/* Estilos para el sidebar similar a Bootstrap */
-
 .sidebar {
-    background-color: #6fb98f; /* Color de fondo del sidebar */
-    color: #fff; /* Color de texto del sidebar */
-    width: 250px; /* Ancho del sidebar */
-    position: fixed; /* Posición fija para el sidebar */
-    height: 100%; /* Altura del sidebar igual al 100% de la ventana */
-    overflow-y: auto; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra en el sidebar */
-    transition: width 0.3s ease; /* Transición suave del ancho del sidebar */
+    background-color: #295e40;
+    color: #fff;
+    width: 250px;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: width 0.3s ease;
 }
 
 .sidebar:hover {
-    width: 260px; /* Ancho ampliado del sidebar al pasar el mouse sobre él */
+    width: 260px;
 }
 
 .sidebar .logo {
-    font-family: 'Times New Roman', Times, serif; /* Fuente y tipo de fuente para el logo */
-    margin: 20px 0; /* Margen superior e inferior del logo */
-    text-align: center; /* Alineación del texto en el centro */
+    font-family: 'Times New Roman', Times, serif;
+    margin: 20px 0;
+    text-align: center;
 }
 
 .sidebar .logo img {
-    max-width: 80%; /* Ancho máximo de la imagen del logo */
-    height: auto; /* Altura automática para mantener la proporción */
-    margin-bottom: 10px; /* Margen inferior de la imagen */
+    max-width: 80%;
+    height: auto;
+    margin-bottom: 10px;
 }
 
 .sidebar .icon {
-    margin: 20px 0; /* Margen superior e inferior de los iconos */
-    text-align: center; /* Alineación del texto en el centro */
+    margin: 20px 0;
+    text-align: center;
 }
 
 .sidebar .icon a {
-    color: #fff; /* Color de texto de los enlaces */
-    text-decoration: none; /* Sin subrayado en los enlaces */
-    font-size: 18px; /* Tamaño de fuente de los enlaces */
-    display: block; /* Mostrar los enlaces como bloques */
-    padding: 10px 20px; /* Relleno interior de los enlaces */
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
 }
 
 .sidebar .icon a:hover {
-    background-color: #a5d6a7; /* Color de fondo al pasar el mouse sobre los enlaces */
-    border-radius: 5px; /* Bordes redondeados */
+    background-color: #a5d6a7;
+    border-radius: 5px;
 }
 
 .sidebar .active {
-    background-color: #a5d6a7; /* Color de fondo del enlace activo */
-    border-radius: 5px; /* Bordes redondeados */
+    background-color: #a5d6a7;
+    border-radius: 5px;
 }
 
 .sidebar .separator {
-    border-bottom: 1px solid #fff; /* Separador entre elementos del sidebar */
-    margin: 10px 0; /* Margen superior e inferior del separador */
+    border-bottom: 1px solid #fff;
+    margin: 10px 0;
 }
 
 .sidebar .collapse-btn {
-    background-color: #5cb85c; /* Color de fondo del botón de colapso */
-    border: none; /* Sin borde en el botón de colapso */
-    color: #fff; /* Color de texto del botón de colapso */
-    font-size: 16px; /* Tamaño de fuente del botón de colapso */
-    cursor: pointer; /* Cursor al pasar sobre el botón de colapso */
-    padding: 10px 15px; /* Relleno interior del botón de colapso */
-    display: block; /* Mostrar el botón de colapso como bloque */
-    width: 100%; /* Ancho completo del botón de colapso */
-    text-align: left; /* Alineación del texto a la izquierda */
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    background-color: #5cb85c;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px 15px;
+    display: block;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.3s ease;
 }
 
 .sidebar .collapse-btn:hover {
-    background-color: #449d44; /* Color de fondo al pasar el mouse sobre el botón de colapso */
+    background-color: #449d44;
 }
 
 .sidebar .submenu {
-    padding-left: 20px; /* Relleno izquierdo del submenu */
-    display: none; /* Ocultar submenu por defecto */
+    padding-left: 20px;
+    display: none;
 }
 
 .sidebar .submenu.active {
-    display: block; /* Mostrar submenu activo */
+    display: block;
+}
+
+.sidebar .icon a i {
+    transition: transform 0.3s ease;
+}
+
+.sidebar .icon a i:hover {
+    transform: scale(1.2);
 }
 
 /* Estilos para el contenido principal */
-
 .content {
-    margin-left: 250px; /* Margen izquierdo igual al ancho del sidebar */
-    transition: margin-left 0.3s ease; /* Transición suave del margen izquierdo */
+    margin-left: 250px;
+    flex-grow: 1;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
 }
 
 @media (max-width: 768px) {
     .sidebar {
-        width: 0; /* Ancho cero para ocultar el sidebar en dispositivos pequeños */
+        width: 0;
     }
 
     .content {
-        margin-left: 0; /* Margen izquierdo cero cuando el sidebar está oculto */
+        margin-left: 0;
     }
 }
 
-
-.content {
-    flex-grow: 1; /* Permite que el contenido crezca dentro del contenedor flex */
-    background-color: #ffffff; /* Color de fondo del contenido */
-    display: flex; /* Contenedor de flexbox para el diseño */
-    flex-direction: column; /* Dirección de los elementos secundarios en columna */
-    overflow-y: auto; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
-}
-
 .top-content {
-    display: flex; /* Contenedor de flexbox para el diseño */
-    flex: 1; /* Ocupa todo el espacio disponible */
-    overflow: hidden; /* Oculta el desbordamiento del contenido */
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    background-color: #ffffff;
 }
 
 .satellite-image,
 .data-grid {
-    flex: 1; /* Ocupa todo el espacio disponible dentro del contenedor */
-    margin: 10px; /* Margen exterior de los elementos */
-    overflow: hidden; /* Oculta el desbordamiento del contenido */
+    flex: 1;
+    margin: 10px;
+    overflow: hidden;
+    background-color: #e6e6e6;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    max-height: 600px; /* Limitar la altura máxima */
 }
 
 .satellite-image {
-    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia */
-    border-radius: 8px; /* Bordes redondeados */
-    overflow: hidden; /* Oculta el desbordamiento del contenido */
-    display: flex; /* Contenedor de flexbox para el diseño */
-    flex-direction: column; /* Dirección de los elementos secundarios en columna */
+    display: flex;
+    flex-direction: column;
 }
 
 #map {
-    flex: 1; /* Ocupa todo el espacio disponible dentro del contenedor */
-    width: 100%; /* Ancho completo del mapa */
+    height: 100vh; /* Altura completa de la ventana */
+    width: 100%; /* Ancho completo */
 }
 
+
 .data-grid {
-    display: flex; /* Contenedor de flexbox para el diseño */
-    flex-direction: column; /* Dirección de los elementos secundarios en columna */
-    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia */
-    border-radius: 8px; /* Bordes redondeados */
-    overflow: hidden; /* Oculta el desbordamiento del contenido */
+    display: flex;
+    flex-direction: column;
 }
 
 .tabs {
-    display: flex; /* Contenedor de flexbox para el diseño */
+    display: flex;
+    border-bottom: 2px solid #fff;
 }
 
 .tablink {
-    background-color: #ddd; /* Color de fondo de los botones */
-    color: #004d00; /* Color de texto de los botones */
-    float: left; /* Flotar los botones a la izquierda */
-    border: none; /* Sin borde en los botones */
-    outline: none; /* Sin contorno al enfocar los botones */
-    cursor: pointer; /* Cursor al pasar sobre los botones */
-    padding: 14px 16px; /* Relleno interior de los botones */
-    font-size: 17px; /* Tamaño de fuente de los botones */
-    width: 50%; /* Ancho de los botones */
-    text-align: center; /* Alineación del texto en el centro */
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
-    border-radius: 50px; /* Bordes redondeados */
+    background-color: #a5d6a7;
+    color: #004d00;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    font-size: 17px;
+    width: 50%;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    border-radius: 50px;
 }
 
 .tablink:hover {
-    background-color: #f2c200; /* Color de fondo al pasar el mouse */
-    border-radius: 50px; /* Bordes redondeados */
+    background-color: #81c784;
 }
 
 .tabcontent {
-    flex: 1; /* Ocupa todo el espacio disponible dentro del contenedor */
-    overflow-y: auto; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
+    display: none;
+    padding: 10px;
+    border-top: none;
+    flex: 1;
+    overflow-y: auto;
+    background-color: #f0f0f0;
 }
 
 .info-area {
-    margin: 10px; /* Margen exterior de la información adicional */
-    padding: 20px; /* Relleno interior de la información adicional */
-    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia */
-    border-radius: 8px; /* Bordes redondeados */
-    background-color: rgba(250, 250, 250, 0.9); /* Color de fondo de la información adicional con transparencia */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); /* Sombra de la información adicional */
-    overflow-y: auto
-    ; /* Agrega desplazamiento vertical cuando el contenido excede el espacio */
+    flex: 1;
+    margin: 10px;
+    padding: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    background-color: rgba(250, 250, 250, 0.9);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    overflow-y: hidden;
 }
 
 .info-area p {
-    background-color: #f4f4f9; /* Color de fondo del párrafo */
-    padding: 10px; /* Relleno interior del párrafo */
-    border-left: 4px solid #f2c200; /* Borde izquierdo del párrafo */
-    line-height: 1.6; /* Altura de línea del párrafo */
+    background-color: #f4f4f9;
+    padding: 10px;
+    border-left: 4px solid #f2c200;
+    line-height: 1.6;
 }
 
 .info-area p:before {
-    content: "ℹ️"; /* Contenido antes del párrafo */
-    font-size: 24px; /* Tamaño de fuente del contenido antes del párrafo */
-    color: #004d00; /* Color del contenido antes del párrafo */
-    margin-right: 10px; /* Margen derecho del contenido antes del párrafo */
+    content: "ℹ️";
+    font-size: 24px;
+    color: #004d00;
+    margin-right: 10px;
 }
 
 h2 {
-    border-bottom: 2px solid #ddd; /* Borde inferior del título */
-    padding-bottom: 10px; /* Relleno inferior del título */
-    margin-bottom: 20px; /* Margen inferior del título */
-    color: #004d00; /* Color del texto del título */
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #004d00;
+}
+
+.table-container {
+    max-height: 400px; /* Limitar la altura máxima */
+    overflow-y: auto;
 }
 
 table {
-    width: 100%; /* Ancho completo de la tabla */
-    border-collapse: collapse; /* Colapsar bordes de la tabla */
-    margin-bottom: 20px; /* Margen inferior de la tabla */
-    color: #333; /* Color de texto de la tabla */
-    background-color: rgba(255, 255, 255, 0.9); /* Color de fondo de la tabla con transparencia */
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 th, td {
-    border: 2px solid rgba(0, 0, 0, 0.5); /* Borde con color y transparencia para celdas de tabla */
-    padding: 4px; /* Relleno interior de celdas de tabla */
-    text-align: left; /* Alineación del texto a la izquierda en celdas de tabla */
-    font-size: 12px; /* Tamaño de fuente para celdas de tabla */
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 4px;
+    text-align: left;
+    font-size: 12px;
 }
 
 th {
-    background-color: #f2c200; /* Color de fondo para encabezados de tabla */
-    color: #004d00; /* Color de texto para encabezados de tabla */
+    background-color: #f2c200;
+    color: #004d00;
 }
 
 tr:nth-child(even) {
-    background-color: #eaf5ea; /* Color de fondo para filas pares de tabla */
+    background-color: #eaf5ea;
 }
 
 tr.selected {
-    background-color: #00ff00; /* Color de fondo para fila seleccionada de tabla */
+    background-color: #00ff00;
 }
 
-.tabs {
-    overflow: hidden; /* Oculta el desbordamiento de los elementos dentro de la pestaña */
-    border-bottom: 1px solid #ccc; /* Borde inferior de la pestaña */
-    margin-bottom: 20px; /* Margen inferior de la pestaña */
-}
-
-.tablink {
-    background-color: #ddd; /* Color de fondo de los botones de pestaña */
-    color: #004d00; /* Color de texto de los botones de pestaña */
-    float: left; /* Flotar los botones a la izquierda */
-    border: none; /* Sin borde en los botones de pestaña */
-    outline: none; /* Sin contorno al enfocar los botones de pestaña */
-    cursor: pointer; /* Cursor al pasar sobre los botones de pestaña */
-    padding: 10px 12px; /* Relleno interior de los botones de pestaña */
-    font-size: 14px; /* Tamaño de fuente de los botones de pestaña */
-    width: 50%; /* Ancho de los botones de pestaña */
-    text-align: center; /* Alineación del texto en el centro */
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
-    border-radius: 50px; /* Bordes redondeados */
-}
-
-.tablink:hover {
-    background-color: #a59557; /* Color de fondo al pasar el mouse sobre los botones de pestaña */
-    border-radius: 50px; /* Bordes redondeados */
-}
-
-.tabcontent {
-    display: none; /* Ocultar el contenido de la pestaña por defecto */
-    padding: 10px; /* Relleno interior del contenido de la pestaña */
-    border-top: none; /* Sin borde superior en el contenido de la pestaña */
-}
-
-#dropdown-container {
-    margin: 10px 0; /* Margen superior e inferior del contenedor de desplegable */
-    display: flex; /* Contenedor de flexbox para el diseño */
-    align-items: center; /* Alineación de los elementos secundarios en el centro vertical */
-}
-
-#dropdown-container select,
-#dropdown-container button {
-    padding: 8px; /* Relleno interior de select y botón */
-    font-size: 14px; /* Tamaño de fuente de select y botón */
-    margin-right: 10px; /* Margen derecho de select y botón */
-    cursor: pointer; /* Cursor al pasar sobre select y botón */
-}
-
-#buscar-btn {
-    background-color: #004d00; /* Color de fondo del botón de búsqueda */
-    color: white; /* Color de texto del botón de búsqueda */
-    border: none; /* Sin borde en el botón de búsqueda */
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
-    border-radius: 50px; /* Bordes redondeados */
-}
-
-#buscar-btn:hover {
-    background-color: #1c601a; /* Color de fondo al pasar el mouse sobre el botón de búsqueda */
-    color: black; /* Color de texto al pasar el mouse sobre el botón de búsqueda */
-}
-
-/* Estilos para los botones específicos */
-#biological-parameters-tab,
-#physicochemical-parameters-tab {
-    background-color: #218e26; /* Color de fondo de los botones específicos */
-    color: white; /* Color de texto de los botones específicos */
-    border-radius: 50px; /* Bordes redondeados */
-}
-
-#biological-parameters-tab:hover,
-#physicochemical-parameters-tab:hover {
-    background-color: #8a8e21; /* Color de fondo al pasar el mouse sobre los botones específicos */
-    border-radius: 50px; /* Bordes redondeados */
-}
-
-/* Estilos para el botón Home */
-.icon a[href="#home"] {
-    background-color: #007bff; /* Color de fondo del botón Home */
-    color: white; /* Color de texto del botón Home */
-}
-
-.icon a[href="#home"]:hover {
-    background-color: #0056b3; /* Color de fondo al pasar el mouse sobre el botón Home */
-}
-
-/* Estilos para el popup */
-.popup {
-    display: none; /* Ocultar el popup por defecto */
-    position: fixed; /* Posición fija para el popup */
-    top: 50%; /* Ubicación vertical del popup */
-    left:
-    50%; /* Ubicación horizontal del popup */
-    transform: translate(-50%, -50%); /* Centrar el popup horizontal y verticalmente */
-    background-color: white; /* Color de fondo delpopup */
-    border: 1px solid #ccc; /* Borde del popup */
-    padding: 20px; /* Relleno interior del popup */
-    z-index: 1000; /* Índice z para la superposición del popup */
-}
-
-.popup-text {
-    margin-bottom: 20px; /* Margen inferior del texto del popup */
-}
-
-.popup button {
-    padding: 10px 20px; /* Relleno interior del botón dentro del popup */
-    background-color: #004d00; /* Color de fondo del botón dentro del popup */
-    color: white; /* Color de texto del botón dentro del popup */
-    border: none; /* Sin borde en el botón dentro del popup */
-    cursor: pointer; /* Cursor al pasar sobre el botón dentro del popup */
-}
-
-/* Principios Gestaltistas */
-
-.sidebar {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra en el sidebar */
-}
-
-.sidebar .icon a i {
-    transition: transform 0.3s ease; /* Transición suave en los íconos dentro de los enlaces */
-}
-
-.sidebar .icon a i:hover {
-    transform: scale(1.2); /* Escala al pasar el mouse sobre los íconos dentro de los enlaces */
-}
-
-/* Teoría del Color */
-
-.sidebar {
-    background-color: #295e40; /* Color de fondo del sidebar */
-    color: #fff; /* Color de texto del sidebar */
-    
-}
-
-.top-content {
-    background-color: #ffffff;; /* Color de fondo del contenido superior */
-}
-
-.satellite-image,
-.data-grid {
-    background-color: #e6e6e6; /* Color de fondo de los elementos */
-}
-
-.tabs {
-    border-bottom: 2px solid #fff; /* Borde inferior de la pestaña */
-}
-
-.tablink {
-    background-color: #a5d6a7; /* Color de fondo de los botones de pestaña */
-    color: #004d00; /* Color de texto de los botones de pestaña */
-}
-
-.tablink:hover {
-    background-color: #81c784; /* Color de fondo al pasar el mouse sobre los botones de pestaña */
-}
-
-.tabcontent {
-    background-color: #f0f0f0; /* Color de fondo del contenido de la pestaña */
-}
-
-/* Diseño Centrado en el Usuario */
-
-.info-area {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra en la información adicional */
-}
-
-.info-area p {
-    background-color: #fafafa; /* Color de fondo del párrafo */
-    border-left: 4px solid #2196f3; /* Borde izquierdo del párrafo */
-}
-
-.info-area p:before {
-    content: "ℹ️"; /* Contenido antes del párrafo */
-    color: #2196f3; /* Color del contenido antes del párrafo */
-}
-
-.popup {
-    background-color: #fff; /* Color de fondo del popup */
-    border: 1px solid #ccc; /* Borde del popup */
-}
-
-.popup button {
-    background-color: #2196f3; /* Color de fondo del botón dentro del popup */
-    color: #fff; /* Color de texto del botón dentro del popup */
-}
-/* CSS para hacer que los encabezados sean pegajosos */
 thead th {
     position: sticky;
     top: 0;
-    background: #f2c200; /* Color amarillo para los encabezados de la tabla */
+    background: #f2c200;
     z-index: 2;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
 
-/* Asegurar que la tabla se desplace dentro del contenedor */
-.table-container {
-    max-height: 400px;
-    overflow-y: auto;
+#dropdown-container {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
 }
+
+#dropdown-container select,
+#dropdown-container button {
+    padding: 8px;
+    font-size: 14px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#buscar-btn {
+    background-color: #004d00;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+    border-radius: 50px;
+}
+
+#buscar-btn:hover {
+    background-color: #1c601a;
+    color: black;
+}
+
+#biological-parameters-tab,
+#physicochemical-parameters-tab {
+    background-color: #218e26;
+    color: white;
+    border-radius: 50px;
+}
+
+#biological-parameters-tab:hover,
+#physicochemical-parameters-tab:hover {
+    background-color: #8a8e21;
+}
+
+.icon a[href="#home"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.icon a[href="#home"]:hover {
+    background-color: #0056b3;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.popup-text {
+    margin-bottom: 20px;
+}
+
+.popup button {
+    padding: 10px 20px;
+    background-color: #004d00;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.popup button:hover {
+    background-color: #2196f3;
+    color: #fff;
+}
+
+.fila-graficos {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-radius: 2px;
+}
+
+.chart {
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
+    transform: translateZ(0); /* Crear efecto 3D */
+}
+
+
+.chart svg {
+    width: 100%;
+    height: auto;
+}
+ /* Modal */
+ .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+.bar {
+    transition: fill 0.3s, height 0.3s;
+}
+
+.bar:hover {
+    fill: orange !important;
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+}
+
