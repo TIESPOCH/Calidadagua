@@ -92,7 +92,7 @@ function mostrarEnMapa(registro, fila) {
 
     // Mostrar los campos solicitados en la consola
     console.log("Nivel 10: ", registro['Nivel 10']);
-    console.log("Nivel 9: ", registro['Nivel 9']);
+    console.log("Nivel 9: ", registro['Nivel 9 ']);
     console.log("Nivel 8: ", registro['Nivel 8']);
     console.log("Nivel 7: ", registro['Nivel 7']);
     console.log("Nivel 6: ", registro['Nivel 6']);
@@ -163,7 +163,7 @@ function actualizarTabla(datos, tablaId) {
     // Obtener los campos específicos para cada tabla
     let camposAMostrar = [];
     if (tablaId === 'tabla1') {
-        camposAMostrar = ['ID', 'RIO', 'PUNTO', 'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON', 'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
+        camposAMostrar = ['ID', 'RIO', 'PUNTO', 'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON','Nivel 10','Nivel 9 ','Nivel 8','Nivel 7','Nivel 6','Nivel 5','Nivel 4','Nivwl 3','Nivel 2','Nivwl 1', 'CALIDAD DEL AGUA SEGÚN SHANNON', 'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
     } else if (tablaId === 'tabla2') {
         camposAMostrar = ['ID', 'RIO', 'PUNTO', 'Temperatura', 'Ph', 'Oxigeno disuelto', 'Solidos_Totales', 'Nitratos', 'Fosfatos', 'Turbiedad', 'DBO5', 'Coliformes fecales', 'CALIDAD AGUA NSF', 'Clasificacion '];
     }
