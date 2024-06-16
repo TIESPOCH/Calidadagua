@@ -24,6 +24,7 @@ function inicializarMapa() {
     }).addTo(map);
 }
 
+// Función para mostrar en el mapa y en la consola los campos especificados
 function mostrarEnMapa(registro, fila) {
     const lat = parseFloat(registro['COORD- X']);
     const lon = parseFloat(registro['COORD- Y']);
@@ -88,6 +89,18 @@ function mostrarEnMapa(registro, fila) {
         marker.closePopup();
     });
     map.setView([coordenadas.latitude, coordenadas.longitude], 15);
+
+    // Mostrar los campos solicitados en la consola
+    console.log("Nivel 10: ", registro['Nivel 10']);
+    console.log("Nivel 9: ", registro['Nivel 9']);
+    console.log("Nivel 8: ", registro['Nivel 8']);
+    console.log("Nivel 7: ", registro['Nivel 7']);
+    console.log("Nivel 6: ", registro['Nivel 6']);
+    console.log("Nivel 5: ", registro['Nivel 5']);
+    console.log("Nivel 4: ", registro['Nivel 4']);
+    console.log("Nivel 3: ", registro['Nivel 3']);
+    console.log("Nivel 2: ", registro['Nivel 2']);
+    console.log("Nivel 1: ", registro['Nivel 1']);
 }
 
 // Función para obtener la fecha por ID
@@ -457,5 +470,4 @@ function generarGraficosFisicoquimicos(registro) {
         }
     }
 }
-
 
