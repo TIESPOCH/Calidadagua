@@ -18,7 +18,7 @@ body {
 
 /* Estilos para el sidebar similar a Bootstrap */
 .sidebar {
-    background-color: #6fb98f;
+    background-color: #295e40;
     color: #fff;
     width: 250px;
     position: fixed;
@@ -59,12 +59,12 @@ body {
 }
 
 .sidebar .icon a:hover {
-    background-color: #a5d6a7;
+    background-color: #295e40;
     border-radius: 5px;
 }
 
 .sidebar .active {
-    background-color: #a5d6a7;
+    background-color:#295e40;
     border-radius: 5px;
 }
 
@@ -105,16 +105,48 @@ body {
     transition: margin-left 0.3s ease;
     flex-grow: 1;
     background-color: white;
+    padding: 20px;
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        width: 0;
-    }
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .content {
-        margin-left: 0;
-    }
+.controls label {
+    font-weight: bold;
+}
+
+.controls select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+#graphContainer {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
 }
 
 /* Estilos para el popup */
@@ -136,38 +168,13 @@ body {
 
 .popup button {
     padding: 10px 20px;
-    background-color: #004d00;
-    color: white;
+    background-color: #007bff;
     border: none;
+    color: white;
     cursor: pointer;
+    border-radius: 4px;
 }
 
-/* Principios Gestaltistas */
-.sidebar {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.sidebar .icon a i {
-    transition: transform 0.3s ease;
-}
-
-.sidebar .icon a i:hover {
-    transform: scale(1.2);
-}
-
-/* Teoría del Color */
-.sidebar {
-    background-color: #295e40;
-    color: #fff;
-}
-
-/* Diseño Centrado en el Usuario */
-.popup {
-    background-color: #fff;
-    border: 1px solid #ccc;
-}
-
-.popup button {
-    background-color: #2196f3;
-    color: #fff;
+.popup button:hover {
+    background-color: #0056b3;
 }

@@ -26,22 +26,32 @@
             <div class="icon">
                 <a href="/index.html"><i class="fas fa-home"></i> Home</a>
             </div>
-           <!-- Icono Ver Gráficos Infografía -->
-           <div class="icon">
-            <a href="infografia.html"><i class="fas fa-chart-bar"></i> Gràficos Parametros Fisicoquìmicos</a>
+            <!-- Icono Ver Gráficos Infografía -->
             <div class="icon">
-                <a href="/biologico/infografia.html"><i class="fas fa-chart-bar"></i> Gràficos Parametros Biològicos</a>
+                <a href="infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Fisicoquímicos</a>
+                <div class="icon">
+                    <a href="/biologico/infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Biológicos</a>
+                </div>
             </div>
-        </div>
         </div>
         <!-- Contenido Principal -->
         <div class="content">
+            <div class="controls">
+                <label for="rivers">Selecciona un río:</label>
+                <select id="rivers" name="rivers" class="form-control">
+                    <!-- Las opciones se llenarán dinámicamente -->
+                </select>
+                <button id="generateGraphBtn" class="btn btn-primary">Generar Gráfica</button>
+            </div>
+            <div id="graphContainer" class="mt-3 p-3 border rounded">
+                <!-- Aquí se generará la gráfica -->
+            </div>
         </div>
     </div>
     <!-- Popup de Error -->
     <div id="error-popup" class="popup">
         <span class="popup-text" id="error-popup-text"></span>
-        <button onclick="cerrarPopup()">Cerrar</button>
+        <button onclick="cerrarPopup()" class="btn btn-primary">Cerrar</button>
     </div>
 </body>
 </html>

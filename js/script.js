@@ -295,5 +295,145 @@ const rangosEscalas = {
     'Coliformes Fecales': [0, 200],
     'Calidad del Agua NSF': [90, 100]
 };
+function generarGraficosFisicoquimicos(registro) {
+    const parametros = {
+        'Temperatura': 'Temperatura',
+        'Ph': 'Ph',
+        'Oxigeno disuelto': 'Oxigeno disuelto',
+        'Sólidos Totales Disueltos': 'Sólidos Totales Disueltos',
+        'Nitratos': 'Nitratos',
+        'Fosfatos': 'Fosfatos',
+        'Turbiedad': 'Turbiedad',
+        'DBO5': 'DBO5'
+    };
+
+    const valoresExcelentes = {
+        'Temperatura': 25,
+        'Ph': 8.5,
+        'Oxigeno disuelto': 7,
+        'Sólidos Totales Disueltos': 500,
+        'Nitratos': 10,
+        'Fosfatos': 0.1,
+        'Turbiedad': 1,
+        'DBO5': 3
+    };
+
+    const rangosEscalas = {
+        'Temperatura': [0, 40],
+        'Ph': [0, 14],
+        'Oxigeno disuelto': [0, 10],
+        'Sólidos Totales Disueltos': [0, 1000],
+        'Nitratos': [0, 20],
+        'Fosfatos': [0, 1],
+        'Turbiedad': [0, 5],
+        'DBO5': [0, 10]
+    };
+
+    const infoArea = document.querySelector('.info-area');
+    infoArea.innerHTML = '<h2><i class="fas fa-info-circle"></i> Información Adicional</h2>';
+
+    const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    let filaDiv;
+    let contador = 0;
+
+    for (let parametro in parametros) {
+        if (registro[parametro] !== undefined) {
+            const valorRegistrado = parseFloat(registro[parametro]);
+            const valorExcelente = valoresExcelentes[parametro];
+            const rangoEscala = rangosEscalas[parametro];
+
+            if (contador % 3 === 0) {
+                filaDiv = document.createElement('div');
+                filaDiv.className = 'fila-graficos';
+                infoArea.appendChild(filaDiv);
+            }
+
+            const chartDiv = document.createElement('div');
+            chartDiv.className = 'chart';
+            filaDiv.appendChild(chartDiv);
+
+            const data = [
+                { name: 'Excelente', value: valorExcelente },
+                { name: 'Registrado', value: valorRegistrado }
+            ];
+
+            const width = 400;
+            const height = 300;
+            const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+
+            const svg = d3.select(chartDiv).append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .style("filter", "drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.4))");
+
+            const x = d3.scaleBand()
+                .domain(data.map(d => d.name))
+                .range([margin.left, width - margin.right])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, rangoEscala[1]]).nice()
+                .range([height - margin.bottom, margin.top]);
+
+            const xAxis = g => g
+                .attr('transform', `translate(0,${height - margin.bottom})`)
+                .call(d3.axisBottom(x).tickSizeOuter(0));
+
+            const yAxis = g => g
+                .attr('transform', `translate(${margin.left},0)`)
+                .call(d3.axisLeft(y))
+                .call(g => g.select('.domain').remove());
+
+            svg.append('g')
+                .selectAll('rect')
+                .data(data)
+                .enter().append('rect')
+                .attr('class', 'bar')
+                .attr('x', d => x(d.name))
+                .attr('y', d => y(d.value))
+                .attr('height', d => y(0) - y(d.value))
+                .attr('width', x.bandwidth())
+                .attr('fill', d => d.name === 'Excelente' ? 'green' : valorRegistrado <= valorExcelente ? 'blue' : 'red')
+                .on('mouseover', function(event, d) {
+                    tooltip.transition().duration(200).style('opacity', .9);
+                    tooltip.html(d.value)
+                        .style('left', (event.pageX) + 'px')
+                        .style('top', (event.pageY - 28) + 'px');
+                })
+                .on('mouseout', function(d) {
+                    tooltip.transition().duration(500).style('opacity', 0);
+                });
+
+            svg.selectAll('rect')
+                .each(function(d) {
+                    d3.select(this.parentNode).append('text')
+                        .attr('x', x(d.name) + x.bandwidth() / 2)
+                        .attr('y', y(d.value) - 5)
+                        .attr('text-anchor', 'middle')
+                        .text(d.value);
+                });
+
+            svg.append('g').call(xAxis);
+            svg.append('g').call(yAxis);
+
+            svg.append('text')
+                .attr('x', width / 2)
+                .attr('y', height - 5)
+                .attr('text-anchor', 'middle')
+                .text(parametro);
+
+            svg.append('text')
+                .attr('x', width / 2)
+                .attr('y', height + margin.bottom - 5)
+                .attr('text-anchor', 'middle')
+                .text('Valor');
+
+            contador++;
+        }
+    }
+}
 
 
