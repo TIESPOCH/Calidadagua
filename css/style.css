@@ -1,13 +1,10 @@
 /* Estilos Generales */
-body, table, th, td {
+body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    color: #333;
-}
-
-body {
     background-color: #1e5226;
+    color: #333;
     height: 100vh;
     overflow: hidden;
 }
@@ -48,7 +45,7 @@ body {
     margin-bottom: 10px;
 }
 
-.sidebar .icon, .sidebar .icon a {
+.sidebar .icon {
     margin: 20px 0;
     text-align: center;
 }
@@ -62,11 +59,9 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.sidebar .icon a:hover,
-.sidebar .icon a i:hover {
+.sidebar .icon a:hover {
     background-color: #a5d6a7;
     border-radius: 5px;
-    transform: scale(1.2);
 }
 
 .sidebar .active {
@@ -105,6 +100,14 @@ body {
     display: block;
 }
 
+.sidebar .icon a i {
+    transition: transform 0.3s ease;
+}
+
+.sidebar .icon a i:hover {
+    transform: scale(1.2);
+}
+
 /* Estilos para el contenido principal */
 .content {
     margin-left: 250px;
@@ -135,120 +138,29 @@ body {
 }
 
 .satellite-image,
-.data-grid,
-.info-area {
+.data-grid {
     flex: 1;
     margin: 10px;
     overflow: hidden;
     background-color: #e6e6e6;
     border: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 8px;
-    max-height: 600px;
+    max-height: 600px; /* Limitar la altura máxima */
 }
 
-.satellite-image,
-.data-grid {
+.satellite-image {
     display: flex;
     flex-direction: column;
 }
 
 #map {
-    height: 100vh;
-    width: 100%;
+    height: 100vh; /* Altura completa de la ventana */
+    width: 100%; /* Ancho completo */
 }
 
-.info-area {
-    padding: 20px;
-    background-color: rgba(250, 250, 250, 0.9);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.info-area p {
-    background-color: #f4f4f9;
-    padding: 10px;
-    border-left: 4px solid #f2c200;
-    line-height: 1.6;
-}
-
-.info-area p:before {
-    content: "ℹ️";
-    font-size: 24px;
-    color: #004d00;
-    margin-right: 10px;
-}
-
-/* Estilos para encabezados */
-h2 {
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: #004d00;
-}
-
-/* Estilos para la tabla */
-.table-container,
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-th,
-td {
-    border: 2px solid rgba(0, 0, 0, 0.5);
-    padding: 1px;
-    text-align: left;
-    font-size: 10px;
-}
-
-th {
-    background-color: #f2c200;
-    color: #004d00;
-}
-
-tr:nth-child(even) {
-    background-color: #eaf5ea;
-}
-
-thead th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-}
-
-tr.selected {
-    background-color: rgb(69, 203, 32) !important;
-}
-
-
-/* Estilos para el contenedor desplegable */
-#dropdown-container {
-    margin: 10px 0;
+.data-grid {
     display: flex;
-    align-items: center;
-}
-
-#dropdown-container select,
-#dropdown-container button {
-    padding: 8px;
-    font-size: 14px;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-#buscar-btn {
-    background-color: #004d00;
-    color: white;
-    border: none;
-    transition: background-color 0.3s ease;
-    border-radius: 50px;
-}
-
-#buscar-btn:hover {
-    background-color: #1c601a;
-    color: black;
+    flex-direction: column;
 }
 
 /* Estilos para las pestañas */
@@ -285,6 +197,115 @@ tr.selected {
     background-color: #f0f0f0;
 }
 
+/* Estilos para el área de información */
+.info-area {
+    flex: 1;
+    margin: 10px;
+    padding: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    background-color: rgba(250, 250, 250, 0.9);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    overflow-y: hidden;
+}
+
+.info-area p {
+    background-color: #f4f4f9;
+    padding: 10px;
+    border-left: 4px solid #f2c200;
+    line-height: 1.6;
+}
+
+.info-area p:before {
+    content: "ℹ️";
+    font-size: 24px;
+    color: #004d00;
+    margin-right: 10px;
+}
+
+/* Estilos para encabezados */
+h2 {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #004d00;
+}
+
+/* Estilos para el contenedor de la tabla */
+.table-container {
+    max-height: 400px; /* Limitar la altura máxima */
+    overflow-y: auto;
+}
+
+/* Estilos para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+th, td {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 2px; /* Ajustar el padding */
+    text-align: left;
+    font-size: 10px; /* Reducir el tamaño de la fuente */
+}
+
+th {
+    background-color: #f2c200;
+    color: #004d00;
+}
+
+/* Estilos para las filas alternas de la tabla */
+tr:nth-child(even) {
+    background-color: #eaf5ea;
+}
+
+/* Estilos para la fila seleccionada */
+tr.selected {
+    background-color: yellow !important;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: #f2c200;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilos para el contenedor desplegable */
+#dropdown-container {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+#dropdown-container select,
+#dropdown-container button {
+    padding: 8px;
+    font-size: 14px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* Estilos para el botón de buscar */
+#buscar-btn {
+    background-color: #004d00;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+    border-radius: 50px;
+}
+
+#buscar-btn:hover {
+    background-color: #1c601a;
+    color: black;
+}
+
+/* Estilos para las pestañas de parámetros */
 #biological-parameters-tab,
 #physicochemical-parameters-tab {
     background-color: #218e26;
@@ -296,6 +317,8 @@ tr.selected {
 #physicochemical-parameters-tab:hover {
     background-color: #8a8e21;
 }
+
+
 
 /* Estilos específicos para íconos */
 .icon a[href="#home"] {
@@ -345,10 +368,11 @@ tr.selected {
     border-radius: 2px;
 }
 
+/* Estilos para el gráfico */
 .chart {
     border-radius: 8px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-    transform: translateZ(0);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
+    transform: translateZ(0); /* Crear efecto 3D */
 }
 
 .chart svg {
