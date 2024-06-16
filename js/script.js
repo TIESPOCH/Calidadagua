@@ -3,6 +3,8 @@ let map;
 let marker;
 let filaSeleccionada = null;
 let datosCSV = [];
+let datosBiologicos = [];
+let datosFisicoquimicos = [];
 let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
     "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR",
     "RIO BLANCO", 
@@ -14,7 +16,6 @@ let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMB
     "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
     "RIO WAWAIM GRANDE","RIO LUSHIN"];
 
-
 // Función para inicializar el mapa
 function inicializarMapa() {
     map = L.map('map').setView([-1.831239, -78.183406], 6.60); // Coordenadas y zoom para ver Ecuador
@@ -23,15 +24,9 @@ function inicializarMapa() {
     }).addTo(map);
 }
 
-// Función para mover el marcador en el mapa a las coordenadas especificadas
-// Función para mover el marcador en el mapa a las coordenadas especificadas
 function mostrarEnMapa(registro, fila) {
     const lat = parseFloat(registro['COORD- X']);
     const lon = parseFloat(registro['COORD- Y']);
-
-    // Log para debug
-    console.log("Registro seleccionado:", registro);
-    console.log("Latitud:", lat, "Longitud:", lon);
 
     if (isNaN(lat) || isNaN(lon)) {
         mostrarPopupError("Las coordenadas no son válidas.");
@@ -40,24 +35,34 @@ function mostrarEnMapa(registro, fila) {
 
     const coordenadas = { latitude: lat, longitude: lon };
 
-    if (filaSeleccionada) {
-        filaSeleccionada.classList.remove('selected');
-    }
+    // Eliminar la clase 'selected' de todas las filas
+    document.querySelectorAll('tr.selected').forEach(fila => fila.classList.remove('selected'));
+
+    // Añadir la clase 'selected' a la fila actual
     fila.classList.add('selected');
     filaSeleccionada = fila;
+
+    // Buscar la fecha en el dataset correspondiente
+    let fecha = '';
+    if (registro.hasOwnProperty('ÍNDICE BMWP/Col.1')) {
+        fecha = obtenerFechaPorID(datosBiologicos, registro['ID']);
+    } else if (registro.hasOwnProperty('Clasificacion ')) {
+        fecha = obtenerFechaPorID(datosFisicoquimicos, registro['ID']);
+    }
 
     // Determinar el contenido del pop-up utilizando las funciones generadoras
     let popupContent = '';
     if (registro.hasOwnProperty('ÍNDICE BMWP/Col.1')) {
-        popupContent = generarContenidoPopupBiologicos(registro);
+        popupContent = generarContenidoPopupBiologicos(registro, fecha);
     } else if (registro.hasOwnProperty('Clasificacion ')) {
-        popupContent = generarContenidoPopupFisicoquimicos(registro);
+        popupContent = generarContenidoPopupFisicoquimicos(registro, fecha);
         generarGraficosFisicoquimicos(registro); // Llamada para generar gráficos
     } else {
         popupContent = `
             <div>
                 <strong>Río:</strong> ${registro['RIO']}<br>
                 <strong>Punto:</strong> ${registro['PUNTO']}<br>
+                <strong>Fecha:</strong> ${fecha}<br>
                 <strong>Información no disponible</strong>
             </div>
         `;
@@ -83,6 +88,12 @@ function mostrarEnMapa(registro, fila) {
         marker.closePopup();
     });
     map.setView([coordenadas.latitude, coordenadas.longitude], 15);
+}
+
+// Función para obtener la fecha por ID
+function obtenerFechaPorID(datos, id) {
+    const registro = datos.find(item => item['ID'] === id);
+    return registro ? registro['FECHA'] : 'Fecha no disponible';
 }
 
 // Función para abrir una pestaña específica
@@ -112,7 +123,9 @@ function cargarDatosCSV(url, tablaId) {
         complete: function(results) {
             const datos = results.data;
             if (tablaId === 'tabla1') {
-                datosCSV = datos;
+                datosBiologicos = datos;
+            } else if (tablaId === 'tabla2') {
+                datosFisicoquimicos = datos;
             }
             actualizarTabla(datos, tablaId);
             if (tablaId === 'tabla1') {
@@ -134,8 +147,13 @@ function actualizarTabla(datos, tablaId) {
 
     if (datos.length === 0) return;
 
-    // Obtener todos los campos de los datos
-    const camposAMostrar = Object.keys(datos[0]);
+    // Obtener los campos específicos para cada tabla
+    let camposAMostrar = [];
+    if (tablaId === 'tabla1') {
+        camposAMostrar = ['ID', 'RIO', 'PUNTO', 'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON', 'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
+    } else if (tablaId === 'tabla2') {
+        camposAMostrar = ['ID', 'RIO', 'PUNTO', 'Temperatura', 'Ph', 'Oxigeno disuelto', 'Solidos_Totales', 'Nitratos', 'Fosfatos', 'Turbiedad', 'DBO5', 'Coliformes fecales', 'CALIDAD AGUA NSF', 'Clasificacion '];
+    }
 
     // Crear encabezados de tabla
     camposAMostrar.forEach(campo => {
@@ -214,8 +232,8 @@ window.onload = function() {
     inicializarMapa();
     abrirPestania({currentTarget: document.getElementById('biological-parameters-tab')}, 'tab1');
     document.getElementById('buscar-btn').addEventListener('click', buscarDatos);
-    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/tablabio.csv', 'tabla1');
-    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
+    document.getElementById('biological-parameters-tab').addEventListener('click', () => cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/tablabio.csv', 'tabla1'));
+    document.getElementById('physicochemical-parameters-tab').addEventListener('click', () => cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2'));
 };
 
 // Nuevo código para llenar el menú desplegable con ríos y buscar datos
@@ -240,22 +258,25 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Función para generar el contenido del popup para parámetros biológicos
-function generarContenidoPopupBiologicos(registro) {
+function generarContenidoPopupBiologicos(registro, fecha) {
     const nombreRio = registro['RIO'];
     const puntoRio = registro['PUNTO'];
     const indiceBMWP = registro['ÍNDICE BMWP/Col.1'];
+    const calidadshanon = registro['CALIDAD DEL AGUA SEGÚN SHANNON'];
 
     return `
         <div>
             <strong>Río:</strong> ${nombreRio}<br>
             <strong>Punto:</strong> ${puntoRio}<br>
-            <strong>ÍNDICE BMWP/Col.1:</strong> ${indiceBMWP}
+            <strong>ÍNDICE BMWP/Col.1:</strong> ${indiceBMWP}<br>
+            <strong>Calidad según Shanon:</strong> ${calidadshanon}<br>
+            <strong>Fecha:</strong> ${fecha}
         </div>
     `;
 }
 
 // Función para generar el contenido del popup para parámetros fisicoquímicos
-function generarContenidoPopupFisicoquimicos(registro) {
+function generarContenidoPopupFisicoquimicos(registro, fecha) {
     const nombreRio = registro['RIO'];
     const puntoRio = registro['PUNTO'];
     const clasificacion = registro['Clasificacion '];
@@ -264,7 +285,8 @@ function generarContenidoPopupFisicoquimicos(registro) {
         <div>
             <strong>Río:</strong> ${nombreRio}<br>
             <strong>Punto:</strong> ${puntoRio}<br>
-            <strong>Clasificación de calidad del agua:</strong> ${clasificacion}
+            <strong>Clasificación de calidad del agua:</strong> ${clasificacion}<br>
+            <strong>Fecha:</strong> ${fecha}
         </div>
     `;
 }

@@ -1,10 +1,13 @@
 /* Estilos Generales */
-body {
+body, table, th, td {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #1e5226;
     color: #333;
+}
+
+body {
+    background-color: #1e5226;
     height: 100vh;
     overflow: hidden;
 }
@@ -17,6 +20,7 @@ body {
     overflow: hidden;
 }
 
+/* Estilos para la barra lateral */
 .sidebar {
     background-color: #295e40;
     color: #fff;
@@ -44,7 +48,7 @@ body {
     margin-bottom: 10px;
 }
 
-.sidebar .icon {
+.sidebar .icon, .sidebar .icon a {
     margin: 20px 0;
     text-align: center;
 }
@@ -58,9 +62,11 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.sidebar .icon a:hover {
+.sidebar .icon a:hover,
+.sidebar .icon a i:hover {
     background-color: #a5d6a7;
     border-radius: 5px;
+    transform: scale(1.2);
 }
 
 .sidebar .active {
@@ -99,14 +105,6 @@ body {
     display: block;
 }
 
-.sidebar .icon a i {
-    transition: transform 0.3s ease;
-}
-
-.sidebar .icon a i:hover {
-    transform: scale(1.2);
-}
-
 /* Estilos para el contenido principal */
 .content {
     margin-left: 250px;
@@ -128,6 +126,7 @@ body {
     }
 }
 
+/* Estilos para la sección superior del contenido principal */
 .top-content {
     display: flex;
     flex: 1;
@@ -136,32 +135,123 @@ body {
 }
 
 .satellite-image,
-.data-grid {
+.data-grid,
+.info-area {
     flex: 1;
     margin: 10px;
     overflow: hidden;
     background-color: #e6e6e6;
     border: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 8px;
-    max-height: 600px; /* Limitar la altura máxima */
+    max-height: 600px;
 }
 
-.satellite-image {
-    display: flex;
-    flex-direction: column;
-}
-
-#map {
-    height: 100vh; /* Altura completa de la ventana */
-    width: 100%; /* Ancho completo */
-}
-
-
+.satellite-image,
 .data-grid {
     display: flex;
     flex-direction: column;
 }
 
+#map {
+    height: 100vh;
+    width: 100%;
+}
+
+.info-area {
+    padding: 20px;
+    background-color: rgba(250, 250, 250, 0.9);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.info-area p {
+    background-color: #f4f4f9;
+    padding: 10px;
+    border-left: 4px solid #f2c200;
+    line-height: 1.6;
+}
+
+.info-area p:before {
+    content: "ℹ️";
+    font-size: 24px;
+    color: #004d00;
+    margin-right: 10px;
+}
+
+/* Estilos para encabezados */
+h2 {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #004d00;
+}
+
+/* Estilos para la tabla */
+.table-container,
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+th,
+td {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 1px;
+    text-align: left;
+    font-size: 10px;
+}
+
+th {
+    background-color: #f2c200;
+    color: #004d00;
+}
+
+tr:nth-child(even) {
+    background-color: #eaf5ea;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+tr.selected {
+    background-color: rgb(69, 203, 32) !important;
+}
+
+
+/* Estilos para el contenedor desplegable */
+#dropdown-container {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+#dropdown-container select,
+#dropdown-container button {
+    padding: 8px;
+    font-size: 14px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#buscar-btn {
+    background-color: #004d00;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+    border-radius: 50px;
+}
+
+#buscar-btn:hover {
+    background-color: #1c601a;
+    color: black;
+}
+
+/* Estilos para las pestañas */
 .tabs {
     display: flex;
     border-bottom: 2px solid #fff;
@@ -195,106 +285,6 @@ body {
     background-color: #f0f0f0;
 }
 
-.info-area {
-    flex: 1;
-    margin: 10px;
-    padding: 20px;
-    border: 2px solid rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
-    background-color: rgba(250, 250, 250, 0.9);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    overflow-y: hidden;
-}
-
-.info-area p {
-    background-color: #f4f4f9;
-    padding: 10px;
-    border-left: 4px solid #f2c200;
-    line-height: 1.6;
-}
-
-.info-area p:before {
-    content: "ℹ️";
-    font-size: 24px;
-    color: #004d00;
-    margin-right: 10px;
-}
-
-h2 {
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: #004d00;
-}
-
-.table-container {
-    max-height: 400px; /* Limitar la altura máxima */
-    overflow-y: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    color: #333;
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-th, td {
-    border: 2px solid rgba(0, 0, 0, 0.5);
-    padding: 4px;
-    text-align: left;
-    font-size: 12px;
-}
-
-th {
-    background-color: #f2c200;
-    color: #004d00;
-}
-
-tr:nth-child(even) {
-    background-color: #eaf5ea;
-}
-
-tr.selected {
-    background-color: #00ff00;
-}
-
-thead th {
-    position: sticky;
-    top: 0;
-    background: #f2c200;
-    z-index: 2;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-}
-
-#dropdown-container {
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-}
-
-#dropdown-container select,
-#dropdown-container button {
-    padding: 8px;
-    font-size: 14px;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-#buscar-btn {
-    background-color: #004d00;
-    color: white;
-    border: none;
-    transition: background-color 0.3s ease;
-    border-radius: 50px;
-}
-
-#buscar-btn:hover {
-    background-color: #1c601a;
-    color: black;
-}
-
 #biological-parameters-tab,
 #physicochemical-parameters-tab {
     background-color: #218e26;
@@ -307,6 +297,7 @@ thead th {
     background-color: #8a8e21;
 }
 
+/* Estilos específicos para íconos */
 .icon a[href="#home"] {
     background-color: #007bff;
     color: white;
@@ -316,6 +307,7 @@ thead th {
     background-color: #0056b3;
 }
 
+/* Estilos para el pop-up */
 .popup {
     display: none;
     position: fixed;
@@ -345,6 +337,7 @@ thead th {
     color: #fff;
 }
 
+/* Estilos para la fila de gráficos */
 .fila-graficos {
     display: flex;
     justify-content: space-between;
@@ -354,17 +347,17 @@ thead th {
 
 .chart {
     border-radius: 8px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
-    transform: translateZ(0); /* Crear efecto 3D */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    transform: translateZ(0);
 }
-
 
 .chart svg {
     width: 100%;
     height: auto;
 }
- /* Modal */
- .modal {
+
+/* Modal */
+.modal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -374,9 +367,9 @@ thead th {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
-  }
+}
 
-  .modal-content {
+.modal-content {
     background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
@@ -385,22 +378,24 @@ thead th {
     max-width: 800px;
     position: relative;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
+}
 
-  .close {
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
-  }
+}
 
-  .close:hover,
-  .close:focus {
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}
+
+/* Estilos para las barras de gráfico */
 .bar {
     transition: fill 0.3s, height 0.3s;
 }
@@ -409,6 +404,7 @@ thead th {
     fill: orange !important;
 }
 
+/* Estilos para el tooltip */
 .tooltip {
     position: absolute;
     text-align: center;
@@ -423,3 +419,35 @@ thead th {
     opacity: 0;
 }
 
+/* Estilos para ambas tablas */
+#tabla1, #tabla2 {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+#tabla1 th, #tabla1 td, #tabla2 th, #tabla2 td {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 2px;
+    font-size: 10px;
+    text-align: left;
+}
+
+#tabla1 th, #tabla2 th {
+    background-color: #f2c200;
+    color: #004d00;
+}
+
+#tabla1 tr:nth-child(even), #tabla2 tr:nth-child(even) {
+    background-color: #eaf5ea;
+}
+
+#tabla1 thead th, #tabla2 thead th {
+    position: sticky;
+    top: 0;
+    background: #f2c200;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
