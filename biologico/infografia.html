@@ -34,14 +34,22 @@
             </div>
         </div>
         </div>
-        <!-- Contenido Principal -->
-        <div class="content">
+       <!-- Contenido Principal -->
+       <div class="content">
+        <div class="controls">
+            <label for="rivers">Selecciona un río:</label>
+            <select id="rivers" name="rivers" class="form-control">
+                <!-- Las opciones se llenarán dinámicamente -->
+            </select>
+            <button id="generateGraphBtn" class="btn btn-primary">Generar Gráfica</button>
         </div>
+        
     </div>
-    <!-- Popup de Error -->
-    <div id="error-popup" class="popup">
-        <span class="popup-text" id="error-popup-text"></span>
-        <button onclick="cerrarPopup()">Cerrar</button>
-    </div>
+</div>
+<!-- Popup de Error -->
+<div id="error-popup" class="popup">
+    <span class="popup-text" id="error-popup-text"></span>
+    <button onclick="cerrarPopup()" class="btn btn-primary">Cerrar</button>
+</div>
 </body>
 </html>

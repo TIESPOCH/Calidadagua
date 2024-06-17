@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const generateGraphBtn = document.getElementById('generateGraphBtn');
+    const histogramContainer = d3.select("#histogram");
+
     generateGraphBtn.addEventListener('click', () => {
         const selectedRiver = riversSelect.value;
         fetchCSVData(selectedRiver);
@@ -34,15 +36,81 @@ document.addEventListener('DOMContentLoaded', () => {
             header: true,
             complete: function(results) {
                 const data = results.data;
-                const fields = results.meta.fields; // Extract the field names
                 const riverData = data.filter(row => row['NOMBRE RIO'] === selectedRiver);
-
-                console.log('Column names:', fields);
-                console.log('Data for selected river:', riverData);
+                drawHistogram(riverData);
             },
             error: function(error) {
                 console.error('Error al cargar el CSV:', error);
             }
+        });
+    }
+
+    function drawHistogram(data) {
+        // Limpiar el contenedor del histograma antes de dibujar uno nuevo
+        histogramContainer.selectAll("*").remove();
+
+        // Configuración del SVG
+        const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+        const width = 960 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
+
+        const svg = histogramContainer.append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Escala de colores por año
+        const colorScale = d3.scaleOrdinal()
+            .domain([2018, 2019, 2020, 2021, 2022, 2023])
+            .range(d3.schemeCategory10);
+
+        // Escala X para los años
+        const x = d3.scaleBand()
+            .domain([2018, 2019, 2020, 2021, 2022, 2023])
+            .range([0, width])
+            .padding(0.1);
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x));
+
+        // Escala Y para la calidad del agua
+        const y = d3.scalePoint()
+            .domain(["Buena", "Regular", "Mala"])
+            .range([height, 0])
+            .padding(1);
+
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // Añadir los puntos
+        svg.selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("cx", d => x(+d.AÑO))
+            .attr("cy", d => y(d.CALIDAD))
+            .attr("r", 5)
+            .attr("fill", d => colorScale(+d.AÑO))
+            .append("title")
+            .text(d => `${d['NOMBRE RIO']} - ${d.PUNTO} (${d.AÑO})`);
+
+        // Añadir líneas de tiempo
+        const line = d3.line()
+            .x(d => x(+d.AÑO))
+            .y(d => y(d.CALIDAD));
+
+        const nestedData = d3.groups(data, d => d['NOMBRE RIO'], d => d.PUNTO);
+
+        nestedData.forEach(([river, points]) => {
+            points.forEach(([point, values]) => {
+                svg.append("path")
+                    .datum(values)
+                    .attr("fill", "none")
+                    .attr("stroke", "#000")
+                    .attr("stroke-width", 1.5)
+                    .attr("d", line);
+            });
         });
     }
 });

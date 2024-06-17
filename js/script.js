@@ -55,6 +55,7 @@ function mostrarEnMapa(registro, fila) {
     let popupContent = '';
     if (registro.hasOwnProperty('ÍNDICE BMWP/Col.1')) {
         popupContent = generarContenidoPopupBiologicos(registro, fecha);
+        generarGraficoBarras(registro);
     } else if (registro.hasOwnProperty('Clasificacion ')) {
         popupContent = generarContenidoPopupFisicoquimicos(registro, fecha);
         generarGraficosFisicoquimicos(registro); // Llamada para generar gráficos
@@ -101,14 +102,21 @@ function mostrarEnMapa(registro, fila) {
     console.log("Nivel 3: ", registro['Nivel 3']);
     console.log("Nivel 2: ", registro['Nivel 2']);
     console.log("Nivel 1: ", registro['Nivel 1']);
+
+   
 }
+
 
 // Función para obtener la fecha por ID
 function obtenerFechaPorID(datos, id) {
     const registro = datos.find(item => item['ID'] === id);
     return registro ? registro['FECHA'] : 'Fecha no disponible';
 }
-
+// Función para limpiar el área de información
+function limpiarInfoArea() {
+    const infoArea = document.querySelector('.info-area');
+    infoArea.innerHTML = '<h2><i class="fas fa-info-circle"></i> Información Adicional</h2>';
+}
 // Función para abrir una pestaña específica
 function abrirPestania(evt, tabName) {
     const tabcontent = document.getElementsByClassName('tabcontent');
@@ -126,6 +134,8 @@ function abrirPestania(evt, tabName) {
 
     // Mostrar el contenedor del dropdown cuando se hace clic en un tab
     document.getElementById("dropdown-container").style.display = "flex";
+      // Limpiar el área de información al cambiar de pestaña
+      limpiarInfoArea();
 }
 
 // Función para cargar datos CSV y mostrarlos en las tablas
@@ -163,7 +173,7 @@ function actualizarTabla(datos, tablaId) {
     // Obtener los campos específicos para cada tabla
     let camposAMostrar = [];
     if (tablaId === 'tabla1') {
-        camposAMostrar = ['ID', 'RIO', 'PUNTO', 'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON','Nivel 10','Nivel 9 ','Nivel 8','Nivel 7','Nivel 6','Nivel 5','Nivel 4','Nivwl 3','Nivel 2','Nivwl 1', 'CALIDAD DEL AGUA SEGÚN SHANNON', 'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
+        camposAMostrar = ['ID', 'RIO', 'PUNTO','Nivel 10','Nivel 9','Nivel 8','Nivel 7','Nivel 6','Nivel 5','Nivel 4','Nivel 3','Nivel 2','Nivel 1', 'RIQUEZA ABSOLUTA', 'DIVERSIDAD SEGÚN SHANNON', 'CALIDAD DEL AGUA SEGÚN SHANNON', 'ÍNDICE BMWP/Col', 'ÍNDICE BMWP/Col.1'];
     } else if (tablaId === 'tabla2') {
         camposAMostrar = ['ID', 'RIO', 'PUNTO', 'Temperatura', 'Ph', 'Oxigeno disuelto', 'Solidos_Totales', 'Nitratos', 'Fosfatos', 'Turbiedad', 'DBO5', 'Coliformes fecales', 'CALIDAD AGUA NSF', 'Clasificacion '];
     }
@@ -331,6 +341,8 @@ const rangosEscalas = {
     'Calidad del Agua NSF': [90, 100]
 };
 function generarGraficosFisicoquimicos(registro) {
+      // Limpiar el área de información al cambiar de pestaña
+      limpiarInfoArea();
     const parametros = {
         'Temperatura': 'Temperatura',
         'Ph': 'Ph',
@@ -471,3 +483,92 @@ function generarGraficosFisicoquimicos(registro) {
     }
 }
 
+// Función para generar la gráfica de barras con D3.js
+function generarGraficoBarras(registro) {
+    // Limpiar el área de información antes de añadir la nueva gráfica
+    limpiarInfoArea();
+
+    // Obtener el nombre del río y el punto
+    const rio = registro['RIO']; // Asegúrate de que 'nombre_del_rio' es el nombre de la propiedad en tu registro
+    const punto = registro['PUNTO']; // Asegúrate de que 'punto' es el nombre de la propiedad en tu registro
+
+    // Datos para la gráfica
+    const data = [
+        { nivel: 'Nivel 10', valor: +registro['Nivel 10'] },
+        { nivel: 'Nivel 9', valor: +registro['Nivel 9'] },
+        { nivel: 'Nivel 8', valor: +registro['Nivel 8'] },
+        { nivel: 'Nivel 7', valor: +registro['Nivel 7'] },
+        { nivel: 'Nivel 6', valor: +registro['Nivel 6'] },
+        { nivel: 'Nivel 5', valor: +registro['Nivel 5'] },
+        { nivel: 'Nivel 4', valor: +registro['Nivel 4'] },
+        { nivel: 'Nivel 3', valor: +registro['Nivel 3'] },
+        { nivel: 'Nivel 2', valor: +registro['Nivel 2'] },
+        { nivel: 'Nivel 1', valor: +registro['Nivel 1'] }
+    ];
+
+    // Crear contenedor para la gráfica
+    const svgWidth = 500, svgHeight = 300;
+    const margin = { top: 40, right: 30, bottom: 40, left: 50 };
+    const width = svgWidth - margin.left - margin.right;
+    const height = svgHeight - margin.top - margin.bottom;
+
+    const svg = d3.select('.info-area').append('svg')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight);
+
+    // Título del gráfico con nombre del río y punto
+    svg.append('text')
+        .attr('x', (svgWidth / 2))
+        .attr('y', margin.top / 2)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '13px')
+        .attr('font-weight', 'bold')
+        .text(`Comparación de los niveles de microorganismos en ${rio}, Punto ${punto}`);
+
+    const g = svg.append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Configurar escalas
+    const x = d3.scaleBand()
+        .domain(data.map(d => d.nivel))
+        .range([0, width])
+        .padding(0.1);
+
+    const y = d3.scaleLinear()
+    .domain([0, d3.max(data, d => Math.ceil(d.valor / 5) * 5)]) // Ajustar el dominio a múltiplos de 5
+        .nice()
+        .range([height, 0]);
+
+    // Añadir ejes
+    g.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x));
+
+    g.append('g')
+        .attr('class', 'y-axis')
+        .call(d3.axisLeft(y));
+
+    // Añadir barras
+    g.selectAll('.bar')
+        .data(data)
+        .enter().append('rect')
+        .attr('class', 'bar')
+        .attr('x', d => x(d.nivel))
+        .attr('y', d => y(d.valor))
+        .attr('width', x.bandwidth())
+        .attr('height', d => height - y(d.valor))
+        .attr('fill', 'steelblue');
+
+    // Añadir valores dentro de las barras
+    g.selectAll('.text')
+        .data(data)
+        .enter().append('text')
+        .attr('class', 'label')
+        .attr('x', d => x(d.nivel) + x.bandwidth() / 2)
+        .attr('y', d => y(d.valor) - 5)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '12px')
+        .attr('fill', 'black')
+        .text(d => d.valor);
+}

@@ -11,6 +11,7 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="js/script.js" defer></script>
 </head>
 <body>
@@ -43,9 +44,7 @@
                 </select>
                 <button id="generateGraphBtn" class="btn btn-primary">Generar Gráfica</button>
             </div>
-            <div id="graphContainer" class="mt-3 p-3 border rounded">
-                <!-- Aquí se generará la gráfica -->
-            </div>
+            <div id="histogram"></div> <!-- Nuevo contenedor para el histograma -->
         </div>
     </div>
     <!-- Popup de Error -->
