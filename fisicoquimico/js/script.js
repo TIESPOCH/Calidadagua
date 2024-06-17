@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             header: true,
             complete: function(results) {
                 const data = results.data;
-                const riverData = data.filter(row => row['NOMBRE RIO'] === selectedRiver);
+                const riverData = data.filter(row => row['RIO'] === selectedRiver); // Cambiado a 'RIO'
                 drawHistogram(riverData);
             },
             error: function(error) {
@@ -65,9 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .domain([2018, 2019, 2020, 2021, 2022, 2023])
             .range(d3.schemeCategory10);
 
+        // Obtener los años únicos para el eje X
+        const years = Array.from(new Set(data.map(d => new Date(d.FECHA).getFullYear())));
+
         // Escala X para los años
         const x = d3.scaleBand()
-            .domain([2018, 2019, 2020, 2021, 2022, 2023])
+            .domain(years)
             .range([0, width])
             .padding(0.1);
 
@@ -75,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x));
 
-        // Escala Y para la calidad del agua
+        // Escala Y para la clasificación (Buena, Regular, Mala)
         const y = d3.scalePoint()
             .domain(["Buena", "Regular", "Mala"])
             .range([height, 0])
@@ -84,23 +87,23 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // Añadir los puntos
+        // Añadir los puntos como círculos
         svg.selectAll("circle")
             .data(data)
             .enter().append("circle")
-            .attr("cx", d => x(+d.AÑO))
-            .attr("cy", d => y(d.CALIDAD))
+            .attr("cx", d => x(new Date(d.FECHA).getFullYear())) // Usando FECHA para el eje X
+            .attr("cy", d => y(d.Clasificacion))
             .attr("r", 5)
-            .attr("fill", d => colorScale(+d.AÑO))
+            .attr("fill", d => colorScale(new Date(d.FECHA).getFullYear())) // Color por año
             .append("title")
-            .text(d => `${d['NOMBRE RIO']} - ${d.PUNTO} (${d.AÑO})`);
+            .text(d => `${d.RIO} - ${d.PUNTO} (${d.FECHA})`); // Mostrar nombre del río, punto y fecha en el tooltip
 
-        // Añadir líneas de tiempo
+        // Añadir líneas de tiempo agrupadas por río y punto
         const line = d3.line()
-            .x(d => x(+d.AÑO))
-            .y(d => y(d.CALIDAD));
+            .x(d => x(new Date(d.FECHA).getFullYear())) // Usando FECHA para el eje X
+            .y(d => y(d.Clasificacion));
 
-        const nestedData = d3.groups(data, d => d['NOMBRE RIO'], d => d.PUNTO);
+        const nestedData = d3.groups(data, d => d.RIO, d => d.PUNTO);
 
         nestedData.forEach(([river, points]) => {
             points.forEach(([point, values]) => {
@@ -109,7 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     .attr("fill", "none")
                     .attr("stroke", "#000")
                     .attr("stroke-width", 1.5)
-                    .attr("d", line);
+                    .attr("d", line)
+                    .append("title")
+                    .text(`${river} - ${point}`);
             });
         });
     }
