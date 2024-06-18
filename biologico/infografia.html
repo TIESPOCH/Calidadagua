@@ -35,16 +35,35 @@
         </div>
         </div>
        <!-- Contenido Principal -->
-       <div class="content">
-        <div class="controls">
-            <label for="rivers">Selecciona un río:</label>
-            <select id="rivers" name="rivers" class="form-control">
-                <!-- Las opciones se llenarán dinámicamente -->
-            </select>
-            <button id="generateGraphBtn" class="btn btn-primary">Generar Gráfica</button>
+       <div class="container">
+        <div class="content">
+            <div class="controls">
+                <div id="dropdown-container">
+                    <select id="rio-select">
+                        <option value="">Seleccione un río</option>
+                    </select>
+                    <select id="puntos-select">
+                        <option value="">Seleccione un punto</option>
+                    </select>
+                    <button id="buscar-btn">Generar Infografía</button>
+                </div>
+            </div>
+            <div class="data-visualization">
+                <div class="data-grid-container">
+                    <div class="data-grid">
+                        <h2><i class="fas fa-table"></i> Datos</h2>
+                        <div class="tabs"></div>
+                        <table id="tabla2">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="grafico" class="grafico"></div>
+            </div>
         </div>
-        
-    </div>
 </div>
 <!-- Popup de Error -->
 <div id="error-popup" class="popup">

@@ -6,9 +6,7 @@
     <title>Visualización de Datos Satelitales</title>
     <link type="text/css" rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -16,18 +14,42 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
+        <div class="content">
+            <div class="controls">
+                <div id="dropdown-container">
+                    <select id="rio-select">
+                        <option value="">Seleccione un río</option>
+                    </select>
+                    <select id="puntos-select">
+                        <option value="">Seleccione un punto</option>
+                    </select>
+                    <button id="buscar-btn">Generar Infografía</button>
+                </div>
+            </div>
+            <div class="data-visualization">
+                <div class="data-grid-container">
+                    <div class="data-grid">
+                        <h2><i class="fas fa-table"></i> Datos</h2>
+                        <div class="tabs"></div>
+                        <table id="tabla2">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="grafico" class="grafico"></div>
+            </div>
+        </div>
         <div class="sidebar">
-            <!-- Logo Espoch -->
             <div class="logo">
                 <img src="path/to/your/logo.png" alt="Logo Espoch">
                 <span>ESPOCH</span>
             </div>
-            <!-- Icono Home -->
             <div class="icon">
                 <a href="/index.html"><i class="fas fa-home"></i> Home</a>
             </div>
-            <!-- Icono Ver Gráficos Infografía -->
             <div class="icon">
                 <a href="infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Fisicoquímicos</a>
                 <div class="icon">
@@ -35,19 +57,7 @@
                 </div>
             </div>
         </div>
-        <!-- Contenido Principal -->
-        <div class="content">
-            <div class="controls">
-                <label for="rivers">Selecciona un río:</label>
-                <select id="rivers" name="rivers" class="form-control">
-                    <!-- Las opciones se llenarán dinámicamente -->
-                </select>
-                <button id="generateGraphBtn" class="btn btn-primary">Generar Gráfica</button>
-            </div>
-            <div id="histogram"></div> <!-- Nuevo contenedor para el histograma -->
-        </div>
     </div>
-    <!-- Popup de Error -->
     <div id="error-popup" class="popup">
         <span class="popup-text" id="error-popup-text"></span>
         <button onclick="cerrarPopup()" class="btn btn-primary">Cerrar</button>

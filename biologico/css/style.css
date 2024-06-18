@@ -107,8 +107,7 @@ body {
     height: 100%;
     width: calc(100% - 250px);
     background-color: #f9f9f9;
-    border: 10px;
-    border-color: #000000 ;
+    padding: 10px;
 }
 
 .controls {
@@ -147,7 +146,99 @@ body {
     border-color: #0056b3;
 }
 
+.data-visualization {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
 
+.data-grid {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    border-color: black 2px;
+}
+
+.data-grid-container {
+    flex: 1;
+    max-width: 35%;
+    border: 2px solid #000000;
+    height: 500px;
+    overflow: auto;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.grafico {
+    flex: 2;
+    border: 2px solid #000000;
+    height: 500px;
+}
+
+.table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+tr:nth-child(even) {
+    background-color: #eaf5ea;
+}
+
+tr.selected {
+    background-color: yellow !important;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: #f2c200;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilos para el contenedor desplegable */
+#dropdown-container {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+#dropdown-container select,
+#dropdown-container button {
+    padding: 8px;
+    font-size: 14px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* Estilos para el botón de buscar */
+#buscar-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+#buscar-btn:hover {
+    background-color: #1c601a;
+    color: black;
+}
 
 /* Estilos para el popup */
 .popup {
