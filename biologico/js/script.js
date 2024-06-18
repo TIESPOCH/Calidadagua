@@ -1,5 +1,5 @@
 let datosCSV = [];
-let datosFisicoquimicos = [];
+let datosBiologicos = [];
 let rios = [
     "RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
     "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR",
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
             mostrarPopupError("Por favor, seleccione un río.");
             return;
         }
-        const puntos = datosFisicoquimicos
+        const puntos = datosBiologicos
             .filter(dato => dato.RIO === nombreRioSeleccionado)
             .map(dato => dato.PUNTO) // Cambia 'PUNTO' por el nombre de la columna que tiene los puntos
             .filter((v, i, a) => a.indexOf(v) === i); // Eliminar duplicados
@@ -57,8 +57,8 @@ function cargarDatosCSV(url, tablaId) {
         download: true,
         header: true,
         complete: function(results) {
-            datosFisicoquimicos = results.data;
-            actualizarTabla(datosFisicoquimicos, tablaId); // Actualizar la tabla después de cargar los datos
+            datosBiologicos = results.data;
+            actualizarTabla(datosBiologicos, tablaId); // Actualizar la tabla después de cargar los datos
         },
         error: function(error) {
             mostrarPopupError("Error al cargar el archivo CSV: " + error.message);
@@ -82,7 +82,7 @@ function buscarDatos() {
         return;
     }
 
-    let datosFiltrados = datosFisicoquimicos.filter(dato => dato.RIO === nombreRioSeleccionado && dato.PUNTO === puntoSeleccionado);
+    let datosFiltrados = datosBiologicos.filter(dato => dato.RIO === nombreRioSeleccionado && dato.PUNTO === puntoSeleccionado);
     
     actualizarTabla(datosFiltrados, 'tabla2');
     
@@ -124,7 +124,7 @@ function actualizarTabla(datos, tablaId) {
     
     if (datos.length === 0) return;
 
-    const camposAMostrar = ['ID', 'RIO', 'PUNTO', 'FECHA', 'ÍNDICE BMWP/Col.1', 'Clasificar'];
+    const camposAMostrar = ['ID','RIO','PUNTO','FECHA','ÍNDICE BMWP/Col.','Clasificar'];
     
     // Llenar encabezado
     camposAMostrar.forEach(campo => {
@@ -171,7 +171,7 @@ function generarGrafico(data, puntoSeleccionado) {
         .range([0, width]);
 
     const y = d3.scaleLinear()
-        .domain([1, 3])
+        .domain([1, 4])
         .range([height, 0]);
 
     const color = d3.scaleOrdinal()
@@ -192,7 +192,7 @@ function generarGrafico(data, puntoSeleccionado) {
         .attr("transform", "rotate(-65)");
 
     svg.append("g")
-        .call(d3.axisLeft(y).ticks(3).tickFormat(d => {
+        .call(d3.axisLeft(y).ticks(4).tickFormat(d => {
             switch (d) {
                 case 1: return "Aguas muy limpias";
                 case 2: return "Aguas ligeramente contaminadas";
