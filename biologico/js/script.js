@@ -8,7 +8,7 @@ let rios = [
     "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
     "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
     "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
-    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
+    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA ",
     "RIO WAWAIM GRANDE", "RIO LUSHIN"
 ];
 
@@ -124,7 +124,7 @@ function actualizarTabla(datos, tablaId) {
     
     if (datos.length === 0) return;
 
-    const camposAMostrar = ['ID','RIO','PUNTO','FECHA','ÍNDICE BMWP/Col.','Clasificar'];
+    const camposAMostrar = ['ID','RIO','PUNTO','FECHA','ÍNDICE BMWP/Col.1','Clasificar'];
     
     // Llenar encabezado
     camposAMostrar.forEach(campo => {
@@ -149,7 +149,7 @@ function actualizarTabla(datos, tablaId) {
 function generarGrafico(data, puntoSeleccionado) {
     // Convertir fechas y clasificar a números
     data.forEach(d => {
-        d.FECHA = d3.timeParse("%d/%m/%Y")(d.FECHA);
+        d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
         d.Clasificar = +d.Clasificar;
     });
 
