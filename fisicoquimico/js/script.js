@@ -48,8 +48,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
-    const buscarBtn = document.getElementById('buscar-btn');
-    buscarBtn.addEventListener('click', buscarDatos);
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
+    toggleBtn.addEventListener('click', function() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('collapsed');
+        const content = document.querySelector('.content');
+        content.classList.toggle('expanded');
+    });
 });
 
 function cargarDatosCSV(url, tablaId) {
@@ -186,6 +191,7 @@ function generarGrafico(data, puntoSeleccionado) {
         .range([height, 0]);
 
     const line = d3.line()
+        .curve(d3.curveMonotoneX) // Aplicar la interpolación que pasa por los puntos
         .x(d => x(d.FECHA))
         .y(d => y(d['CALIDAD AGUA NSF']));
 
@@ -293,18 +299,38 @@ function generarGrafico(data, puntoSeleccionado) {
         .style("text-decoration", "underline")
         .text(titulo);
 
-    // Agregar leyenda
-    const legend = svg.append("g")
-        .attr("class", "legend")
-        .attr("transform", `translate(${width - 200}, 30)`); // Mover la leyenda a la izquierda
+        
+// Agregar ícono de información
+    const infoIcon = svg.append("g")
+        .attr("class", "info-icon")
+        .attr("transform", `translate(${width - 30}, 20)`);
 
-    const legendData = [
-        { label: 'Buena (> 68.25)', color: '#388E3C' },
-        { label: 'Regular (41.08 - 68.25)', color: '#FBC02D' },
-        { label: 'Malo (< 41.08)', color: '#D32F2F' }
-    ];
+    infoIcon.append("circle")
+        .attr("r", 10)
+        .attr("fill", "lightblue")
+        .attr("stroke", "black");
 
-    legend.selectAll("rect")
+    infoIcon.append("text")
+        .attr("x", 0)
+        .attr("y", 4)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("fill", "black")
+        .text("i");
+
+    // Agregar contenedor de la leyenda (oculto por defecto)
+    const legendGroup = svg.append("g")
+        .attr("class", "legend-group")
+        .attr("transform", `translate(${width - 200}, 40)`)
+        .style("display", "none"); // Oculto por defecto
+
+        const legendData = [
+            { label: 'Buena (> 68.25)', color: '#388E3C' },
+            { label: 'Regular (41.08 - 68.25)', color: '#FBC02D' },
+            { label: 'Malo (< 41.08)', color: '#D32F2F' }
+        ];
+
+    legendGroup.selectAll("rect")
         .data(legendData)
         .enter().append("rect")
         .attr("x", 0)
@@ -313,11 +339,25 @@ function generarGrafico(data, puntoSeleccionado) {
         .attr("height", 18)
         .style("fill", d => d.color);
 
-    legend.selectAll("text")
+    legendGroup.selectAll("text")
         .data(legendData)
         .enter().append("text")
         .attr("x", 24)
         .attr("y", (d, i) => i * 20 + 9)
         .attr("dy", ".35em")
+        .style("font-size", "14px") // Cambiar el tamaño de la fuente
         .text(d => d.label);
+
+    // Mostrar la leyenda al pasar el mouse sobre el ícono de información
+    infoIcon.on("mouseover", function() {
+        legendGroup.style("display", "block");
+    });
+
+    // Ocultar la leyenda cuando el mouse sale del ícono de información
+    infoIcon.on("mouseout", function() {
+        legendGroup.style("display", "none");
+    });
+
+    // Retornar el objeto SVG para poder modificarlo más tarde si es necesario
+    return svg;
 }

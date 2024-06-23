@@ -2,14 +2,13 @@ import pandas as pd
 from pyproj import Proj
 
 # Leer archivo CSV
-file_path = 'C:\\Users\\User\\Desktop\\coordenadasfisio.csv'
+file_path = '/mnt/data/fisicoquimicos.csv'
 df = pd.read_csv(file_path)
 
-# Establecer proyección UTM para la zona 18 Sur
-p = Proj(proj='utm', zone=18, ellps='WGS84', south=True)
-
-# Convertir coordenadas UTM a latitud y longitud
+# Convertir coordenadas UTM a latitud y longitud considerando la zona UTM de cada fila
 for i in range(len(df)):
+    zona = int(df.loc[i, 'ZONA'])
+    p = Proj(proj='utm', zone=zona, ellps='WGS84', south=True)
     lon, lat = p(df.loc[i, 'COORD- X'], df.loc[i, 'COORD- Y'], inverse=True)
     df.loc[i, 'COORD- X'] = lat
     df.loc[i, 'COORD- Y'] = lon
@@ -17,5 +16,8 @@ for i in range(len(df)):
 # Renombrar columnas a latitud y longitud
 df.rename(columns={'COORD- X': 'latitud', 'COORD- Y': 'longitud'}, inplace=True)
 
-# Guardar el DataFrame actualizado en el archivo CSV original
-df.to_csv(file_path, index=False)
+# Guardar el DataFrame actualizado en un nuevo archivo CSV
+output_file_path = '/mnt/data/fisicoquimicos_latlong.csv'
+df.to_csv(output_file_path, index=False)
+
+output_file_path

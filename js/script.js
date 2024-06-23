@@ -13,7 +13,7 @@ let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMB
     "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
     "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
     "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
-    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA",
+    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA ",
     "RIO WAWAIM GRANDE","RIO LUSHIN"];
 
 // Función para inicializar el mapa
@@ -278,6 +278,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         buscarDatos();
     });
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
+    toggleBtn.addEventListener('click', function() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('collapsed');
+        const content = document.querySelector('.content');
+        content.classList.toggle('expanded');
+    });
+    
 });
 
 // Función para generar el contenido del popup para parámetros biológicos

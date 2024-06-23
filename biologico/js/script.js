@@ -48,8 +48,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/tablabio.csv', 'tabla2');
-    const buscarBtn = document.getElementById('buscar-btn');
-    buscarBtn.addEventListener('click', buscarDatos);
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
+    toggleBtn.addEventListener('click', function() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('collapsed');
+        const content = document.querySelector('.content');
+        content.classList.toggle('expanded');
+    });
 });
 
 function cargarDatosCSV(url, tablaId) {
@@ -87,154 +92,304 @@ function buscarDatos() {
     actualizarTabla(datosFiltrados, 'tabla2');
     
     // Limpiar cualquier gráfico previo
-    d3.select("#grafico svg").remove();
+    d3.select("#grafico1 svg").remove();
+    d3.select("#grafico2 svg").remove();
 
-    // Generar nuevo gráfico
-    generarGrafico(datosFiltrados, puntoSeleccionado);
-}
-
-function limpiarVisualizaciones() {
-    // Limpiar tabla
-    actualizarTabla([], 'tabla2');
+    // Generar nuevos gráficos
+    generarGrafico(datosFiltrados, puntoSeleccionado,
+        '#grafico1');
+        generarGrafico(datosFiltrados, puntoSeleccionado, '#grafico2');
+    }
     
-    // Limpiar gráficos
-    d3.select("#grafico svg").remove();
-}
-
-function mostrarPopupError(mensaje) {
-    const popup = document.getElementById('error-popup');
-    const popupText = document.getElementById('error-popup-text');
-    popupText.textContent = mensaje;
-    popup.style.display = 'block';
-}
-
-function cerrarPopup() {
-    const popup = document.getElementById('error-popup');
-    popup.style.display = 'none';
-}
-
-function actualizarTabla(datos, tablaId) {
-    const tabla = document.getElementById(tablaId);
-    const thead = tabla.querySelector('thead tr');
-    const tbody = tabla.querySelector('tbody');
+    function limpiarVisualizaciones() {
+        // Limpiar tabla
+        actualizarTabla([], 'tabla2');
+        
+        // Limpiar gráficos
+        d3.select("#grafico1 svg").remove();
+        d3.select("#grafico2 svg").remove();
+    }
     
-    // Limpiar tabla
-    thead.innerHTML = '';
-    tbody.innerHTML = '';
+    function mostrarPopupError(mensaje) {
+        const popup = document.getElementById('error-popup');
+        const popupText = document.getElementById('error-popup-text');
+        popupText.textContent = mensaje;
+        popup.style.display = 'block';
+    }
     
-    if (datos.length === 0) return;
-
-    const camposAMostrar = ['ID','RIO','PUNTO','FECHA','ÍNDICE BMWP/Col.1','Clasificar'];
+    function cerrarPopup() {
+        const popup = document.getElementById('error-popup');
+        popup.style.display = 'none';
+    }
     
-    // Llenar encabezado
-    camposAMostrar.forEach(campo => {
-        const th = document.createElement('th');
-        th.textContent = campo;
-        thead.appendChild(th);
-    });
+    function actualizarTabla(datos, tablaId) {
+        const tabla = document.getElementById(tablaId);
+        const thead = tabla.querySelector('thead tr');
+        const tbody = tabla.querySelector('tbody');
+        
+        // Limpiar tabla
+        thead.innerHTML = '';
+        tbody.innerHTML = '';
+        
+        if (datos.length === 0) return;
     
-    // Llenar cuerpo
-    datos.forEach(dato => {
-        const tr = document.createElement('tr');
+        const camposAMostrar = ['RIO','PUNTO','FECHA','ÍNDICE BMWP/Col.1','ÍNDICE BMWP/Col','DIVERSIDAD SEGÚN SHANNON','CALIDAD DEL AGUA SEGÚN SHANNON'];
+        
+        // Llenar encabezado
         camposAMostrar.forEach(campo => {
-            const td = document.createElement('td');
-            td.textContent = dato[campo];
-            tr.appendChild(td);
+            const th = document.createElement('th');
+            th.textContent = campo;
+            thead.appendChild(th);
         });
-        tbody.appendChild(tr);
-    });
-}
-
-
-function generarGrafico(data, puntoSeleccionado) {
-    // Convertir fechas y clasificar a números
-    data.forEach(d => {
-        d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
-        d.Clasificar = +d.Clasificar;
-    });
-
-    // Ordenar los datos por fecha
-    data.sort((a, b) => a.FECHA - b.FECHA);
-
-    const margin = { top: 20, right: 20, bottom: 70, left: 50 },
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
-
-    const svg = d3.select("#grafico").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    const x = d3.scaleTime()
-        .domain(d3.extent(data, d => d.FECHA))
-        .range([0, width]);
-
-    const y = d3.scaleLinear()
-        .domain([1, 4])
-        .range([height, 0]);
-
-    const color = d3.scaleOrdinal()
-        .domain(['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18'])
-        .range(['red', 'green', 'pink', 'red', 'blue', 'black', 'yellow', 'brown', 'gray', 'aqua', 'magenta', 'orange', 'turquoise', 'cyan', 'melon', 'darkred', 'purple', 'purple']);
-
-    const line = d3.line()
-        .x(d => x(d.FECHA))
-        .y(d => y(d.Clasificar));
-
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b %Y")))
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)");
-
-    svg.append("g")
-        .call(d3.axisLeft(y).ticks(4).tickFormat(d => {
-            switch (d) {
-                case 1: return "Aguas muy limpias";
-                case 2: return "Aguas ligeramente contaminadas";
-                case 3: return "Aguas moderadamente contaminadas";
-                case 4: return "Aguas muy contaminadas";
-                default: return d;
-            }
-        }));
-
-    svg.append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", color(puntoSeleccionado))
-        .attr("stroke-width", 1.5)
-        .attr("d", line);
-
-    svg.selectAll("circle")
-        .data(data)
-        .enter().append("circle")
-        .attr("cx", d => x(d.FECHA))
-        .attr("cy", d => y(d.Clasificar))
-        .attr("r", 3)
-        .attr("fill", color(puntoSeleccionado))
-        .on("mouseover", function(event, d) {
-            d3.select(this).transition().duration(200).attr("r", 6);
-            svg.append("text")
-                .attr("class", "tooltip")
-                .attr("x", x(d.FECHA))
-                .attr("y", y(d.Clasificar) - 10)
-                .attr("text-anchor", "middle")
-                .text(d3.timeFormat("%d/%m/%Y")(d.FECHA));
-        })
-        .on("mouseout", function() {
-            d3.select(this).transition().duration(200).attr("r", 3);
-            svg.select(".tooltip").remove();
+        
+        // Llenar cuerpo
+        datos.forEach(dato => {
+            const tr = document.createElement('tr');
+            camposAMostrar.forEach(campo => {
+                const td = document.createElement('td');
+                td.textContent = dato[campo];
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
         });
+    }
+    
 
-    svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", 0 - margin.top / 2)
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .style("text-decoration", "underline")
-        .text("Clasificación del Agua por Fecha");
-}
+    function generarGrafico(data, puntoSeleccionado, contenedor) {
+        // Convertir fechas y el índice BMWP/Col a números
+        data.forEach(d => {
+            d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
+            d['ÍNDICE BMWP/Col'] = +d['ÍNDICE BMWP/Col']; // Asegurarse de que ÍNDICE BMWP/Col. es un número
+        });
+    
+        // Encontrar la fecha mínima en los datos para definir el inicio del eje x
+        const minFecha = d3.min(data, d => d.FECHA);
+    
+        // Filtrar los datos para empezar desde la fecha mínima encontrada
+        data = data.filter(d => d.FECHA >= minFecha);
+    
+        // Ordenar los datos por fecha nuevamente
+        data.sort((a, b) => a.FECHA - b.FECHA);
+    
+        // Definir el número de ticks en el eje x dependiendo de la cantidad de datos
+        let ticksCount = data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
+    
+        // Definir los colores para los rangos de calidad del agua (oscuros)
+        const colorScale = d3.scaleThreshold()
+            .domain([36, 49, 85])
+            .range(['#D32F2F', '#FBC02D', '#228B22', '#00008B']);
+    
+        // Encontrar el mínimo y máximo de ÍNDICE BMWP/Col. en los datos filtrados
+        const minIndice = d3.min(data, d => d['ÍNDICE BMWP/Col']);
+        const maxIndice = d3.max(data, d => d['ÍNDICE BMWP/Col']);
+    
+        // Definir el dominio del eje y extendido
+        const yDomain = [minIndice, maxIndice + 3];
+    
+        const margin = { top: 50, right: 20, bottom: 70, left: 50 },
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+    
+        const svg = d3.select(contenedor).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+        const x = d3.scaleTime()
+            .domain([minFecha, d3.timeMonth.offset(new Date(2025, 0, 1), -6)]) // Ajustar el dominio de las fechas
+            .range([0, width]);
+    
+        const y = d3.scaleLinear()
+            .domain(yDomain)
+            .nice() // Mejorar el aspecto del eje y extendido
+            .range([height, 0]);
+    
+        const line = d3.line()
+            .curve(d3.curveMonotoneX) // Aplicar la interpolación que pasa por los puntos
+            .x(d => x(d.FECHA))
+            .y(d => y(d['ÍNDICE BMWP/Col']));
+    
+        // Agregar ejes
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).ticks(ticksCount).tickFormat(d3.timeFormat("%b %Y")))
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)");
+    
+        svg.append("g")
+            .call(d3.axisLeft(y));
+    
+        // Agregar la línea con degradado de color
+        const gradient = svg.append("defs")
+            .append("linearGradient")
+            .attr("id", "line-gradient")
+            .attr("gradientUnits", "userSpaceOnUse")
+            .attr("x1", 0)
+            .attr("y1", y(yDomain[0]))
+            .attr("x2", 0)
+            .attr("y2", y(yDomain[1]));
+    
+        gradient.selectAll("stop")
+            .data([
+                { offset: "0%", color: '#D32F2F' },
+                { offset: "36%", color: '#FBC02D' },
+                { offset: "49%", color: '#228B22' },
+                { offset: "85%", color: '#00008B' }
+            ])
+            .enter().append("stop")
+            .attr("offset", d => d.offset)
+            .attr("stop-color", d => d.color);
+    
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "url(#line-gradient)")
+            .attr("stroke-width", 1.5)
+            .attr("d", line);
+    
+        // Agregar puntos y eventos de interacción
+        svg.selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("cx", d => x(d.FECHA))
+            .attr("cy", d => y(d['ÍNDICE BMWP/Col']))
+            .attr("r", 5) // Aumentar el tamaño de los puntos para una mejor visualización
+            .attr("fill", "black") // Puntos en color negro
+            .attr("stroke", "white") // Borde blanco para destacar los puntos
+            .on("mouseover", function(event, d) {
+                d3.select(this).transition().duration(200).attr("r", 8); // Agrandar el punto al pasar el mouse
+    
+                const tooltipGroup = svg.append("g")
+                    .attr("class", "tooltip-group");
+    
+                const background = tooltipGroup.append("rect")
+                    .attr("fill", "white")
+                    .attr("stroke", "black")
+                    .attr("rx", 5)
+                    .attr("ry", 5);
+    
+                const text1 = tooltipGroup.append("text")
+                    .attr("x", 0)
+                    .attr("y", -18)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "12px")
+                    .text("FECHA DE MUESTRA: " + d3.timeFormat("%d/%m/%Y")(d.FECHA));
+    
+                const text2 = tooltipGroup.append("text")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "12px")
+                    .text("ÍNDICE BMWP/Col.: " + d['ÍNDICE BMWP/Col']);
+    
+                const text3 = tooltipGroup.append("text")
+                    .attr("x", 0)
+                    .attr("y", 18)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "12px")
+                    .text("Clasificación: " + d['ÍNDICE BMWP/Col.1']);
+    
+                const bbox = tooltipGroup.node().getBBox();
+                background
+                    .attr("x", bbox.x - 10)
+                    .attr("y", bbox.y - 5)
+                    .attr("width", bbox.width + 20)
+                    .attr("height", bbox.height + 10);
+    
+                // Asegurar que el tooltip se muestre completamente dentro de los límites del gráfico
+                let tooltipX = x(d.FECHA);
+                let tooltipY = y(d['ÍNDICE BMWP/Col']) - 40;
+    
+                if (tooltipX + bbox.width / 2 + 10 > width) {
+                    tooltipX = width - bbox.width / 2 - 10;
+                } else if (tooltipX - bbox.width / 2 - 10 < 0) {
+                    tooltipX = bbox.width / 2 + 10;
+                }
+    
+                if (tooltipY - bbox.height - 10 < 0) {
+                    tooltipY = y(d['ÍNDICE BMWP/Col']) + bbox.height + 10;
+                }
+    
+                tooltipGroup.attr("transform", `translate(${tooltipX},${tooltipY})`);
+            })
+            .on("mouseout", function() {
+                d3.select(this).transition().duration(200).attr("r", 5); // Restaurar tamaño original del punto
+                svg.select(".tooltip-group").remove();
+            });
+    
+        // Agregar título
+        const titulo = "Calidad del Agua con el ÍNDICE BMWP/Col.1 " + data[0].RIO + " en el punto " + puntoSeleccionado;
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", -margin.top / 2) // Mover el título hacia abajo para evitar que se vea tapado
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("text-decoration", "underline")
+            .text(titulo);
+    
+        // Agregar ícono de información
+        const infoIcon = svg.append("g")
+            .attr("class", "info-icon")
+            .attr("transform", `translate(${width - 30}, 20)`);
+    
+        infoIcon.append("circle")
+            .attr("r", 10)
+            .attr("fill", "lightblue")
+            .attr("stroke", "black");
+    
+        infoIcon.append("text")
+            .attr("x", 0)
+            .attr("y", 4)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .attr("fill", "black")
+            .text("i");
+    
+        // Agregar contenedor de la leyenda (oculto por defecto)
+        const legendGroup = svg.append("g")
+            .attr("class", "legend-group")
+            .attr("transform", `translate(${width - 200}, 40)`)
+            .style("display", "none"); // Oculto por defecto
+    
+        const legendData = [
+            { label: 'Aguas muy limpias (≥ 86)', color: '#00008B' },
+            { label: 'Aguas ligeramente contaminadas (60 - 85)', color: '#228B22' },
+            { label: 'Aguas moderadamente contaminadas (37 - 49)', color: '#FBC02D' },
+            { label: 'Aguas muy contaminadas (≤ 36)', color: '#D32F2F' }
+        ];
+    
+        legendGroup.selectAll("rect")
+            .data(legendData)
+            .enter().append("rect")
+            .attr("x", 0)
+            .attr("y", (d, i) => i * 20)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", d => d.color);
+    
+        legendGroup.selectAll("text")
+            .data(legendData)
+            .enter().append("text")
+            .attr("x", 24)
+            .attr("y", (d, i) => i * 20 + 9)
+            .attr("dy", ".35em")
+            .text(d => d.label);
+    
+        // Mostrar la leyenda al pasar el mouse sobre el ícono de información
+        infoIcon.on("mouseover", function() {
+            legendGroup.style("display", "block");
+        });
+    
+        // Ocultar la leyenda cuando el mouse sale del ícono de información
+        infoIcon.on("mouseout", function() {
+            legendGroup.style("display", "none");
+        });
+    
+        // Retornar el objeto SVG para poder modificarlo más tarde si es necesario
+        return svg;
+    }
+    

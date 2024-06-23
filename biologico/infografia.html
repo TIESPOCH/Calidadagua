@@ -13,14 +13,11 @@
     <script src="js/script.js" defer></script>
 </head>
 <body>
+    <button id="sidebar-toggle-btn"><i class="fas fa-chevron-left"></i></button> <!-- Botón para ocultar/mostrar sidebar -->
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <!-- Logo Espoch -->
-            <div class="logo">
-                <img src="path/to/your/logo.png" alt="Logo Espoch">
-                <span>ESPOCH</span>
-            </div>
+            
             <!-- Icono Home -->
             <div class="icon">
                 <a href="/index.html"><i class="fas fa-home"></i> Home</a>
@@ -44,7 +41,7 @@
                     <select id="puntos-select">
                         <option value="">Seleccione un punto</option>
                     </select>
-                    <button id="buscar-btn">Generar Infografía</button>
+                    
                 </div>
             </div>
             <div class="data-visualization">
@@ -60,7 +57,10 @@
                         </table>
                     </div>
                 </div>
-                <div id="grafico" class="grafico"></div>
+                <div id="graficos" class="grafico">
+                    <div id="grafico1"></div>
+                    <div id="grafico2"></div>
+                </div>
             </div>
         </div>
 </div>

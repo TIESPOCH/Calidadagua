@@ -16,11 +16,10 @@ body {
     overflow: hidden;
 }
 
-/* Estilos para el sidebar similar a Bootstrap */
 .sidebar {
     background-color: #295e40;
     color: #fff;
-    width: 250px;
+    width: 150px; /* Reducir el ancho del sidebar */
     position: fixed;
     height: 100%;
     overflow-y: auto;
@@ -29,20 +28,9 @@ body {
 }
 
 .sidebar:hover {
-    width: 260px;
+    width: 160px; /* Ajustar el ancho al hacer hover */
 }
 
-.sidebar .logo {
-    font-family: 'Times New Roman', Times, serif;
-    margin: 20px 0;
-    text-align: center;
-}
-
-.sidebar .logo img {
-    max-width: 80%;
-    height: auto;
-    margin-bottom: 10px;
-}
 
 .sidebar .icon {
     margin: 20px 0;
@@ -101,30 +89,34 @@ body {
 
 /* Estilos para el contenido principal */
 .content {
-    margin-left: 250px;
+    margin-left: 150px; /* Ancho del sidebar */
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: calc(100% - 250px);
+    width: calc(100% - 150px); /* Ancho total menos el ancho del sidebar */
     background-color: #f9f9f9;
     padding: 10px;
+    transition: margin-left 0.3s ease, width 0.3s ease; /* Agrega transición al cambiar el ancho */
 }
 
 .controls {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
+    gap: 15px;
+    padding: 15px;
+    padding-right: 30px; /* Ajusta el padding a tu gusto para mover los elementos hacia la derecha */
     background-color: #f9f9f9;
     border-bottom: 1px solid #ddd;
+    margin-left: 40px; /* Ajusta el margen a tu gusto para alejarlo del sidebar */
 }
+
 
 .controls label {
     font-weight: bold;
 }
 
 .controls select {
-    padding: 10px;
+    padding: 2px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -138,6 +130,7 @@ body {
     color: white;
     cursor: pointer;
     border-radius: 4px;
+    
     transition: background-color 0.3s ease;
 }
 
@@ -158,11 +151,11 @@ body {
     flex-direction: column;
     margin-left: 10px;
     border-color: black 2px;
+    flex: 1; /* Ajustar para que ocupe la mitad del espacio */
 }
 
 .data-grid-container {
-    flex: 1;
-    max-width: 35%;
+    max-width: 50%; /* Reducir el ancho a la mitad */
     border: 2px solid #000000;
     height: 500px;
     overflow: auto;
@@ -171,11 +164,17 @@ body {
     justify-content: flex-start;
     align-items: flex-start;
 }
-
 .grafico {
-    flex: 2;
+    flex: 1; /* Ajustar para que ocupe la mitad del espacio */
     border: 2px solid #000000;
-    height: 500px;
+    height: 1000px; /* Ajustar altura para contener ambas gráficas */
+}
+
+.grafico > div {
+    height: 50%; /* Cada gráfica ocupará la mitad del contenedor */
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
+    transform: translateZ(0); /* Crear efecto 3D */
 }
 
 .table {
@@ -209,36 +208,24 @@ thead th {
 }
 
 /* Estilos para el contenedor desplegable */
-#dropdown-container {
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
+.dropdown-container {
+    position: absolute;
+    top: 10px; /* Ajusta según sea necesario */
+    right: 10px; /* Ajusta según sea necesario */
+    z-index: 999; /* Asegura que esté sobre el contenido */
+    width: 50%; /* Reducir el ancho a la mitad */
 }
 
-#dropdown-container select,
-#dropdown-container button {
-    padding: 8px;
+.dropdown-select {
+    padding: 5px;
     font-size: 14px;
-    margin-right: 10px;
+    margin-right: 70px;
     cursor: pointer;
-}
-
-/* Estilos para el botón de buscar */
-#buscar-btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    border: 1px solid #007bff;
-    color: white;
-    cursor: pointer;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    width: 50%; /* Reducir el ancho a la mitad */
 }
 
-#buscar-btn:hover {
-    background-color: #1c601a;
-    color: black;
-}
 
 /* Estilos para el popup */
 .popup {
@@ -268,4 +255,71 @@ thead th {
 
 .popup button:hover {
     background-color: #0056b3;
+}
+
+/* Estilos para ambas tablas */
+#tabla1, #tabla2 {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+#tabla1 th, #tabla1 td, #tabla2 th, #tabla2 td {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 2px;
+    font-size: 10px;
+    text-align: left;
+}
+
+#tabla1 th, #tabla2 th {
+    background-color: #f2c200;
+    color: #004d00;
+}
+
+#tabla1 tr:nth-child(even), #tabla2 tr:nth-child(even) {
+    background-color: #eaf5ea;
+}
+
+#tabla1 thead th, #tabla2 thead th {
+    position: sticky;
+    top: 0;
+    background: #f2c200;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilos para el botón de ocultar/mostrar sidebar */
+#sidebar-toggle-btn {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: #295e40;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+#sidebar-toggle-btn:hover {
+    background-color: #1f3e27;
+}
+
+.sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+}
+
+.content.expanded {
+    margin-left: 0;
+    width: 100%;
 }
