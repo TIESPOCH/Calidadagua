@@ -31,7 +31,6 @@ body {
     width: 160px; /* Ajustar el ancho al hacer hover */
 }
 
-
 .sidebar .icon {
     margin: 20px 0;
     text-align: center;
@@ -110,16 +109,32 @@ body {
     margin-left: 40px; /* Ajusta el margen a tu gusto para alejarlo del sidebar */
 }
 
-
 .controls label {
     font-weight: bold;
 }
 
+/* Estilos tipo Bootstrap para listas desplegables */
 .controls select {
-    padding: 2px;
+    padding: 8px 12px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    appearance: none; /* Eliminar el estilo por defecto del navegador */
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+.controls select:hover {
+    border-color: #888;
+}
+
+.controls select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 4px rgba(0, 86, 179, 0.5);
+    outline: none;
 }
 
 .controls button {
@@ -130,7 +145,6 @@ body {
     color: white;
     cursor: pointer;
     border-radius: 4px;
-    
     transition: background-color 0.3s ease;
 }
 
@@ -164,9 +178,9 @@ body {
     justify-content: flex-start;
     align-items: flex-start;
 }
+
 .grafico {
     flex: 1; /* Ajustar para que ocupe la mitad del espacio */
-    border: 2px solid #000000;
     height: 1000px; /* Ajustar altura para contener ambas gráficas */
 }
 
@@ -175,6 +189,14 @@ body {
     border-radius: 8px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
     transform: translateZ(0); /* Crear efecto 3D */
+    margin-bottom: 10px; /* Agregar margen inferior para separar las gráficas */
+    border: 2px solid #000000;
+}
+
+.grafico h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre el icono y el texto */
 }
 
 .table {
@@ -225,7 +247,6 @@ thead th {
     border-radius: 4px;
     width: 50%; /* Reducir el ancho a la mitad */
 }
-
 
 /* Estilos para el popup */
 .popup {

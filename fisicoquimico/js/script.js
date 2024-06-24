@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     selectRio.addEventListener('change', function() {
-        limpiarVisualizaciones();
+        limpiarGrafico(); // Solo limpiar gráficos, no la tabla
         const nombreRioSeleccionado = selectRio.value;
         if (!nombreRioSeleccionado) {
             mostrarPopupError("Por favor, seleccione un río.");
@@ -92,18 +92,14 @@ function buscarDatos() {
     actualizarTabla(datosFiltrados, 'tabla2');
     
     // Limpiar cualquier gráfico previo
-    d3.select("#grafico svg").remove();
+    limpiarGrafico();
 
     // Generar nuevo gráfico
-    generarGrafico(datosFiltrados, puntoSeleccionado);
+    generarGrafico(datosFiltrados, puntoSeleccionado, '#grafico1');
 }
 
-function limpiarVisualizaciones() {
-    // Limpiar tabla
-    actualizarTabla([], 'tabla2');
-    
-    // Limpiar gráficos
-    d3.select("#grafico svg").remove();
+function limpiarGrafico() {
+    d3.select("#grafico1 svg").remove();
 }
 
 function mostrarPopupError(mensaje) {
@@ -129,7 +125,7 @@ function actualizarTabla(datos, tablaId) {
     
     if (datos.length === 0) return;
 
-    const camposAMostrar = ['RIO','FECHA', 'Clasificacion ', 'CALIDAD AGUA NSF'];
+    const camposAMostrar = ['RIO', 'FECHA', 'Clasificacion ', 'CALIDAD AGUA NSF'];
     
     // Llenar encabezado
     camposAMostrar.forEach(campo => {
@@ -150,7 +146,8 @@ function actualizarTabla(datos, tablaId) {
     });
 }
 
-function generarGrafico(data, puntoSeleccionado) {
+
+function generarGrafico(data, puntoSeleccionado, contenedor) {
     // Convertir fechas y calidad del agua a números
     data.forEach(d => {
         d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
@@ -176,7 +173,7 @@ function generarGrafico(data, puntoSeleccionado) {
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-    const svg = d3.select("#grafico").append("svg")
+    const svg = d3.select(contenedor).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -292,61 +289,79 @@ function generarGrafico(data, puntoSeleccionado) {
     // Agregar título
     const titulo = "Calidad del Agua NSF en el " + data[0].RIO + " en el punto " + puntoSeleccionado;
     svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", 0 - margin.top / 2)
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .style("text-decoration", "underline")
-        .text(titulo);
+    .attr("x", width / 2)
+    .attr("y", -margin.top / 3) // Mover el título hacia abajo para evitar que se vea tapado
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("text-decoration", "underline")
+    .text(titulo);
 
         
 // Agregar ícono de información
-    const infoIcon = svg.append("g")
-        .attr("class", "info-icon")
-        .attr("transform", `translate(${width - 30}, 20)`);
+const infoIcon = svg.append("g")
+    .attr("class", "info-icon")
+    .attr("transform", `translate(${width - 80}, 20)`)
+    .on("mouseover", function() {
+        legendGroup.style("display", "block");
+    })
+    .on("mouseout", function() {
+        legendGroup.style("display", "none");
+    });
 
-    infoIcon.append("circle")
-        .attr("r", 10)
-        .attr("fill", "lightblue")
-        .attr("stroke", "black");
+infoIcon.append("circle")
+    .attr("r", 10)
+    .attr("fill", "lightblue")
+    .attr("stroke", "black");
 
-    infoIcon.append("text")
-        .attr("x", 0)
-        .attr("y", 4)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
-        .attr("fill", "black")
-        .text("i");
+infoIcon.append("text")
+    .attr("x", 0)
+    .attr("y", 4)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "12px")
+    .attr("fill", "black")
+    .text("i");
 
-    // Agregar contenedor de la leyenda (oculto por defecto)
-    const legendGroup = svg.append("g")
-        .attr("class", "legend-group")
-        .attr("transform", `translate(${width - 200}, 40)`)
-        .style("display", "none"); // Oculto por defecto
+// Agregar contenedor de la leyenda (oculto por defecto)
+const legendGroup = svg.append("g")
+    .attr("class", "legend-group")
+    .style("display", "none");
 
-        const legendData = [
-            { label: 'Buena (> 68.25)', color: '#388E3C' },
-            { label: 'Regular (41.08 - 68.25)', color: '#FBC02D' },
-            { label: 'Malo (< 41.08)', color: '#D32F2F' }
-        ];
+const legendBackground = legendGroup.append("rect")
+    .attr("x", width - 200) // Ajustar la posición x del cuadro de la leyenda
+    .attr("y", 60) // Ajustar la posición y del cuadro de la leyenda
+    .attr("width", 180)
+    .attr("height", 80)
+    .attr("fill", "white")
+    .attr("stroke", "black");
 
-    legendGroup.selectAll("rect")
-        .data(legendData)
-        .enter().append("rect")
-        .attr("x", 0)
-        .attr("y", (d, i) => i * 20)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", d => d.color);
+    const legendData = [
+        { label: 'Buena (> 68.25)', color: '#388E3C' },
+        { label: 'Regular (41.08 - 68.25)', color: '#FBC02D' },
+        { label: 'Malo (< 41.08)', color: '#D32F2F' }
+    ];
 
-    legendGroup.selectAll("text")
-        .data(legendData)
-        .enter().append("text")
-        .attr("x", 24)
-        .attr("y", (d, i) => i * 20 + 9)
-        .attr("dy", ".35em")
-        .style("font-size", "14px") // Cambiar el tamaño de la fuente
-        .text(d => d.label);
+
+legendGroup.selectAll("rect.legend-item")
+    .data(legendData)
+    .enter()
+    .append("rect")
+    .attr("class", "legend-item")
+    .attr("x", width - 190) // Ajustar la posición x de los elementos de la leyenda
+    .attr("y", (d, i) => 70 + i * 20) // Ajustar la posición y de los elementos de la leyenda
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("fill", d => d.color);
+
+legendGroup.selectAll("text.legend-item")
+    .data(legendData)
+    .enter()
+    .append("text")
+    .attr("class", "legend-item")
+    .attr("x", width - 170) // Ajustar la posición x de los elementos de texto de la leyenda
+    .attr("y", (d, i) => 79 + i * 20) // Ajustar la posición y de los elementos de texto de la leyenda
+    .attr("dy", ".35em")
+    .attr("font-size", "12px")
+    .text(d => d.label);
 
     // Mostrar la leyenda al pasar el mouse sobre el ícono de información
     infoIcon.on("mouseover", function() {
