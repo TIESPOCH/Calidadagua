@@ -167,7 +167,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     const maxCalidadAgua = d3.max(data, d => d['CALIDAD AGUA NSF']);
 
     // Definir el dominio del eje y extendido
-    const yDomain = [minCalidadAgua, maxCalidadAgua + 3];
+    const yDomain = [Math.min(40, minCalidadAgua), Math.max(75, maxCalidadAgua)];
 
     const margin = { top: 20, right: 20, bottom: 70, left: 50 },
         width = 960 - margin.left - margin.right,
@@ -186,6 +186,28 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     const y = d3.scaleLinear()
         .domain(yDomain)
         .range([height, 0]);
+
+    // Agregar el fondo de colores según los rangos
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", y(50))
+        .attr("width", width)
+        .attr("height", height - y(50))
+        .attr("fill", "#FFEBEE"); // Color de fondo rojo claro
+
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", y(68.25))
+        .attr("width", width)
+        .attr("height", y(50) - y(68.25))
+        .attr("fill", "#FFF9C4"); // Color de fondo amarillo claro
+
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", width)
+        .attr("height", y(68.25))
+        .attr("fill", "#E8F5E9"); // Color de fondo verde claro
 
     const line = d3.line()
         .curve(d3.curveMonotoneX) // Aplicar la interpolación que pasa por los puntos
@@ -229,8 +251,9 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
         .datum(data)
         .attr("fill", "none")
         .attr("stroke", "url(#line-gradient)")
-        .attr("stroke-width", 1.5)
-        .attr("d", line);
+        .attr("stroke-width", 2) // Aumentar el ancho de la línea para que resalte más
+        .attr("d", line)
+        .style("mix-blend-mode", "multiply"); // Mezclar modo para que la línea resalte sobre el fondo
 
     // Agregar puntos y eventos de interacción
     svg.selectAll("circle")
@@ -245,7 +268,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
             const tooltipGroup = svg.append("g")
                 .attr("class", "tooltip-group")
-                .attr("transform", `translate(${x(d.FECHA)},${y(d['CALIDAD AGUA NSF']) - 40})`);
+                .attr("transform", `translate(${x(d.FECHA)+50},${y(d['CALIDAD AGUA NSF']) +50})`);
 
             const background = tooltipGroup.append("rect")
                 .attr("fill", "white")
@@ -289,79 +312,77 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     // Agregar título
     const titulo = "Calidad del Agua NSF en el " + data[0].RIO + " en el punto " + puntoSeleccionado;
     svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", -margin.top / 3) // Mover el título hacia abajo para evitar que se vea tapado
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .style("text-decoration", "underline")
-    .text(titulo);
+        .attr("x", width / 2)
+        .attr("y", -margin.top / 3) // Mover el título hacia abajo para evitar que se vea tapado
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text(titulo);
 
-        
-// Agregar ícono de información
-const infoIcon = svg.append("g")
-    .attr("class", "info-icon")
-    .attr("transform", `translate(${width - 80}, 20)`)
-    .on("mouseover", function() {
-        legendGroup.style("display", "block");
-    })
-    .on("mouseout", function() {
-        legendGroup.style("display", "none");
-    });
+    // Agregar ícono de información
+    const infoIcon = svg.append("g")
+        .attr("class", "info-icon")
+        .attr("transform", `translate(${width - 80}, 20)`)
+        .on("mouseover", function() {
+            legendGroup.style("display", "block");
+        })
+        .on("mouseout", function() {
+            legendGroup.style("display", "none");
+        });
 
-infoIcon.append("circle")
-    .attr("r", 10)
-    .attr("fill", "lightblue")
-    .attr("stroke", "black");
+    infoIcon.append("circle")
+        .attr("r", 10)
+        .attr("fill", "lightblue")
+        .attr("stroke", "black");
 
-infoIcon.append("text")
-    .attr("x", 0)
-    .attr("y", 4)
-    .attr("text-anchor", "middle")
-    .attr("font-size", "12px")
-    .attr("fill", "black")
-    .text("i");
+    infoIcon.append("text")
+        .attr("x", 0)
+        .attr("y", 4)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("fill", "black")
+        .text("i");
 
-// Agregar contenedor de la leyenda (oculto por defecto)
-const legendGroup = svg.append("g")
-    .attr("class", "legend-group")
-    .style("display", "none");
+    // Agregar contenedor de la leyenda (oculto por defecto)
+    const legendGroup = svg.append("g")
+        .attr("class", "legend-group")
+        .style("display", "none");
 
-const legendBackground = legendGroup.append("rect")
-    .attr("x", width - 200) // Ajustar la posición x del cuadro de la leyenda
-    .attr("y", 60) // Ajustar la posición y del cuadro de la leyenda
-    .attr("width", 180)
-    .attr("height", 80)
-    .attr("fill", "white")
-    .attr("stroke", "black");
+    const legendBackground = legendGroup.append("rect")
+        .attr("x", width - 200) // Ajustar la posición x del cuadro de la leyenda
+        .attr("y", 60) // Ajustar la posición y del cuadro de la leyenda
+        .attr("width", 180)
+        .attr("height", 80)
+        .attr("fill", "white")
+        .attr("stroke", "black");
 
     const legendData = [
         { label: 'Buena (> 68.25)', color: '#388E3C' },
-        { label: 'Regular (41.08 - 68.25)', color: '#FBC02D' },
-        { label: 'Malo (< 41.08)', color: '#D32F2F' }
+        { label: 'Regular (50- 68.25)', color: '#FBC02D' },
+        { label: 'Malo (< 50)', color: '#D32F2F' }
     ];
 
+    legendGroup.selectAll("rect.legend-item")
+        .data(legendData)
+        .enter()
+        .append("rect")
+        .attr("class", "legend-item")
+        .attr("x", width - 190) // Ajustar la posición x de los elementos de la leyenda
+        .attr("y", (d, i) => 70 + i * 20) // Ajustar la posición y de los elementos de la leyenda
+        .attr("width", 18)
+        .attr("height", 18)
+        .attr("fill", d => d.color);
 
-legendGroup.selectAll("rect.legend-item")
-    .data(legendData)
-    .enter()
-    .append("rect")
-    .attr("class", "legend-item")
-    .attr("x", width - 190) // Ajustar la posición x de los elementos de la leyenda
-    .attr("y", (d, i) => 70 + i * 20) // Ajustar la posición y de los elementos de la leyenda
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", d => d.color);
-
-legendGroup.selectAll("text.legend-item")
-    .data(legendData)
-    .enter()
-    .append("text")
-    .attr("class", "legend-item")
-    .attr("x", width - 170) // Ajustar la posición x de los elementos de texto de la leyenda
-    .attr("y", (d, i) => 79 + i * 20) // Ajustar la posición y de los elementos de texto de la leyenda
-    .attr("dy", ".35em")
-    .attr("font-size", "12px")
-    .text(d => d.label);
+    legendGroup.selectAll("text.legend-item")
+        .data(legendData)
+        .enter()
+        .append("text")
+        .attr("class", "legend-item")
+        .attr("x", width - 170) // Ajustar la posición x de los elementos de texto de la leyenda
+        .attr("y", (d, i) => 79 + i * 20) // Ajustar la posición y de los elementos de texto de la leyenda
+        .attr("dy", ".35em")
+        .attr("font-size", "12px")
+        .text(d => d.label);
 
     // Mostrar la leyenda al pasar el mouse sobre el ícono de información
     infoIcon.on("mouseover", function() {
