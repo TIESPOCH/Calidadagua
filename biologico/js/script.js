@@ -287,7 +287,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("y", y(36))
     .attr("width", width)
     .attr("height", height - y(36))
-    .attr("fill", "#FFEBEE"); // Color de fondo rojo claro
+    .attr("fill", "#D32F2F"); // Color de fondo rojo claro
 
   svg
     .append("rect")
@@ -295,7 +295,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("y", y(49))
     .attr("width", width)
     .attr("height", y(36) - y(49))
-    .attr("fill", "#FFF9C4"); // Color de fondo amarillo claro
+    .attr("fill", "#FBC02D"); // Color de fondo amarillo claro
 
   svg
     .append("rect")
@@ -303,7 +303,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("y", y(85))
     .attr("width", width)
     .attr("height", y(49) - y(85))
-    .attr("fill", "#E8F5E9"); // Color de fondo verde claro
+    .attr("fill", "#228B22"); // Color de fondo verde claro
 
 
   svg
@@ -312,7 +312,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("y", y(100))
     .attr("width", width)
     .attr("height", y(85) - y(100))
-    .attr("fill", "#6696e3"); // Color de fondo azul
+    .attr("fill", "#00008B"); // Color de fondo azul
 
   // Agregar la línea con degradado de color
   const gradient = svg

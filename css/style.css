@@ -17,11 +17,10 @@ body {
     overflow: hidden;
 }
 
-/* Estilos para la barra lateral */
 .sidebar {
     background-color: #295e40;
     color: #fff;
-    width: 250px;
+    width: 150px; /* Reducir el ancho del sidebar */
     position: fixed;
     height: 100%;
     overflow-y: auto;
@@ -30,19 +29,7 @@ body {
 }
 
 .sidebar:hover {
-    width: 260px;
-}
-
-.sidebar .logo {
-    font-family: 'Times New Roman', Times, serif;
-    margin: 20px 0;
-    text-align: center;
-}
-
-.sidebar .logo img {
-    max-width: 80%;
-    height: auto;
-    margin-bottom: 10px;
+    width: 160px; /* Ajustar el ancho al hacer hover */
 }
 
 .sidebar .icon {
@@ -60,12 +47,12 @@ body {
 }
 
 .sidebar .icon a:hover {
-    background-color: #a5d6a7;
+    background-color: #295e40;
     border-radius: 5px;
 }
 
 .sidebar .active {
-    background-color: #a5d6a7;
+    background-color:#295e40;
     border-radius: 5px;
 }
 
@@ -100,17 +87,9 @@ body {
     display: block;
 }
 
-.sidebar .icon a i {
-    transition: transform 0.3s ease;
-}
-
-.sidebar .icon a i:hover {
-    transform: scale(1.2);
-}
-
 /* Estilos para el contenido principal */
 .content {
-    margin-left: 250px;
+    margin-left: 150px;
     flex-grow: 1;
     background-color: #ffffff;
     display: flex;

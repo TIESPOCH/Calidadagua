@@ -322,261 +322,447 @@ function generarContenidoPopupFisicoquimicos(registro, fecha) {
     `;
 }
 
-// Función para generar gráficos comparativos utilizando D3.js
 const valoresExcelentes = {
-    'Temperatura': 25,
-    'Ph': 8.5,
-    'Oxigeno disuelto': 7,
-    'Sólidos Totales Disueltos': 500,
-    'Nitratos': 10,
-    'Fosfatos': 0.1,
-    'Turbiedad': 1,
-    'DBO5': 3,
-    'Coliformes Fecales': 200,
-    'Calidad del Agua NSF': 100
+    'Ph': [6.5, 9],
+    'Oxigeno disuelto': 80,
+    'Nitratos': 13,
+    'DBO5': 20,
+    'Coliformes Fecales': 0,
+    'CALIDAD AGUA NSF': 100
 };
 
-const rangosEscalas = {
-    'Temperatura': [5, 25],
-    'Ph': [6.5, 8.5],
-    'Oxigeno disuelto': [0, 7],
-    'Sólidos Totales Disueltos': [0, 500],
-    'Nitratos': [0, 10],
-    'Fosfatos': [0, 0.5],
-    'Turbiedad': [0, 1],
-    'DBO5': [0, 3],
-    'Coliformes Fecales': [0, 200],
-    'Calidad del Agua NSF': [90, 100]
-};
 function generarGraficosFisicoquimicos(registro) {
-      // Limpiar el área de información al cambiar de pestaña
-      limpiarInfoArea();
-    const parametros = {
-        'Temperatura': 'Temperatura',
-        'Ph': 'Ph',
-        'Oxigeno disuelto': 'Oxigeno disuelto',
-        'Sólidos Totales Disueltos': 'Sólidos Totales Disueltos',
-        'Nitratos': 'Nitratos',
-        'Fosfatos': 'Fosfatos',
-        'Turbiedad': 'Turbiedad',
-        'DBO5': 'DBO5'
-    };
-
-    const valoresExcelentes = {
-        'Temperatura': 25,
-        'Ph': 8.5,
-        'Oxigeno disuelto': 7,
-        'Sólidos Totales Disueltos': 500,
-        'Nitratos': 10,
-        'Fosfatos': 0.1,
-        'Turbiedad': 1,
-        'DBO5': 3
-    };
-
-    const rangosEscalas = {
-        'Temperatura': [0, 40],
-        'Ph': [0, 14],
-        'Oxigeno disuelto': [0, 10],
-        'Sólidos Totales Disueltos': [0, 1000],
-        'Nitratos': [0, 20],
-        'Fosfatos': [0, 1],
-        'Turbiedad': [0, 5],
-        'DBO5': [0, 10]
-    };
+    // Limpiar el área de información al cambiar de pestaña
+    limpiarInfoArea();
+    const parametros = [
+        'DBO5', 'Nitratos', 'Oxigeno disuelto', 'Ph', 'Coliformes fecales', 'CALIDAD AGUA NSF'
+    ];
 
     const infoArea = document.querySelector('.info-area');
     infoArea.innerHTML = '<h2><i class="fas fa-info-circle"></i> Información Adicional</h2>';
 
-    const tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
-
     let filaDiv;
-    let contador = 0;
-
-    for (let parametro in parametros) {
-        if (registro[parametro] !== undefined) {
-            const valorRegistrado = parseFloat(registro[parametro]);
-            const valorExcelente = valoresExcelentes[parametro];
-            const rangoEscala = rangosEscalas[parametro];
-
-            if (contador % 3 === 0) {
-                filaDiv = document.createElement('div');
-                filaDiv.className = 'fila-graficos';
-                infoArea.appendChild(filaDiv);
-            }
-
-            const chartDiv = document.createElement('div');
-            chartDiv.className = 'chart';
-            filaDiv.appendChild(chartDiv);
-
-            const data = [
-                { name: 'Excelente', value: valorExcelente },
-                { name: 'Registrado', value: valorRegistrado }
-            ];
-
-            const width = 400;
-            const height = 300;
-            const margin = { top: 20, right: 30, bottom: 40, left: 40 };
-
-            const svg = d3.select(chartDiv).append('svg')
-                .attr('width', width)
-                .attr('height', height)
-                .style("filter", "drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.4))");
-
-            const x = d3.scaleBand()
-                .domain(data.map(d => d.name))
-                .range([margin.left, width - margin.right])
-                .padding(0.1);
-
-            const y = d3.scaleLinear()
-                .domain([0, rangoEscala[1]]).nice()
-                .range([height - margin.bottom, margin.top]);
-
-            const xAxis = g => g
-                .attr('transform', `translate(0,${height - margin.bottom})`)
-                .call(d3.axisBottom(x).tickSizeOuter(0));
-
-            const yAxis = g => g
-                .attr('transform', `translate(${margin.left},0)`)
-                .call(d3.axisLeft(y))
-                .call(g => g.select('.domain').remove());
-
-            svg.append('g')
-                .selectAll('rect')
-                .data(data)
-                .enter().append('rect')
-                .attr('class', 'bar')
-                .attr('x', d => x(d.name))
-                .attr('y', d => y(d.value))
-                .attr('height', d => y(0) - y(d.value))
-                .attr('width', x.bandwidth())
-                .attr('fill', d => d.name === 'Excelente' ? 'green' : valorRegistrado <= valorExcelente ? 'blue' : 'red')
-                .on('mouseover', function(event, d) {
-                    tooltip.transition().duration(200).style('opacity', .9);
-                    tooltip.html(d.value)
-                        .style('left', (event.pageX) + 'px')
-                        .style('top', (event.pageY - 28) + 'px');
-                })
-                .on('mouseout', function(d) {
-                    tooltip.transition().duration(500).style('opacity', 0);
-                });
-
-            svg.selectAll('rect')
-                .each(function(d) {
-                    d3.select(this.parentNode).append('text')
-                        .attr('x', x(d.name) + x.bandwidth() / 2)
-                        .attr('y', y(d.value) - 5)
-                        .attr('text-anchor', 'middle')
-                        .text(d.value);
-                });
-
-            svg.append('g').call(xAxis);
-            svg.append('g').call(yAxis);
-
-            svg.append('text')
-                .attr('x', width / 2)
-                .attr('y', height - 5)
-                .attr('text-anchor', 'middle')
-                .text(parametro);
-
-            svg.append('text')
-                .attr('x', width / 2)
-                .attr('y', height + margin.bottom - 5)
-                .attr('text-anchor', 'middle')
-                .text('Valor');
-
-            contador++;
+    parametros.forEach((parametro, index) => {
+        if (index % 3 === 0) {
+            filaDiv = document.createElement('div');
+            filaDiv.className = 'fila-graficos';
+            infoArea.appendChild(filaDiv);
         }
-    }
+
+        const chartDiv = document.createElement('div');
+        chartDiv.className = 'chart';
+        filaDiv.appendChild(chartDiv);
+
+        const valorRegistrado = parseFloat(registro[parametro]);
+        let rangoEscala;
+        let colorIdeal, colorRegistrado;
+        let titulo;
+
+        switch (parametro) {
+            case 'DBO5':
+                rangoEscala = [0, Math.max(25, valorRegistrado)];
+                colorRegistrado = valorRegistrado < 20 ? 'blue' : valorRegistrado === 20 ? 'green' : 'red';
+                colorIdeal = 'green';
+                titulo = 'Comparación de niveles de DBO5 ';
+                break;
+            case 'Nitratos':
+                rangoEscala = [0, Math.max(25, valorRegistrado)];
+                colorRegistrado = valorRegistrado < 13 ? 'blue' : valorRegistrado === 13 ? 'green' : 'red';
+                colorIdeal = 'green';
+                titulo = 'Comparación de niveles de Nitratos';
+                break;
+            case 'Oxigeno disuelto':
+                rangoEscala = [0, Math.max(100, valorRegistrado)];
+                colorRegistrado = valorRegistrado > 80 ? 'blue' : valorRegistrado === 80 ? 'green' : 'red';
+                colorIdeal = 'green';
+                titulo = 'Comparación de niveles de Oxígeno Disuelto';
+                break;
+            case 'Ph':
+                rangoEscala = [0, 14];
+                colorRegistrado = valorRegistrado >= 6.5 && valorRegistrado <= 9 ? 'blue' : 'red';
+                colorIdeal = 'green';
+                titulo = 'Comparación de niveles de pH';
+                break;
+            case 'Coliformes fecales':
+                rangoEscala = [0, valorRegistrado];
+                colorRegistrado = 'red';
+                colorIdeal = 'green';
+                titulo = 'Comparación de niveles de Coliformes Fecales';
+                break;
+            case 'CALIDAD AGUA NSF':
+                rangoEscala = [0, 100];
+                colorIdeal = 'blue'; // Color de la barra ideal
+                if (valorRegistrado >= 91) colorRegistrado = 'blue';
+                else if (valorRegistrado >= 71) colorRegistrado = 'green';
+                else if (valorRegistrado >= 51) colorRegistrado = 'yellow';
+                else if (valorRegistrado >= 26) colorRegistrado = 'red';
+                else colorRegistrado = 'black';
+                titulo = 'Comparación Calidad del Agua NSF';
+                break;
+        }
+
+        const data = [
+            { name: 'Criterio Admisible', value: valoresExcelentes[parametro] instanceof Array ? valoresExcelentes[parametro][1] : valoresExcelentes[parametro], color: colorIdeal },
+            { name: 'Valor Registrado', value: valorRegistrado, color: colorRegistrado }
+        ];
+
+        const width = 400;
+        const height = 300;
+        const margin = { top: 40, right: 30, bottom: 60, left: 40 }; // Incremento en el margen superior para dar espacio al título
+
+        const svg = d3.select(chartDiv).append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .style("filter", "drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.4))");
+
+        const x = d3.scaleBand()
+            .domain(data.map(d => d.name))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+
+        const y = d3.scaleLinear()
+            .domain([0, rangoEscala[1]]).nice()
+            .range([height - margin.bottom, margin.top]);
+
+        const xAxis = g => g
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+
+        const yAxis = g => g
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select('.domain').remove());
+
+        svg.append('g')
+            .selectAll('rect')
+            .data(data)
+            .enter().append('rect')
+            .attr('class', 'bar')
+            .attr('x', d => x(d.name))
+            .attr('y', d => y(d.value))
+            .attr('height', d => y(0) - y(d.value))
+            .attr('width', x.bandwidth())
+            .attr('fill', d => d.color)
+            .style('filter', 'url(#3d-bar-filter)'); // Añadir filtro 3D
+
+        svg.selectAll('rect')
+            .each(function (d) {
+                d3.select(this.parentNode).append('text')
+                    .attr('x', x(d.name) + x.bandwidth() / 2)
+                    .attr('y', y(d.value) - 5)
+                    .attr('text-anchor', 'middle')
+                    .text(d.value);
+            });
+
+        svg.append('g').call(xAxis);
+        svg.append('g').call(yAxis);
+
+        svg.append('text')
+            .attr('x', width / 2)
+            .attr('y', margin.top / 2) // Posición del título en la parte superior del gráfico
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16px') // Tamaño del texto del título
+            .text(titulo);
+
+        svg.append('text')
+            .attr('x', width / 2)
+            .attr('y', height + margin.bottom - 10) // Ajuste de la posición del pie de gráfico
+            .attr('text-anchor', 'middle')
+            .text('Valor');
+
+        // Definir el filtro 3D
+        svg.append('defs')
+            .append('filter')
+            .attr('id', '3d-bar-filter')
+            .append('feDropShadow')
+            .attr('dx', 3)
+            .attr('dy', 3)
+            .attr('stdDeviation', 2)
+            .attr('flood-color', 'rgba(0, 0, 0, 0.4)');
+    });
 }
 
-// Función para generar la gráfica de barras con D3.js
+
 function generarGraficoBarras(registro) {
-    // Limpiar el área de información antes de añadir la nueva gráfica
+    // Limpiar el área de información al cambiar de pestaña
     limpiarInfoArea();
+    const infoArea = document.querySelector('.info-area');
+    infoArea.innerHTML = '<h2><i class="fas fa-info-circle"></i> Información Adicional</h2><br><br>';
 
-    // Obtener el nombre del río y el punto
-    const rio = registro['RIO']; // Asegúrate de que 'nombre_del_rio' es el nombre de la propiedad en tu registro
-    const punto = registro['PUNTO']; // Asegúrate de que 'punto' es el nombre de la propiedad en tu registro
+    // Crear fila para los tres primeros gráficos
+    const fila1Div = document.createElement('div');
+    fila1Div.className = 'fila-graficos';
+    infoArea.appendChild(fila1Div);
 
-    // Datos para la gráfica
-    const data = [
-        { nivel: 'Nivel 10', valor: +registro['Nivel 10'] },
-        { nivel: 'Nivel 9', valor: +registro['Nivel 9'] },
-        { nivel: 'Nivel 8', valor: +registro['Nivel 8'] },
-        { nivel: 'Nivel 7', valor: +registro['Nivel 7'] },
-        { nivel: 'Nivel 6', valor: +registro['Nivel 6'] },
-        { nivel: 'Nivel 5', valor: +registro['Nivel 5'] },
-        { nivel: 'Nivel 4', valor: +registro['Nivel 4'] },
-        { nivel: 'Nivel 3', valor: +registro['Nivel 3'] },
-        { nivel: 'Nivel 2', valor: +registro['Nivel 2'] },
-        { nivel: 'Nivel 1', valor: +registro['Nivel 1'] }
+    // Ajustar tamaño de los contenedores
+    const chartSize = 400;
+
+    // Primer gráfico: Diversidad según Shannon
+    const shannonDiv = document.createElement('div');
+    shannonDiv.className = 'chart grande';
+    shannonDiv.style.width = `${chartSize}px`;
+    shannonDiv.style.height = `${chartSize}px`;
+    fila1Div.appendChild(shannonDiv);
+
+    const shannonValor = parseFloat(registro['DIVERSIDAD SEGÚN SHANNON']);
+    const shannonData = [{ name: 'Diversidad', value: shannonValor, color: 'yellow', calidad: registro['CALIDAD DEL AGUA SEGÚN SHANNON'] }];
+    crearGraficoBarrasSimple(shannonDiv, shannonData, 'ÍNDICE DE DIVERSIDAD SEGÚN SHANNON', 0, 3);
+
+    // Segundo gráfico: Comparación del ÍNDICE BMWP/Col
+    const bmwpDiv = document.createElement('div');
+    bmwpDiv.className = 'chart grande';
+    bmwpDiv.style.width = `${chartSize}px`;
+    bmwpDiv.style.height = `${chartSize}px`;
+    fila1Div.appendChild(bmwpDiv);
+
+    const bmwpValor = parseFloat(registro['ÍNDICE BMWP/Col']);
+    let bmwpColor;
+    if (bmwpValor < 36) bmwpColor = 'red';
+    else if (bmwpValor < 60) bmwpColor = 'yellow';
+    else if (bmwpValor < 85) bmwpColor = 'green';
+    else bmwpColor = 'blue';
+
+    const bmwpData = [
+        { name: 'Valor Admisible', value: 85, color: 'blue', indice: 'ÍNDICE BMWP/Col.1' },
+        { name: 'Valor Registrado', value: bmwpValor, color: bmwpColor, indice: 'ÍNDICE BMWP/Col.1' }
     ];
 
-    // Crear contenedor para la gráfica
-    const svgWidth = 500, svgHeight = 300;
-    const margin = { top: 40, right: 30, bottom: 40, left: 50 };
-    const width = svgWidth - margin.left - margin.right;
-    const height = svgHeight - margin.top - margin.bottom;
+    crearGraficoBarrasSimple(bmwpDiv, bmwpData, 'Comparación del ÍNDICE BMWP/Col', 0, 130);
 
-    const svg = d3.select('.info-area').append('svg')
-        .attr('width', svgWidth)
-        .attr('height', svgHeight);
+    // Tercer gráfico: Diagrama de sectores de la riqueza absoluta
+    const riquezaDiv = document.createElement('div');
+    riquezaDiv.className = 'chart grande';
+    riquezaDiv.style.width = `${chartSize}px`;
+    riquezaDiv.style.height = `${chartSize}px`;
+    fila1Div.appendChild(riquezaDiv);
 
-    // Título del gráfico con nombre del río y punto
-    svg.append('text')
-        .attr('x', (svgWidth / 2))
-        .attr('y', margin.top / 2)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', '13px')
-        .attr('font-weight', 'bold')
-        .text(`Comparación de los niveles de microorganismos en ${rio}, Punto ${punto}`);
+    const niveles = ['Nivel 10', 'Nivel 9', 'Nivel 8', 'Nivel 7', 'Nivel 6', 'Nivel 5', 'Nivel 4', 'Nivel 3', 'Nivel 2', 'Nivel 1'];
+    const riquezaAbsoluta = niveles.reduce((sum, nivel) => sum + parseFloat(registro[nivel]), 0);
 
-    const g = svg.append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
+    const riquezaData = niveles.map((nivel, index) => ({
+        name: nivel,
+        value: parseFloat(registro[nivel]),
+        level: 10 - index // Niveles de 10 a 1
+    }));
 
-    // Configurar escalas
-    const x = d3.scaleBand()
-        .domain(data.map(d => d.nivel))
-        .range([0, width])
-        .padding(0.1);
+    crearDiagramaSectores(riquezaDiv, riquezaData, 'Presencia de Macroinvertebrados', riquezaAbsoluta);
 
-    const y = d3.scaleLinear()
-    .domain([0, d3.max(data, d => Math.ceil(d.valor / 5) * 5)]) // Ajustar el dominio a múltiplos de 5
-        .nice()
-        .range([height, 0]);
+    // Crear fila para el cuarto gráfico
+    const fila2Div = document.createElement('div');
+    fila2Div.className = 'fila-graficos';
+    infoArea.appendChild(fila2Div);
 
-    // Añadir ejes
-    g.append('g')
-        .attr('class', 'x-axis')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x));
+    // Cuarto gráfico: Comparación de los niveles
+    const nivelesDiv = document.createElement('div');
+    nivelesDiv.className = 'chart extendido';
+    nivelesDiv.style.width = `${chartSize}px`;
+    nivelesDiv.style.height = `${chartSize}px`;
+    fila2Div.appendChild(nivelesDiv);
 
-    g.append('g')
-        .attr('class', 'y-axis')
-        .call(d3.axisLeft(y));
+    const nivelesData = niveles.map(nivel => ({
+        name: nivel,
+        value: parseFloat(registro[nivel]),
+        color: 'steelblue'
+    }));
 
-    // Añadir barras
-    g.selectAll('.bar')
-        .data(data)
-        .enter().append('rect')
-        .attr('class', 'bar')
-        .attr('x', d => x(d.nivel))
-        .attr('y', d => y(d.valor))
-        .attr('width', x.bandwidth())
-        .attr('height', d => height - y(d.valor))
-        .attr('fill', 'steelblue');
+    crearGraficoBarrasSimple(nivelesDiv, nivelesData, 'Comparación de Niveles', 0, Math.max(...nivelesData.map(d => d.value)) + 10);
 
-    // Añadir valores dentro de las barras
-    g.selectAll('.text')
-        .data(data)
-        .enter().append('text')
-        .attr('class', 'label')
-        .attr('x', d => x(d.nivel) + x.bandwidth() / 2)
-        .attr('y', d => y(d.valor) - 5)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', '12px')
-        .attr('fill', 'black')
-        .text(d => d.valor);
+    // Funciones para crear los gráficos
+    function crearGraficoBarrasSimple(container, data, title, yMin, yMax) {
+        const width = 400;
+        const height = 400;
+        const margin = { top: 60, right: 20, bottom: 40, left: 40 };
+
+        const svg = d3.select(container).append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .style('filter', 'drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.4))');
+
+        const x = d3.scaleBand()
+            .domain(data.map(d => d.name))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+
+        const y = d3.scaleLinear()
+            .domain([yMin, yMax]).nice()
+            .range([height - margin.bottom, margin.top]);
+
+        const xAxis = g => g
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+
+        const yAxis = g => g
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select('.domain').remove());
+
+        svg.append('g')
+            .selectAll('rect')
+            .data(data)
+            .enter().append('rect')
+            .attr('class', 'bar')
+            .attr('x', d => x(d.name))
+            .attr('y', d => y(d.value))
+            .attr('height', d => y(0) - y(d.value))
+            .attr('width', x.bandwidth())
+            .attr('fill', d => d.color)
+            .style('filter', 'url(#3d-bar-filter)') // Añadir filtro 3D
+            .on('mouseover', function(event, d) {
+                d3.select(this).attr('fill', d3.rgb(d.color).darker(2));
+                const [mouseX, mouseY] = d3.pointer(event);
+                d3.select(container).append('text')
+                    .attr('class', 'tooltip')
+                    .attr('x', mouseX)
+                    .attr('y', mouseY - 10)
+                    .attr('text-anchor', 'middle')
+                    .attr('font-size', '12px')
+                    .attr('font-weight', 'bold')
+                    .attr('fill', 'black')
+                    .text(d.calidad || d.indice || d.value);
+            })
+            .on('mouseout', function(event, d) {
+                d3.select(this).attr('fill', d.color);
+                d3.selectAll('.tooltip').remove();
+            });
+
+        svg.append('g').call(xAxis);
+        svg.append('g').call(yAxis);
+
+        svg.append('text')
+            .attr('x', width / 2)
+            .attr('y', margin.top / 2)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16px')
+            .text(title);
+
+        // Añadir los valores en la barra
+        svg.selectAll(".text")        
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("class","label")
+            .attr("x", (d) => x(d.name) + x.bandwidth() / 2)
+            .attr("y", (d) => y(d.value) - 5)
+            .attr("text-anchor", "middle")
+            .text((d) => d.value);
+
+        // Definir el filtro 3D
+        svg.append('defs')
+            .append('filter')
+            .attr('id', '3d-bar-filter')
+            .append('feDropShadow')
+            .attr('dx', 3)
+            .attr('dy', 3)
+            .attr('stdDeviation', 2)
+            .attr('flood-color', 'rgba(0, 0, 0, 0.4)');
+
+        return svg;
+    }
+
+    function crearDiagramaSectores(container, data, title, total) {
+        const width = 350;
+        const height = 350;
+        const margin = 50;  // Margen para el título y el pie de página
+        const radius = Math.min(width, height - margin * 2) / 2;  // Ajustar el radio para que encaje en el espacio disponible
+        const arc = d3.arc().outerRadius(radius - 10).innerRadius(0);
+        const labelArc = d3.arc().outerRadius(radius - 40).innerRadius(radius - 40);
+        const pie = d3.pie().sort(null).value(d => d.value);
+    
+        const colors = {
+            10: '#0000CC',
+            9: '#0000FF',
+            8: '#00FF00',
+            7: '#66FF66',
+            6: '#FFFF00',
+            5: '#CCCC00',
+            4: '#FFA500',
+            3: '#FF8C00',
+            2: '#FF0000',
+            1: '#8B0000'
+        };
+    
+        const svg = d3.select(container).append('svg')
+            .attr('width', width)
+            .attr('height', height + margin * 2);  // Aumentamos la altura para el margen superior e inferior
+    
+        // Título
+        svg.append('text')
+            .attr('x', width / 2)
+            .attr('y', margin / 2)  // Posicionar el título en el margen superior
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16px')
+            .text(title);
+    
+        // Grupo del gráfico
+        const g = svg.append('g')
+            .attr('transform', `translate(${width / 2},${(height / 2) + margin})`);
+    
+        const filteredData = data.filter(d => d.value > 0);
+    
+        const arcs = g.selectAll('.arc')
+            .data(pie(filteredData))
+            .enter().append('g')
+            .attr('class', 'arc');
+    
+        arcs.append('path')
+            .attr('d', arc)
+            .style('fill', d => colors[d.data.level])
+            .style('filter', 'url(#3d-sector-filter)') // Añadir filtro 3D
+            .on('mouseover', function(event, d) {
+                d3.select(this).transition()
+                    .duration(200)
+                    .attr('d', d3.arc().outerRadius(radius).innerRadius(0));
+    
+                const percentage = ((d.data.value / total) * 100).toFixed(2);
+    
+                // Actualizar el contenido del texto fijo
+                fixedTooltip.html(`<div>Nivel ${d.data.level}: ${d.data.value}</div><div>${percentage}%</div>`);
+            })
+            .on('mouseout', function() {
+                d3.select(this).transition()
+                    .duration(200)
+                    .attr('d', arc);
+    
+                // Limpiar el contenido del texto fijo al salir del sector
+                fixedTooltip.html('');
+            });
+    
+        arcs.append('text')
+            .attr('transform', d => `translate(${labelArc.centroid(d)})`)
+            .attr('dy', '0.35em')
+            .attr('text-anchor', 'middle')
+            .text(d => d.data.value);
+    
+        // Texto de "Riqueza Absoluta"
+        svg.append('text')
+            .attr('x', width / 2)
+            .attr('y', height + margin - 10)  // Posicionar el texto de "Riqueza Absoluta" en el margen inferior
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '14px')
+            .text(`Riqueza Absoluta: ${total}`);
+    
+        // Crear un elemento para el tooltip fijo
+        const fixedTooltip = d3.select(container).append('div')
+            .attr('class', 'fixed-tooltip')
+            .style('position', 'absolute')
+            .style('top', '50px')  // Posicionar el tooltip fijo en el margen superior
+            .style('left', '40%')
+            .style('transform', 'translateX(-50%)')
+            .style('background', '#fff')
+            .style('border', '1px solid #ccc')
+            .style('padding', '5px')
+            .style('pointer-events', 'none');
+
+        // Definir el filtro 3D
+        svg.append('defs')
+            .append('filter')
+            .attr('id', '3d-sector-filter')
+            .append('feDropShadow')
+            .attr('dx', 3)
+            .attr('dy', 3)
+            .attr('stdDeviation', 2)
+            .attr('flood-color', 'rgba(0, 0, 0, 0.4)');
+
+        return svg;
+    }
 }
