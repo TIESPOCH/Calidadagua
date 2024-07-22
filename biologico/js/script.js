@@ -215,7 +215,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
   // Encontrar la fecha mínima y máxima en los datos
   const minFecha = d3.min(data, (d) => d.FECHA);
-  const maxFecha = d3.max(data, (d) => d.FECHA);
+  const maxFecha = new Date(2024, 0, 1); // Extender la fecha máxima hasta enero del 2024
 
   // Filtrar los datos para empezar desde la fecha mínima encontrada
   data = data.filter((d) => d.FECHA >= minFecha);
@@ -258,7 +258,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
   const y = d3
     .scaleLinear()
-    .domain([20, 100]) // Establecer el dominio del eje Y de 0 a 100
+    .domain([20, 130]) // Ajustar el dominio del eje Y con un máximo de 130
     .range([height, 0]);
 
   const line = d3
@@ -287,7 +287,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("y", y(36))
     .attr("width", width)
     .attr("height", height - y(36))
-    .attr("fill", "#D32F2F"); // Color de fondo rojo claro
+    .attr("fill", "#ff5133"); // Color de fondo rojo claro
 
   svg
     .append("rect")
@@ -295,7 +295,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("y", y(49))
     .attr("width", width)
     .attr("height", y(36) - y(49))
-    .attr("fill", "#FBC02D"); // Color de fondo amarillo claro
+    .attr("fill", "#feef00"); // Color de fondo amarillo claro
 
   svg
     .append("rect")
@@ -303,46 +303,22 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("y", y(85))
     .attr("width", width)
     .attr("height", y(49) - y(85))
-    .attr("fill", "#228B22"); // Color de fondo verde claro
-
+    .attr("fill", "#31a84f"); // Color de fondo verde claro
 
   svg
     .append("rect")
     .attr("x", 0)
-    .attr("y", y(100))
+    .attr("y", y(130))
     .attr("width", width)
-    .attr("height", y(85) - y(100))
-    .attr("fill", "#00008B"); // Color de fondo azul
+    .attr("height", y(85) - y(130))
+    .attr("fill", "#3a48ba"); // Color de fondo azul
 
-  // Agregar la línea con degradado de color
-  const gradient = svg
-    .append("defs")
-    .append("linearGradient")
-    .attr("id", "line-gradient")
-    .attr("gradientUnits", "userSpaceOnUse")
-    .attr("x1", 0)
-    .attr("y1", y(0))
-    .attr("x2", 0)
-    .attr("y2", y(100));
-
-  gradient
-    .selectAll("stop")
-    .data([
-      { offset: "0%", color: "#D32F2F" },
-      { offset: "36%", color: "#FBC02D" },
-      { offset: "59%", color: "#228B22" },
-      { offset: "85%", color: "#00008B" },
-    ])
-    .enter()
-    .append("stop")
-    .attr("offset", (d) => d.offset)
-    .attr("stop-color", (d) => d.color);
-
+  // Agregar la línea negra
   svg
     .append("path")
     .datum(data)
     .attr("fill", "none")
-    .attr("stroke", "url(#line-gradient)")
+    .attr("stroke", "black")
     .attr("stroke-width", 1.5)
     .attr("d", line);
 
@@ -362,8 +338,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
         const tooltipGroup = svg.append("g")
             .attr("class", "tooltip-group")
-            .attr("transform", `translate(${x(d.FECHA)+50},${y(d['ÍNDICE BMWP/Col']) +50})`);
-
+            .attr("transform", `translate(${x(d.FECHA) + 50},${y(d['ÍNDICE BMWP/Col']) + 50})`);
         const background = tooltipGroup.append("rect")
             .attr("fill", "white")
             .attr("stroke", "black")
@@ -397,26 +372,38 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
             .attr("y", bbox.y - 5)
             .attr("width", bbox.width + 20)
             .attr("height", bbox.height + 10);
+
+        // Ajuste de la posición del tooltip para que no se salga del gráfico
+        let tooltipX = x(d.FECHA);
+        let tooltipY = y(d["ÍNDICE BMWP/Col"]) - 40;
+
+        if (tooltipX + bbox.width / 2 + 10 > width) {
+          tooltipX = width - bbox.width / 2 - 10;
+        } else if (tooltipX - bbox.width / 2 - 10 < 0) {
+          tooltipX = bbox.width / 2 + 10;
+        }
+
+        if (tooltipY - bbox.height - 10 < 0) {
+          tooltipY = y(d["ÍNDICE BMWP/Col"]) + bbox.height + 10;
+        }
+
+        tooltipGroup.attr("transform", `translate(${tooltipX},${tooltipY})`);
     })
     .on("mouseout", function() {
-        d3.select(this).transition().duration(200).attr("r", 3);
+        d3.select(this).transition().duration(200).attr("r", 5);
         svg.select(".tooltip-group").remove();
     });
 
- // Agregar título
- const titulo =
- "ÍNDICE BMWP/Col." +
- data[0].RIO +
- " en el punto " +
- puntoSeleccionado;
-svg
- .append("text")
- .attr("x", width / 2)
- .attr("y", -margin.top / 2) // Mover el título hacia abajo para evitar que se vea tapado
- .attr("text-anchor", "middle")
- .style("font-size", "16px")
- .style("text-decoration", "bold")
- .text(titulo);
+  // Agregar título
+  const titulo = "ÍNDICE BMWP/Col." + data[0].RIO + " en el punto " + puntoSeleccionado;
+  svg
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", -margin.top / 2) // Mover el título hacia abajo para evitar que se vea tapado
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("text-decoration", "bold")
+    .text(titulo);
 
   // Agregar ícono de información
   const infoIcon = svg
@@ -455,7 +442,7 @@ svg
     .append("rect")
     .attr("x", 625)
     .attr("y", 0)
-    .attr("width", 400)
+    .attr("width", 180)
     .attr("height", 120)
     .attr("fill", "white")
     .attr("stroke", "black");
@@ -490,6 +477,7 @@ svg
     .attr("dy", ".35em")
     .attr("font-size", "12px")
     .text((d) => d.label);
+
   // Mostrar la leyenda al pasar el mouse sobre el ícono de información
   infoIcon.on("mouseover", function () {
     legendGroup.style("display", "block");
@@ -504,8 +492,11 @@ svg
   return svg;
 }
 
+
+
 function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
   // Convertir fechas y el índice DIVERSIDAD SEGÚN SHANNON a números
+
   data.forEach((d) => {
     d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
     d["DIVERSIDAD SEGÚN SHANNON"] = +d["DIVERSIDAD SEGÚN SHANNON"]; // Asegurarse de que DIVERSIDAD SEGÚN SHANNON es un número
@@ -524,12 +515,8 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
   let ticksCount =
     data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
 
-  // Encontrar el mínimo y máximo de DIVERSIDAD SEGÚN SHANNON en los datos filtrados
-  const minIndice = d3.min(data, (d) => d["DIVERSIDAD SEGÚN SHANNON"]);
-  const maxIndice = d3.max(data, (d) => d["DIVERSIDAD SEGÚN SHANNON"]);
-
   // Definir el dominio del eje y extendido
-  const yDomain = [minIndice, maxIndice + 1];
+  const yDomain = [0, 5];
 
   const margin = { top: 50, right: 20, bottom: 70, left: 50 },
     width = 960 - margin.left - margin.right,
@@ -545,7 +532,7 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
 
   const x = d3
     .scaleTime()
-    .domain([minFecha, d3.timeMonth.offset(new Date(2025, 0, 1), -6)]) // Ajustar el dominio de las fechas
+    .domain([minFecha, d3.timeMonth.offset(new Date(2024, 6, 1), -6)]) // Ajustar el dominio de las fechas
     .range([0, width]);
 
   const y = d3
@@ -573,12 +560,30 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
 
   svg.append("g").call(d3.axisLeft(y));
 
+  // Agregar los rectángulos de colores para los rangos
+  const ranges = [
+    { min: 0, max: 1.18, color: "#ff5133" },
+    { min: 1.18, max: 2.46, color: "#feef00" },
+    { min: 2.46, max: 5, color: "#31a84f" },
+  ];
+
+  ranges.forEach((range) => {
+    svg
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", y(range.max))
+      .attr("width", width)
+      .attr("height", y(range.min) - y(range.max))
+      .attr("fill", range.color)
+      
+  });
+
   // Agregar la línea
   svg
     .append("path")
     .datum(data)
     .attr("fill", "none")
-    .attr("stroke", "#FBC02D")
+    .attr("stroke", "black")
     .attr("stroke-width", 1.5)
     .attr("d", line);
 
@@ -712,13 +717,15 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
     .append("rect")
     .attr("x", 625)
     .attr("y", 0)
-    .attr("width", 400)
-    .attr("height", 120)
+    .attr("width", 235)
+    .attr("height", 100)
     .attr("fill", "white")
     .attr("stroke", "black");
 
   const legendData = [
-    { label: "CALIDAD DEL AGUA SEGÚN SHANNON", color: "#FBC02D" },
+    { color: "#D32F2F", label: "Contaminación alta (0-1,18)" },
+    { color: "#FBC02D", label: "Contaminación Moderada (1,19-2,46)" },
+    { color: "#228B22", label: "Poca Contaminación (2,46-5)" },
   ];
 
   legendGroup
@@ -744,6 +751,7 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
     .attr("dy", ".35em")
     .attr("font-size", "12px")
     .text((d) => d.label);
+
   // Mostrar la leyenda al pasar el mouse sobre el ícono de información
   infoIcon.on("mouseover", function () {
     legendGroup.style("display", "block");

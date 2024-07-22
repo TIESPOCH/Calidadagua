@@ -180,7 +180,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     const x = d3.scaleTime()
-        .domain([d3.min(data, d => d.FECHA), new Date(2025, 0, 1)]) // Extender hasta 2025
+        .domain([d3.min(data, d => d.FECHA), new Date(2024, 0, 1)]) // Extender hasta 2025
         .range([0, width]);
 
     const y = d3.scaleLinear()
@@ -193,21 +193,21 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
         .attr("y", y(50))
         .attr("width", width)
         .attr("height", height - y(50))
-        .attr("fill", "#FFEBEE"); // Color de fondo rojo claro
+        .attr("fill", "#ff5133"); // Color de fondo rojo claro
 
     svg.append("rect")
         .attr("x", 0)
-        .attr("y", y(68.25))
+        .attr("y", y(69.99))
         .attr("width", width)
-        .attr("height", y(50) - y(68.25))
-        .attr("fill", "#FFF9C4"); // Color de fondo amarillo claro
+        .attr("height", y(50) - y(69.99))
+        .attr("fill", "#feef00"); // Color de fondo amarillo claro
 
     svg.append("rect")
         .attr("x", 0)
         .attr("y", 0)
         .attr("width", width)
-        .attr("height", y(68.25))
-        .attr("fill", "#E8F5E9"); // Color de fondo verde claro
+        .attr("height", y(70))
+        .attr("fill", "#31a84f"); // Color de fondo verde claro
 
     const line = d3.line()
         .curve(d3.curveMonotoneX) // Aplicar la interpolación que pasa por los puntos
@@ -227,33 +227,15 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     svg.append("g")
         .call(d3.axisLeft(y));
 
-    // Agregar la línea con degradado de color
-    const gradient = svg.append("defs")
-        .append("linearGradient")
-        .attr("id", "line-gradient")
-        .attr("gradientUnits", "userSpaceOnUse")
-        .attr("x1", 0)
-        .attr("y1", y(yDomain[0]))
-        .attr("x2", 0)
-        .attr("y2", y(yDomain[1]));
+    // Agregar la línea negra
+  svg
+  .append("path")
+  .datum(data)
+  .attr("fill", "none")
+  .attr("stroke", "black")
+  .attr("stroke-width", 1.5)
+  .attr("d", line);
 
-    gradient.selectAll("stop")
-        .data([
-            { offset: "0%", color: '#D32F2F' },
-            { offset: "50%", color: '#FBC02D' },
-            { offset: "100%", color: '#388E3C' }
-        ])
-        .enter().append("stop")
-        .attr("offset", d => d.offset)
-        .attr("stop-color", d => d.color);
-
-    svg.append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "url(#line-gradient)")
-        .attr("stroke-width", 2) // Aumentar el ancho de la línea para que resalte más
-        .attr("d", line)
-        .style("mix-blend-mode", "multiply"); // Mezclar modo para que la línea resalte sobre el fondo
 
     // Agregar puntos y eventos de interacción
     svg.selectAll("circle")
@@ -261,8 +243,9 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
         .enter().append("circle")
         .attr("cx", d => x(d.FECHA))
         .attr("cy", d => y(d['CALIDAD AGUA NSF']))
-        .attr("r", 3)
-        .attr("fill", "black") // Puntos en color negro
+        .attr("r", 5)
+        .attr("fill", "black")
+        .attr("stroke", "white")
         .on("mouseover", function(event, d) {
             d3.select(this).transition().duration(200).attr("r", 6);
 
@@ -297,15 +280,31 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
                 .style("font-size", "12px")
                 .text("Clasificación: " + d['Clasificacion ']);
 
-            const bbox = tooltipGroup.node().getBBox();
-            background
-                .attr("x", bbox.x - 10)
-                .attr("y", bbox.y - 5)
-                .attr("width", bbox.width + 20)
-                .attr("height", bbox.height + 10);
+                const bbox = tooltipGroup.node().getBBox();
+                background
+                    .attr("x", bbox.x - 10)
+                    .attr("y", bbox.y - 5)
+                    .attr("width", bbox.width + 20)
+                    .attr("height", bbox.height + 10);
+        
+                // Ajuste de la posición del tooltip para que no se salga del gráfico
+                let tooltipX = x(d.FECHA);
+                let tooltipY = y(d["CALIDAD AGUA NSF"]) - 40;
+        
+                if (tooltipX + bbox.width / 2 + 10 > width) {
+                  tooltipX = width - bbox.width / 2 - 10;
+                } else if (tooltipX - bbox.width / 2 - 10 < 0) {
+                  tooltipX = bbox.width / 2 + 10;
+                }
+        
+                if (tooltipY - bbox.height - 10 < 0) {
+                  tooltipY = y(d["CALIDAD AGUA NSF"]) + bbox.height + 10;
+                }
+        
+                tooltipGroup.attr("transform", `translate(${tooltipX},${tooltipY})`);
         })
         .on("mouseout", function() {
-            d3.select(this).transition().duration(200).attr("r", 3);
+            d3.select(this).transition().duration(200).attr("r", 5);
             svg.select(".tooltip-group").remove();
         });
 

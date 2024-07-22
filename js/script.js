@@ -324,7 +324,7 @@ function generarContenidoPopupFisicoquimicos(registro, fecha) {
 
 const valoresExcelentes = {
     'Ph': [6.5, 9],
-    'Oxigeno disuelto': 80,
+    'Oxigeno disuelto': 8,
     'Nitratos': 13,
     'DBO5': 20,
     'Coliformes Fecales': 0,
@@ -373,7 +373,7 @@ function generarGraficosFisicoquimicos(registro) {
                 break;
             case 'Oxigeno disuelto':
                 rangoEscala = [0, Math.max(100, valorRegistrado)];
-                colorRegistrado = valorRegistrado > 80 ? 'blue' : valorRegistrado === 80 ? 'green' : 'red';
+                colorRegistrado = valorRegistrado > 8 ? 'blue' : valorRegistrado === 8 ? 'green' : 'red';
                 colorIdeal = 'green';
                 titulo = 'Comparación de niveles de Oxígeno Disuelto';
                 break;
@@ -402,6 +402,7 @@ function generarGraficosFisicoquimicos(registro) {
         }
 
         const data = [
+            
             { name: 'Criterio Admisible', value: valoresExcelentes[parametro] instanceof Array ? valoresExcelentes[parametro][1] : valoresExcelentes[parametro], color: colorIdeal },
             { name: 'Valor Registrado', value: valorRegistrado, color: colorRegistrado }
         ];
