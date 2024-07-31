@@ -1,0 +1,346 @@
+/* Estilos Generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1e5226;
+    color: #333;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.sidebar {
+    background-color: #295e40;
+    color: #fff;
+    width: 150px; /* Reducir el ancho del sidebar */
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: width 0.3s ease;
+}
+
+.sidebar:hover {
+    width: 160px; /* Ajustar el ancho al hacer hover */
+}
+
+.sidebar .icon {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.sidebar .icon a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .icon a:hover {
+    background-color: #295e40;
+    border-radius: 5px;
+}
+
+.sidebar .active {
+    background-color:#295e40;
+    border-radius: 5px;
+}
+
+.sidebar .separator {
+    border-bottom: 1px solid #fff;
+    margin: 10px 0;
+}
+
+.sidebar .collapse-btn {
+    background-color: #5cb85c;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px 15px;
+    display: block;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .collapse-btn:hover {
+    background-color: #449d44;
+}
+
+.sidebar .submenu {
+    padding-left: 20px;
+    display: none;
+}
+
+.sidebar .submenu.active {
+    display: block;
+}
+
+/* Estilos para el contenido principal */
+.content {
+    margin-left: 150px; /* Ancho del sidebar */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: calc(100% - 150px); /* Ancho total menos el ancho del sidebar */
+    background-color: #f9f9f9;
+    padding: 10px;
+    transition: margin-left 0.3s ease, width 0.3s ease; /* Agrega transición al cambiar el ancho */
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    padding-right: 30px; /* Ajusta el padding a tu gusto para mover los elementos hacia la derecha */
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    margin-left: 40px; /* Ajusta el margen a tu gusto para alejarlo del sidebar */
+}
+
+.controls label {
+    font-weight: bold;
+}
+
+/* Estilos tipo Bootstrap para listas desplegables */
+.controls select {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    appearance: none; /* Eliminar el estilo por defecto del navegador */
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+.controls select:hover {
+    border-color: #888;
+}
+
+.controls select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 4px rgba(0, 86, 179, 0.5);
+    outline: none;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.data-visualization {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.data-grid {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    border-color: black 2px;
+    flex: 1; /* Ajustar para que ocupe la mitad del espacio */
+}
+
+.data-grid-container {
+    max-width: 50%; /* Reducir el ancho a la mitad */
+    border: 2px solid #000000;
+    height: 500px;
+    overflow: auto;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.grafico {
+    flex: 1; /* Ajustar para que ocupe la mitad del espacio */
+    height: 1000px; /* Ajustar altura para contener ambas gráficas */
+}
+
+.grafico > div {
+    height: 50%; /* Cada gráfica ocupará la mitad del contenedor */
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
+    transform: translateZ(0); /* Crear efecto 3D */
+    margin-bottom: 10px; /* Agregar margen inferior para separar las gráficas */
+    border: 2px solid #000000;
+}
+
+.grafico h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre el icono y el texto */
+}
+
+.table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+tr:nth-child(even) {
+    background-color: #eaf5ea;
+}
+
+tr.selected {
+    background-color: yellow !important;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: #f2c200;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilos para el contenedor desplegable */
+.dropdown-container {
+    position: absolute;
+    top: 10px; /* Ajusta según sea necesario */
+    right: 10px; /* Ajusta según sea necesario */
+    z-index: 999; /* Asegura que esté sobre el contenido */
+    width: 50%; /* Reducir el ancho a la mitad */
+}
+
+.dropdown-select {
+    padding: 5px;
+    font-size: 14px;
+    margin-right: 70px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 50%; /* Reducir el ancho a la mitad */
+}
+
+/* Estilos para el popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.popup-text {
+    margin-bottom: 20px;
+}
+
+.popup button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.popup button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para ambas tablas */
+#tabla1, #tabla2 {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+#tabla1 th, #tabla1 td, #tabla2 th, #tabla2 td {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 2px;
+    font-size: 10px;
+    text-align: left;
+}
+
+#tabla1 th, #tabla2 th {
+    background-color: #f2c200;
+    color: #004d00;
+}
+
+#tabla1 tr:nth-child(even), #tabla2 tr:nth-child(even) {
+    background-color: #eaf5ea;
+}
+
+#tabla1 thead th, #tabla2 thead th {
+    position: sticky;
+    top: 0;
+    background: #f2c200;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilos para el botón de ocultar/mostrar sidebar */
+#sidebar-toggle-btn {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: #295e40;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+#sidebar-toggle-btn:hover {
+    background-color: #1f3e27;
+}
+
+.sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+}
+
+.content.expanded {
+    margin-left: 0;
+    width: 100%;
+}
