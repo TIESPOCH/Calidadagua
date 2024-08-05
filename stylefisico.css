@@ -19,7 +19,7 @@ body {
 .sidebar {
     background-color: #295e40;
     color: #fff;
-    width: 150px; /* Reducir el ancho del sidebar */
+    width: 150px;
     position: fixed;
     height: 100%;
     overflow-y: auto;
@@ -28,7 +28,7 @@ body {
 }
 
 .sidebar:hover {
-    width: 160px; /* Ajustar el ancho al hacer hover */
+    width: 160px;
 }
 
 .sidebar .icon {
@@ -51,7 +51,7 @@ body {
 }
 
 .sidebar .active {
-    background-color:#295e40;
+    background-color: #295e40;
     border-radius: 5px;
 }
 
@@ -88,14 +88,14 @@ body {
 
 /* Estilos para el contenido principal */
 .content {
-    margin-left: 150px; /* Ancho del sidebar */
+    margin-left: 150px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: calc(100% - 150px); /* Ancho total menos el ancho del sidebar */
+    width: calc(100% - 150px);
     background-color: #f9f9f9;
     padding: 10px;
-    transition: margin-left 0.3s ease, width 0.3s ease; /* Agrega transición al cambiar el ancho */
+    transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
 .controls {
@@ -103,10 +103,10 @@ body {
     align-items: center;
     gap: 15px;
     padding: 15px;
-    padding-right: 30px; /* Ajusta el padding a tu gusto para mover los elementos hacia la derecha */
+    padding-right: 30px;
     background-color: #f9f9f9;
     border-bottom: 1px solid #ddd;
-    margin-left: 40px; /* Ajusta el margen a tu gusto para alejarlo del sidebar */
+    margin-left: 40px;
 }
 
 .controls label {
@@ -122,7 +122,7 @@ body {
     background-color: #fff;
     color: #333;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    appearance: none; /* Eliminar el estilo por defecto del navegador */
+    appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
 }
@@ -153,55 +153,67 @@ body {
     border-color: #0056b3;
 }
 
+/* Estilos de visualización de datos */
 .data-visualization {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
     height: 100%;
-    overflow-y: auto;
+    overflow: auto;
+    padding: 10px;
+}
+
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    height: 500px; /* Ajusta el alto según sea necesario */
+    margin-bottom: 20px;
 }
 
 .data-grid {
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-    border-color: black 2px;
-    flex: 1; /* Ajustar para que ocupe la mitad del espacio */
+    flex: 1;
+    margin-right: 10px;
+    border: 2px solid #000000;
+    overflow: auto;
 }
 
-.data-grid-container {
-    max-width: 50%; /* Reducir el ancho a la mitad */
+#tabla2 {
+    height: 100%;
+}
+
+#grafico1 {
+    flex: 2;
+    height: 100%;
     border: 2px solid #000000;
-    height: 500px;
-    overflow: auto;
-    margin: 0 auto;
+}
+
+.bottom-section {
     display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.bottom-section .grafico {
+    flex: 1 1 calc(50% - 10px);
+    height: 500px;
+    width:500px ;
+    border: 2px solid #000000;
 }
 
 .grafico {
-    flex: 1; /* Ajustar para que ocupe la mitad del espacio */
-    height: 1000px; /* Ajustar altura para contener ambas gráficas */
-}
-
-.grafico > div {
-    height: 50%; /* Cada gráfica ocupará la mitad del contenedor */
     border-radius: 8px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Agregar sombra */
-    transform: translateZ(0); /* Crear efecto 3D */
-    margin-bottom: 10px; /* Agregar margen inferior para separar las gráficas */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    transform: translateZ(0);
     border: 2px solid #000000;
 }
 
-.grafico h2 {
+.data-grid h2 {
     display: flex;
     align-items: center;
-    gap: 10px; /* Espacio entre el icono y el texto */
+    gap: 10px;
 }
 
 .table {
     width: 100%;
-    height: 100%;
     border-collapse: collapse;
 }
 
@@ -225,59 +237,16 @@ thead th {
     position: sticky;
     top: 0;
     background: #f2c200;
-    z-index: 2;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-}
-
-/* Estilos para el contenedor desplegable */
-.dropdown-container {
-    position: absolute;
-    top: 10px; /* Ajusta según sea necesario */
-    right: 10px; /* Ajusta según sea necesario */
-    z-index: 999; /* Asegura que esté sobre el contenido */
-    width: 50%; /* Reducir el ancho a la mitad */
-}
-
-.dropdown-select {
-    padding: 5px;
-    font-size: 14px;
-    margin-right: 70px;
     cursor: pointer;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 50%; /* Reducir el ancho a la mitad */
 }
 
-/* Estilos para el popup */
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    z-index: 1000;
+td.highlight {
+    background-color: #ff0;
 }
 
-.popup-text {
-    margin-bottom: 20px;
+tr td:last-child {
+    font-weight: bold;
 }
-
-.popup button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.popup button:hover {
-    background-color: #0056b3;
-}
-
 /* Estilos para ambas tablas */
 #tabla1, #tabla2 {
     width: 100%;
@@ -310,12 +279,45 @@ thead th {
     z-index: 2;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
+/* Estilos para el pop-up de error */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border: 2px solid #000000;
+    padding: 20px;
+    z-index: 1001;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
 
-/* Estilos para el botón de ocultar/mostrar sidebar */
+.popup .popup-text {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.popup .btn {
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popup .btn:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Estilos para el botón de alternar la barra lateral */
 #sidebar-toggle-btn {
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 1px;
+    left: 2px;
     background-color: #295e40;
     color: #fff;
     border: none;
@@ -335,6 +337,7 @@ thead th {
     background-color: #1f3e27;
 }
 
+/* Estilos para el botón de alternar la barra lateral (estado colapsado) */
 .sidebar.collapsed {
     width: 0;
     overflow: hidden;
@@ -343,4 +346,15 @@ thead th {
 .content.expanded {
     margin-left: 0;
     width: 100%;
+}
+
+.sidebar.collapsed #sidebar-toggle-btn {
+    left: 10px;
+    background-color: #295e40;
+    color: #fff;
+    border: none;
+}
+
+#sidebar-toggle-btn i {
+    font-size: 16px;
 }

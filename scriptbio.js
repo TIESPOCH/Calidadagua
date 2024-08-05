@@ -147,11 +147,17 @@ function buscarDatos() {
   // Generar nuevos gráficos
   generarGrafico(datosFiltrados, puntoSeleccionado, "#grafico1");
   generarGraficoshanon(datosFiltrados, puntoSeleccionado, "#grafico2");
+  generarGrafico3(datosFiltrados, '#grafico3');
+  generarGrafico4(datosFiltrados, '#grafico4');
+  generarGrafico5(datosFiltrados, '#grafico5');
 }
 
 function limpiarGrafico() {
   d3.select("#grafico1 svg").remove();
   d3.select("#grafico2 svg").remove();
+  d3.select("#grafico3 svg").remove();
+  d3.select("#grafico4 svg").remove();
+  d3.select("#grafico5 svg").remove();
 }
 
 function mostrarPopupError(mensaje) {
@@ -181,6 +187,7 @@ function actualizarTabla(datos, tablaId) {
     "RIO",
     "PUNTO",
     "FECHA",
+    "RIQUEZA ABSOLUTA",
     "ÍNDICE BMWP/Col.1",
     "ÍNDICE BMWP/Col",
     "DIVERSIDAD SEGÚN SHANNON",
@@ -205,7 +212,186 @@ function actualizarTabla(datos, tablaId) {
     tbody.appendChild(tr);
   });
 }
+function generarGrafico3(datos, contenedor) {
+  // Transformar datos para Google Charts
+  const datosGrafico = [['FECHA', 'Riqueza Absoluta']];
+  
+  datos.sort((a, b) => new Date(a.FECHA) - new Date(b.FECHA)); // Ordenar datos por fecha
 
+  datos.forEach(dato => {
+      datosGrafico.push([new Date(dato.FECHA), parseFloat(dato["RIQUEZA ABSOLUTA"])]);
+  });
+
+  // Cargar Google Charts
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+      const data = google.visualization.arrayToDataTable(datosGrafico);
+      
+      const containerElement = document.querySelector(contenedor);
+      const width = containerElement.clientWidth;
+      const height = containerElement.clientHeight || 400; // Altura predeterminada si no se establece
+
+      const options = {
+          title: 'Riqueza Absoluta a lo largo del tiempo',
+          titleTextStyle: {
+              fontSize: 16, // Tamaño de fuente del título
+              bold: true,   // Hacer el título en negrita
+              color: '#333', // Color del título
+              italic: false // No usar cursiva
+          },
+          hAxis: {
+              title: 'Fecha',
+              format: 'yyyy', // Mostrar solo años
+              gridlines: { count: 15 },
+              slantedText: true, // Rotar las etiquetas si es necesario
+              slantedTextAngle: 45 // Ángulo de rotación de las etiquetas
+          },
+          vAxis: {
+              title: 'Riqueza Absoluta',
+              viewWindow: {
+                  min: Math.min(...datosGrafico.slice(1).map(d => d[1])),
+                  max: Math.max(...datosGrafico.slice(1).map(d => d[1]))
+              }
+          },
+          legend: { position: 'none' },
+          width: width,
+          height: height,
+          pointSize: 5, // Tamaño de los puntos en el gráfico
+          explorer: {
+              actions: ['dragToZoom', 'rightClickToReset'], // Habilitar zoom y reinicio
+              axis: 'horizontal', // Aplicar zoom en el eje horizontal
+              keepInBounds: true // Mantener dentro de los límites del gráfico
+          },
+          areaOpacity: 0.4,
+          colors: ['#1c91c0'], // Color del área
+          lineWidth: 1, // Grosor de la línea
+      };
+
+      const chart = new google.visualization.AreaChart(containerElement);
+      chart.draw(data, options);
+  }
+}
+function generarGrafico4(datos, contenedor) {
+  // Transformar datos para Google Charts
+  const datosGrafico = [['Fecha', 'ÍNDICE BMWP/Col']];
+  
+  datos.sort((a, b) => new Date(a.FECHA) - new Date(b.FECHA)); // Ordenar datos por fecha
+
+  datos.forEach(dato => {
+      datosGrafico.push([new Date(dato.FECHA), parseFloat(dato["ÍNDICE BMWP/Col"])]);
+  });
+
+  // Cargar Google Charts
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+      const data = google.visualization.arrayToDataTable(datosGrafico);
+      
+      const containerElement = document.querySelector(contenedor);
+      const width = containerElement.clientWidth;
+      const height = containerElement.clientHeight || 400; // Altura predeterminada si no se establece
+
+      const options = {
+          title: 'ÍNDICE BMWP/Col a lo largo del tiempo',
+          titleTextStyle: {
+              fontSize: 16, // Tamaño de fuente del título
+              bold: true,   // Hacer el título en negrita
+              color: '#333', // Color del título
+              italic: false // No usar cursiva
+          },
+          hAxis: {
+              title: 'Fecha',
+              format: 'yyyy', // Mostrar solo años
+              gridlines: { count: 15 },
+              slantedText: true, // Rotar las etiquetas si es necesario
+              slantedTextAngle: 45 // Ángulo de rotación de las etiquetas
+          },
+          vAxis: {
+              title: 'ÍNDICE BMWP/Col',
+              viewWindow: {
+                  min: Math.min(...datosGrafico.slice(1).map(d => d[1])),
+                  max: Math.max(...datosGrafico.slice(1).map(d => d[1]))
+              }
+          },
+          legend: { position: 'none' },
+          width: width,
+          height: height,
+          pointSize: 5, // Tamaño de los puntos en el gráfico
+          explorer: {
+              actions: ['dragToZoom', 'rightClickToReset'], // Habilitar zoom y reinicio
+              axis: 'horizontal', // Aplicar zoom en el eje horizontal
+              keepInBounds: true // Mantener dentro de los límites del gráfico
+          },
+          lineWidth: 2, // Grosor de la línea
+          colors: ['#e0440e'] // Color de la línea
+      };
+
+      const chart = new google.visualization.LineChart(containerElement);
+      chart.draw(data, options);
+  }
+}
+function generarGrafico5(datos, contenedor) {
+  // Transformar datos para Google Charts
+  const datosGrafico = [['Fecha', 'DIVERSIDAD SEGÚN SHANNON']];
+  
+  datos.sort((a, b) => new Date(a.FECHA) - new Date(b.FECHA)); // Ordenar datos por fecha
+
+  datos.forEach(dato => {
+      datosGrafico.push([new Date(dato.FECHA), parseFloat(dato["DIVERSIDAD SEGÚN SHANNON"])]);
+  });
+
+  // Cargar Google Charts
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+      const data = google.visualization.arrayToDataTable(datosGrafico);
+      
+      const containerElement = document.querySelector(contenedor);
+      const width = containerElement.clientWidth;
+      const height = containerElement.clientHeight || 400; // Altura predeterminada si no se establece
+
+      const options = {
+          title: 'DIVERSIDAD SEGÚN SHANNON a lo largo del tiempo',
+          titleTextStyle: {
+              fontSize: 16, // Tamaño de fuente del título
+              bold: true,   // Hacer el título en negrita
+              color: '#333', // Color del título
+              italic: false // No usar cursiva
+          },
+          hAxis: {
+              title: 'Fecha',
+              format: 'yyyy', // Mostrar solo años
+              gridlines: { count: 15 },
+              slantedText: true, // Rotar las etiquetas si es necesario
+              slantedTextAngle: 45 // Ángulo de rotación de las etiquetas
+          },
+          vAxis: {
+              title: 'DIVERSIDAD SEGÚN SHANNON',
+              viewWindow: {
+                  min: Math.min(...datosGrafico.slice(1).map(d => d[1])),
+                  max: Math.max(...datosGrafico.slice(1).map(d => d[1]))
+              }
+          },
+          legend: { position: 'none' },
+          width: width,
+          height: height,
+          explorer: {
+              actions: ['dragToZoom', 'rightClickToReset'], // Habilitar zoom y reinicio
+              axis: 'horizontal', // Aplicar zoom en el eje horizontal
+              keepInBounds: true // Mantener dentro de los límites del gráfico
+          },
+          bar: { groupWidth: '80%' }, // Ajustar el grosor de las barras
+          colors: ['#76A7FA'] // Color de las barras
+      };
+
+      const chart = new google.visualization.ColumnChart(containerElement);
+      chart.draw(data, options);
+  }
+}
 function generarGrafico(data, puntoSeleccionado, contenedor) {
   // Convertir fechas y el índice BMWP/Col a números
   data.forEach((d) => {
@@ -235,12 +421,6 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
   } else {
     ticksCount = d3.timeMonth.every(6); // Si la diferencia es mayor a 1 año
   }
-
-  // Definir los colores para los rangos de calidad del agua (oscuros)
-  const colorScale = d3
-    .scaleThreshold()
-    .domain([36, 49, 85])
-    .range(["#D32F2F", "#FBC02D", "#228B22", "#00008B"]);
 
   const margin = { top: 50, right: 20, bottom: 70, left: 50 },
     width = 960 - margin.left - margin.right,
@@ -280,38 +460,26 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
   svg.append("g").call(d3.axisLeft(y).ticks(10)); // Ajustar los ticks del eje Y a intervalos de 10
 
-  // Agregar los rectángulos de colores según los rangos de calidad del agua
+  // Agregar líneas horizontales para los rangos de calidad del agua
+  const yLines = d3.range(20, 135, 10);
   svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", y(36))
-    .attr("width", width)
-    .attr("height", height - y(36))
-    .attr("fill", "#ff5133"); // Color de fondo rojo claro
-
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", y(49))
-    .attr("width", width)
-    .attr("height", y(36) - y(49))
-    .attr("fill", "#feef00"); // Color de fondo amarillo claro
-
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", y(85))
-    .attr("width", width)
-    .attr("height", y(49) - y(85))
-    .attr("fill", "#31a84f"); // Color de fondo verde claro
-
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", y(130))
-    .attr("width", width)
-    .attr("height", y(85) - y(130))
-    .attr("fill", "#3a48ba"); // Color de fondo azul
+    .selectAll("line.horizontal-grid")
+    .data(yLines)
+    .enter()
+    .append("line")
+    .attr("class", "horizontal-grid")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", (d) => y(d))
+    .attr("y2", (d) => y(d))
+    .attr("stroke", (d) => {
+      if (d <= 36) return "#D32F2F"; // Rojo para 0-35
+      else if (d <= 49) return "#FBC02D"; // Amarillo para 36-49
+      else if (d <= 85) return "#228B22"; // Verde para 50-84
+      else return "#00008B"; // Azul para 85-100
+    })
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "5,5"); // Línea entrecortada
 
   // Agregar la línea negra
   svg
@@ -494,9 +662,9 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
 
 
+
 function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
   // Convertir fechas y el índice DIVERSIDAD SEGÚN SHANNON a números
-
   data.forEach((d) => {
     d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
     d["DIVERSIDAD SEGÚN SHANNON"] = +d["DIVERSIDAD SEGÚN SHANNON"]; // Asegurarse de que DIVERSIDAD SEGÚN SHANNON es un número
@@ -518,9 +686,16 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
   // Definir el dominio del eje y extendido
   const yDomain = [0, 5];
 
+  // Obtener las dimensiones del contenedor
+  const containerWidth = d3.select(contenedor).node().getBoundingClientRect().width;
+  const containerHeight = d3.select(contenedor).node().getBoundingClientRect().height;
+
   const margin = { top: 50, right: 20, bottom: 70, left: 50 },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = containerWidth - margin.left - margin.right,
+    height = containerHeight - margin.top - margin.bottom;
+
+  // Eliminar cualquier SVG existente dentro del contenedor
+  d3.select(contenedor).selectAll("svg").remove();
 
   const svg = d3
     .select(contenedor)
@@ -560,25 +735,25 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
 
   svg.append("g").call(d3.axisLeft(y));
 
-  // Agregar los rectángulos de colores para los rangos
-  const ranges = [
-    { min: 0, max: 1.18, color: "#ff5133" },
-    { min: 1.18, max: 2.46, color: "#feef00" },
-    { min: 2.46, max: 5, color: "#31a84f" },
-  ];
+  // Definir la escala de colores
+  const colorScale = d3.scaleLinear()
+    .domain([0, 1.18, 2.46, 5])
+    .range(["#ff5133", "#feef00", "#31a84f"]);
 
-  ranges.forEach((range) => {
+  // Agregar líneas entrecortadas de colores cada 0.5 unidades en la escala Y
+  for (let i = 0; i <= 5; i += 0.5) {
     svg
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", y(range.max))
-      .attr("width", width)
-      .attr("height", y(range.min) - y(range.max))
-      .attr("fill", range.color)
-      
-  });
+      .append("line")
+      .attr("x1", 0)
+      .attr("x2", width)
+      .attr("y1", y(i))
+      .attr("y2", y(i))
+      .attr("stroke", colorScale(i))
+      .attr("stroke-width", 2)
+      .attr("stroke-dasharray", "5,5");
+  }
 
-  // Agregar la línea
+  // Agregar la línea de datos
   svg
     .append("path")
     .datum(data)
@@ -684,7 +859,7 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
   const infoIcon = svg
     .append("g")
     .attr("class", "info-icon")
-    .attr("transform", `translate(730, -30)`)
+    .attr("transform", `translate(${width - 30}, -30)`)
     .on("mouseover", function () {
       legendGroup.style("display", "block");
     })
@@ -715,7 +890,7 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
 
   const legendBackground = legendGroup
     .append("rect")
-    .attr("x", 625)
+    .attr("x", width - 235)
     .attr("y", 0)
     .attr("width", 235)
     .attr("height", 100)
@@ -723,9 +898,9 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
     .attr("stroke", "black");
 
   const legendData = [
-    { color: "#D32F2F", label: "Contaminación alta (0-1,18)" },
-    { color: "#FBC02D", label: "Contaminación Moderada (1,19-2,46)" },
-    { color: "#228B22", label: "Poca Contaminación (2,46-5)" },
+    { color: "#D32F2F", label: "Contaminación alta (0-1.18)" },
+    { color: "#FBC02D", label: "Contaminación Moderada (1.19-2.46)" },
+    { color: "#228B22", label: "Poca Contaminación (2.46-5)" },
   ];
 
   legendGroup
@@ -734,7 +909,7 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
     .enter()
     .append("rect")
     .attr("class", "legend-item")
-    .attr("x", 630)
+    .attr("x", width - 230)
     .attr("y", (d, i) => 20 + i * 20)
     .attr("width", 18)
     .attr("height", 18)
@@ -746,7 +921,7 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
     .enter()
     .append("text")
     .attr("class", "legend-item")
-    .attr("x", 650)
+    .attr("x", width - 210)
     .attr("y", (d, i) => 29 + i * 20)
     .attr("dy", ".35em")
     .attr("font-size", "12px")
@@ -765,3 +940,4 @@ function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
   // Retornar el objeto SVG para poder modificarlo más tarde si es necesario
   return svg;
 }
+
