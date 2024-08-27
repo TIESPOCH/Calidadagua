@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scatter Plot</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+    <svg width="800" height="600"></svg>
+    <script>
+        const data = [
+            {"COORD- X": 10, "COORD- Y": 20, "CALIDAD AGUA NSF": 50},
+            {"COORD- X": 15, "COORD- Y": 25, "CALIDAD AGUA NSF": 60},
+            {"COORD- X": 20, "COORD- Y": 30, "CALIDAD AGUA NSF": 70},
+            // Agrega más datos aquí
+        ];
+
+        data.forEach(d => {
+            d['COORD- X'] = +d['COORD- X'];
+            d['COORD- Y'] = +d['COORD- Y'];
+            d.CALIDAD = +d['CALIDAD AGUA NSF'];
+        });
+
+        const svg = d3.select("svg");
+        const width = +svg.attr("width");
+        const height = +svg.attr("height");
+
+        const x = d3.scaleLinear()
+            .domain(d3.extent(data, d => d['COORD- X']))
+            .range([0, width]);
+
+        const y = d3.scaleLinear()
+            .domain(d3.extent(data, d => d['COORD- Y']))
+            .range([height, 0]);
+
+        const color = d3.scaleSequential(d3.interpolateViridis)
+            .domain(d3.extent(data, d => d.CALIDAD));
+
+        svg.selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("cx", d => x(d['COORD- X']))
+            .attr("cy", d => y(d['COORD- Y']))
+            .attr("r", 5)
+            .attr("fill", d => color(d.CALIDAD));
+    </script>
+</body>
+</html>

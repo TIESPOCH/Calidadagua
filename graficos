@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scatter Plot</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+    <svg width="800" height="600"></svg>
+    <script>
+        d3.csv("C:\Users\User\Desktop\nuevo diseño\Parametrosfisio.csv").then(data => {
+            // Parse data
+            data.forEach(d => {
+                d.COORD_X = +d['COORD- X'];
+                d.COORD_Y = +d['COORD- Y'];
+                d.CALIDAD = +d['CALIDAD AGUA NSF'];
+            });
+
+            const svg = d3.select("svg");
+            const width = +svg.attr("width");
+            const height = +svg.attr("height");
+
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.COORD_X))
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.COORD_Y))
+                .range([height, 0]);
+
+            const color = d3.scaleSequential(d3.interpolateViridis)
+                .domain(d3.extent(data, d => d.CALIDAD));
+
+            svg.selectAll("circle")
+                .data(data)
+                .enter().append("circle")
+                .attr("cx", d => x(d.COORD_X))
+                .attr("cy", d => y(d.COORD_Y))
+                .attr("r", 5)
+                .attr("fill", d => color(d.CALIDAD));
+        });
+    </script>
+</body>
+</html>

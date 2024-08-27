@@ -1,54 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-88ZDZ1ZN35"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-88ZDZ1ZN35');
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualización de Datos Satelitales</title>
     <link type="text/css" rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.5/ol.css" type="text/css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.5/ol.js"></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    
+    <!-- D3 -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="js/script.js" defer></script>
 </head>
 <body>
+    <button id="sidebar-toggle-btn"><i class="fas fa-chevron-left"></i></button> <!-- Botón para ocultar/mostrar sidebar -->
     <div class="container">
-        <div class="satellite-image">
-            <h2><i class="fas fa-globe-americas"></i> Mapa Satelital</h2>
-            <div id="map" style="width: 100%; height: 500px;"></div>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Logo Espoch -->
+            
+            <!-- Icono Home -->
+            <div class="icon">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            </div>
+            <!-- Icono Ver Gráficos Infografía -->
+            <div class="icon">
+                <a href="fisicoquimico/infografia.html"><i class="fas fa-chart-bar"></i>Ver Gráficos Parámetros Fisicoquímicos</a>
+            </div>
+                <div class="icon">
+                    <a href="biologico/infografia.html"><i class="fas fa-chart-bar"></i>Ver Gráficos Parámetros Biológicos</a>
+                </div>
         </div>
-        <div class="data-grid">
-            <h2><i class="fas fa-table"></i> Datos</h2>
-            <select id="rio-select">
-                <option value="">Seleccione un río</option>
-            </select>
-            <button id="buscar-btn">Buscar</button>
-            <div class="tabs">
-                <button id="biological-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab1')">Parámetros Biológicos</button>
-                <button id="physicochemical-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab2')">Parámetros Fisicoquímicos</button>
+        <!-- Contenido Principal -->
+        <div class="content">
+            <div class="main-content">
+                <div class="top-content">
+                    <!-- Imagen Satelital -->
+                    <div class="satellite-image">
+                        <h2><i class="fas fa-globe-americas"></i> Mapa Satelital</h2>
+                        <div id="map"></div>
+                    </div>
+                    <!-- Cuadrícula de Datos -->
+                    <div class="data-grid">
+                        <h2><i class="fas fa-table"></i> Datos</h2>
+                        <div class="tabs">
+                            <button id="biological-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab1')">Ver Parámetros Biológicos</button>
+                            <button id="physicochemical-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab2')">Ver Parámetros Fisicoquímicos</button>
+                        </div>
+                        <div id="dropdown-container">
+                            <select id="rio-select">
+                                <option value="">Seleccione un río</option>
+                            </select>
+                            <button id="buscar-btn">Buscar</button>
+                        </div>
+                        <div id="tab1" class="tabcontent">
+                            <table id="tabla1">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div id="tab2" class="tabcontent" style="display:none">
+                            <table id="tabla2">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Información Adicional -->
+                <div class="info-area">
+                    <h2><i class="fas fa-info-circle"></i> Información Adicional</h2>
+                    <p>Aquí puedes agregar información adicional relacionada con la imagen satelital y los datos mostrados en la cuadrícula. Esto podría incluir descripciones, análisis o cualquier otro contenido relevante.</p>
+                </div>
             </div>
-            <div id="tab1" class="tabcontent">
-                <table id="tabla1">
-                    <thead>
-                        <tr></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div id="tab2" class="tabcontent" style="display:none">
-                <table id="tabla2">
-                    <thead>
-                        <tr></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-        <div class="info-area">
-            <h2><i class="fas fa-info-circle"></i> Información Adicional</h2>
-            <p>Aquí puedes agregar información adicional relacionada con la imagen satelital y los datos mostrados en la cuadrícula. Esto podría incluir descripciones, análisis o cualquier otro contenido relevante.</p>
         </div>
     </div>
+    <!-- Popup de Error -->
     <div id="error-popup" class="popup">
         <span class="popup-text" id="error-popup-text"></span>
         <button onclick="cerrarPopup()">Cerrar</button>
