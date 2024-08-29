@@ -1,3 +1,5 @@
+/* CSS Original */
+
 /* Estilos Generales */
 body {
     font-family: Arial, sans-serif;
@@ -61,22 +63,6 @@ body {
     margin: 10px 0;
 }
 
-.sidebar .collapse-btn {
-    background-color: #5cb85c;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 10px 15px;
-    display: block;
-    width: 100%;
-    text-align: left;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar .collapse-btn:hover {
-    background-color: #449d44;
-}
 
 .sidebar .submenu {
     padding-left: 20px;
@@ -85,6 +71,52 @@ body {
 
 .sidebar .submenu.active {
     display: block;
+}
+/* Cuando el sidebar está colapsado */
+.sidebar.collapsed {
+    width: 0; /* Oculta el sidebar */
+    overflow: hidden; /* Evita que el contenido se desborde */
+    transition: width 0.3s ease; /* Transición suave al colapsar */
+}
+
+/* Cuando el contenido se expande al colapsar el sidebar */
+.content.expanded {
+    margin-left: 0; /* Elimina el margen izquierdo */
+    width: 100%; /* Ocupa todo el ancho */
+    transition: margin-left 0.3s ease; /* Transición suave para el contenido */
+}
+
+
+/* Estilos para el botón de ocultar/mostrar sidebar */
+#sidebar-toggle-btn {
+    position: fixed;
+    top: 5px; /* Ajustar la posición desde la parte superior */
+    left: 5px; /* Ajustar la posición desde la parte izquierda */
+    background-color: #295e40;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease, left 0.3s ease; /* Añadir transición para la posición */
+}
+
+#sidebar-toggle-btn:hover {
+    background-color: #1f3e27;
+}
+
+.sidebar.collapsed #sidebar-toggle-btn {
+    left: 10px; /* Ajustar la posición cuando el sidebar esté colapsado */
+}
+
+.content.expanded #sidebar-toggle-btn {
+    left: 10px; /* Asegurar que el botón se mantenga alineado con el contenido */
 }
 
 /* Estilos para el contenido principal */
@@ -96,16 +128,6 @@ body {
     flex-direction: column;
     overflow-y: auto;
     transition: margin-left 0.3s ease;
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        width: 0;
-    }
-
-    .content {
-        margin-left: 0;
-    }
 }
 
 /* Estilos para la sección superior del contenido principal */
@@ -364,128 +386,181 @@ thead th {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 1001;
+    padding-top: 100px;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
+    background-color: #fff;
+    margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-    max-width: 800px;
-    position: relative;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 10px;
+    background-color: #5cb85c;
+    color: white;
+    text-align: right;
 }
 
 .close {
-    color: #aaa;
+    color: white;
     float: right;
     font-size: 28px;
     font-weight: bold;
-    cursor: pointer;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #000;
     text-decoration: none;
     cursor: pointer;
 }
 
-/* Estilos para las barras de gráfico */
-.bar {
-    transition: fill 0.3s, height 0.3s;
-}
-
-.bar:hover {
-    fill: orange !important;
-}
-
-/* Estilos para el tooltip */
-.tooltip {
-    position: absolute;
-    text-align: center;
-    width: 60px;
-    height: 28px;
-    padding: 2px;
-    font: 12px sans-serif;
-    background: lightsteelblue;
-    border: 0px;
-    border-radius: 8px;
-    pointer-events: none;
-    opacity: 0;
-}
-
-/* Estilos para ambas tablas */
-#tabla1, #tabla2 {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    color: #333;
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-#tabla1 th, #tabla1 td, #tabla2 th, #tabla2 td {
-    border: 2px solid rgba(0, 0, 0, 0.5);
-    padding: 2px;
-    font-size: 10px;
-    text-align: left;
-}
-
-#tabla1 th, #tabla2 th {
-    background-color: #f2c200;
-    color: #004d00;
-}
-
-#tabla1 tr:nth-child(even), #tabla2 tr:nth-child(even) {
-    background-color: #eaf5ea;
-}
-
-#tabla1 thead th, #tabla2 thead th {
-    position: sticky;
-    top: 0;
-    background: #f2c200;
-    z-index: 2;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-}
-/* Estilos para el botón de ocultar/mostrar sidebar */
-/* Estilos para el botón de ocultar/mostrar sidebar */
-#sidebar-toggle-btn {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    background-color: #295e40;
-    color: #fff;
+/* Estilos para el botón de cerrar */
+.close-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
     border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
     cursor: pointer;
-    z-index: 999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     transition: background-color 0.3s ease;
 }
 
-#sidebar-toggle-btn:hover {
-    background-color: #1f3e27;
+.close-btn:hover {
+    background-color: #d32f2f;
 }
 
-.sidebar.collapsed {
-    width: 0;
-    overflow: hidden;
+
+/* CSS Responsive */
+
+/* Para dispositivos con un ancho máximo de 768px (tablets y móviles) */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100px; /* Reducir el ancho del sidebar */
+    }
+    .chart {
+        flex: 1 1 100%; /* Ocupan el 100% del ancho del contenedor en pantallas pequeñas */
+    }
+    .sidebar:hover {
+        width: 110px; /* Ajustar el ancho al hacer hover */
+    }
+
+    .sidebar .icon a {
+        font-size: 14px; /* Reducir el tamaño de la fuente */
+        padding: 8px 12px;
+    }
+    #sidebar-toggle-btn {
+        left: 10px; /* Ajustar la posición del botón para pantallas pequeñas */
+    }
+    .content {
+        margin-left: 100px; /* Ajustar el margen izquierdo */
+    }
+
+    .satellite-image,
+    .data-grid {
+        flex: 1;
+        max-height: 400px; /* Reducir la altura máxima */
+    }
+
+    .top-content {
+        flex-direction: column; /* Cambiar la dirección a columna */
+    }
+
+    .fila-graficos {
+        flex-direction: column; /* Cambiar la dirección a columna */
+        align-items: stretch;
+    }
+
+    .chart {
+        margin-bottom: 20px; /* Añadir margen inferior */
+    }
+
+    .info-area {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .tablink {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
 }
 
-.content.expanded {
-    margin-left: 0;
-    width: 100%;
+/* Para dispositivos con un ancho máximo de 480px (móviles) */
+@media (max-width: 480px) {
+    .sidebar {
+        width: 80px; /* Reducir más el ancho del sidebar */
+    }
+
+    .sidebar:hover {
+        width: 90px; /* Ajustar el ancho al hacer hover */
+    }
+
+    .sidebar .icon a {
+        font-size: 12px; /* Reducir más el tamaño de la fuente */
+        padding: 6px 8px;
+    }
+    #sidebar-toggle-btn {
+        left: 5px; /* Ajustar más la posición del botón para pantallas muy pequeñas */
+        width: 35px; /* Reducir el tamaño del botón */
+        height: 35px; /* Reducir el tamaño del botón */
+        font-size: 20px; /* Reducir el tamaño de la fuente */
+    }
+    .content {
+        margin-left: 80px; /* Ajustar el margen izquierdo */
+    }
+
+    .satellite-image,
+    .data-grid {
+        flex: 1;
+        max-height: 300px; /* Reducir más la altura máxima */
+    }
+
+    .top-content {
+        flex-direction: column; /* Cambiar la dirección a columna */
+    }
+
+    .chart {
+        margin-bottom: 15px; /* Reducir el margen inferior */
+    }
+
+    .tablink {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+
+    h2 {
+        font-size: 18px; /* Reducir el tamaño de la fuente */
+    }
+
+    p {
+        font-size: 14px; /* Reducir el tamaño de la fuente */
+    }
+
+    table {
+        font-size: 8px; /* Reducir el tamaño de la fuente */
+    }
+
+    .info-area p:before {
+        font-size: 18px; /* Reducir el tamaño del ícono */
+    }
 }

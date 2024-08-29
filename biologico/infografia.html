@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="js/script.js" defer></script>
 </head>
 <body>
@@ -25,10 +26,10 @@
            <!-- Icono Ver Gráficos Infografía -->
            <div class="icon">
             <a href="/fisicoquimico/infografia.html"><i class="fas fa-chart-bar"></i> Gràficos Parametros Fisicoquìmicos</a>
+        </div>
             <div class="icon">
                 <a href="infografia.html"><i class="fas fa-chart-bar"></i> Gràficos Parametros Biològicos</a>
             </div>
-        </div>
         </div>
        <!-- Contenido Principal -->
        <div class="container">
@@ -45,7 +46,7 @@
                 </div>
             </div>
             <div class="data-visualization">
-                <div class="data-grid-container">
+                <div class="top-section">
                     <div class="data-grid">
                         <h2><i class="fas fa-table"></i> Datos</h2>
                         <div class="tabs"></div>
@@ -56,13 +57,18 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                      <div id="grafico1" class="grafico"></div>
+                      
                 </div>
-                <div id="graficos" class="grafico">
-                    <div id="grafico1"></div>
-                    <div id="grafico2"></div>
+                <div class="bottom-section">
+                    <div id="grafico2" class="grafico"></div>
+                    <div id="grafico3" class="grafico"></div>
+                    <div id="grafico4" class="grafico"></div>
+                    <div id="grafico5" class="grafico"></div>
                 </div>
             </div>
-        </div>
+                
+            </div>
 </div>
 <!-- Popup de Error -->
 <div id="error-popup" class="popup">

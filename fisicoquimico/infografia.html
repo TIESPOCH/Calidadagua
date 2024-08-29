@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="js/script.js" defer></script>
 </head>
 <body>
@@ -24,11 +25,10 @@
                     <select id="puntos-select">
                         <option value="">Seleccione un punto</option>
                     </select>
-                    
                 </div>
             </div>
             <div class="data-visualization">
-                <div class="data-grid-container">
+                <div class="top-section">
                     <div class="data-grid">
                         <h2><i class="fas fa-table"></i> Datos</h2>
                         <div class="tabs"></div>
@@ -39,23 +39,30 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                    <div id="grafico1" class="grafico"></div>
                 </div>
-                <div id="graficos" class="grafico">
-                    <div id="grafico1"></div>
-                    
+                <div class="bottom-section">
+                    <div id="grafico2" class="grafico"></div>
+                    <div id="grafico3" class="grafico"></div>
+                    <div id="grafico4" class="grafico"></div>
+                    <div id="grafico5" class="grafico"></div>
+                    <div id="grafico6" class="grafico"></div>
+                    <div id="grafico7" class="grafico"></div>
+                    <div id="grafico8" class="grafico"></div>
+                    <div id="grafico9" class="grafico"></div>
                 </div>
             </div>
+            
         </div>
         <div class="sidebar">
-           
             <div class="icon">
                 <a href="/index.html"><i class="fas fa-home"></i> Home</a>
             </div>
             <div class="icon">
                 <a href="infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Fisicoquímicos</a>
-                <div class="icon">
-                    <a href="/biologico/infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Biológicos</a>
-                </div>
+            </div>
+            <div class="icon">
+                <a href="/biologico/infografia.html"><i class="fas fa-chart-bar"></i> Gráficos Parámetros Biológicos</a>
             </div>
         </div>
     </div>
