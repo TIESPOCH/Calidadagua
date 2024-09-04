@@ -27,33 +27,31 @@
     <!-- D3 -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="js/script.js" defer></script>
-    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   </head>
   <body>
     <div class="wrapper">
       <div class="body-overlay"></div>
       <!-- Sidebar -->
-     <!-- Sidebar  -->
-     <nav id="sidebar">
-      <div class="sidebar-header">
-          <h3><img src="img/logo.png" class="img-fluid"/><span>CALINAGUA</span></h3>
-      </div>
-      <ul class="list-unstyled components">
-     <li  class="active">
-              <a href="index.html" class="dashboard"><i class="material-icons">dashboard</i><span>ICA</span></a>
-          </li>
-
-          <li  class="active">
-            <a href="fisicoquimicos/infografia.html" class="dashboard"><i class="material-icons">aspect_ratio</i><span>P.fisicoquimicos</span></a>
-        </li>
-        <li  class="active">
-            <a href="biologicos/infografia.html" class="dashboard"><i class="material-icons">aspect_ratio</i><span>P.Biológicos</span></a>
-        </li>
-
+      <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><img src="/img/logo.png" class="img-fluid"/><span>CALINAGUA</span></h3>
+        </div>
+        <ul class="list-unstyled components">
+       <li  class="active">
+                <a href="/index.html" class="dashboard"><i class="material-icons">dashboard</i><span>ICA</span></a>
+            </li>
   
-     
-  </nav>
-
+            <li  class="active">
+              <a href="infografia.html" class="dashboard"><i class="material-icons">aspect_ratio</i><span>P.fisicoquimicos</span></a>
+          </li>
+          <li  class="active">
+              <a href="/biologicos/infografia.html" class="dashboard"><i class="material-icons">aspect_ratio</i><span>P.Biológicos</span></a>
+          </li>
+  
+    
+       
+    </nav>
 
       <!-- Page Content -->
       <div id="content">
@@ -69,7 +67,16 @@
               <a class="navbar-brand mx-auto text-center">
                 <h2 style="color: white; font-weight: bold; font-size: 2rem;">CALINAGUA</h2>
               </a>
-        
+              <div class="controls">
+              <div id="dropdown-container">
+                  <select id="rio-select">
+                      <option value="">Seleccione un río</option>
+                  </select>
+                  <select id="puntos-select">
+                      <option value="">Seleccione un punto</option>
+                  </select>
+              </div>
+          </div>
               <!-- Botón de menú móvil -->
               <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,40 +91,14 @@
             </div>
           </nav>
         </div>
-        
-        
-          
-
         <div class="main-content">
           <div class="row">
             <div class="top-content">
-                <!-- Imagen Satelital -->
-                <div class="satellite-image">
-                    <h2><i class="fas fa-globe-americas"></i> Mapa Satelital</h2>
-                    <div id="map"></div>
-                </div>
-                <!-- Cuadrícula de Datos -->
-                <div class="data-grid">
-                    <h2><i class="fas fa-table"></i> Datos</h2>
-                    <div class="tabs">
-                        <button id="biological-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab1')">Parámetros Biológicos</button>
-                        <button id="physicochemical-parameters-tab" class="tablink" onclick="abrirPestania(event, 'tab2')">Parámetros Fisicoquímicos</button>
-                    </div>
-                    <div id="dropdown-container">
-                        <select id="rio-select">
-                            <option value="">Seleccione un río</option>
-                        </select>
-                        <button id="buscar-btn">Buscar</button>
-                    </div>
-                    <div id="tab1" class="tabcontent">
-                        <table id="tabla1">
-                            <thead>
-                                <tr></tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    <div id="tab2" class="tabcontent" style="display:none">
+              <div class="data-visualization">
+                <div class="top-section">
+                    <div class="data-grid">
+                        <h2><i class="fas fa-table"></i> Datos</h2>
+                      
                         <table id="tabla2">
                             <thead>
                                 <tr></tr>
@@ -125,19 +106,23 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                    <div id="grafico1" class="grafico"></div>
+                </div>
+                <div class="bottom-section">
+                    <div id="grafico2" class="grafico"></div>
+                    <div id="grafico3" class="grafico"></div>
+                    <div id="grafico4" class="grafico"></div>
+                    <div id="grafico5" class="grafico"></div>
+                    <div id="grafico6" class="grafico"></div>
+                    <div id="grafico7" class="grafico"></div>
+                    <div id="grafico8" class="grafico"></div>
+                    <div id="grafico9" class="grafico"></div>
                 </div>
             </div>
-            </div>
-          </div>
-        
-          <div class="row">
-            <div class="info-area">
-                <h2><i class="fas fa-info-circle"></i> Información Adicional</h2>
-                <p>Aquí puedes agregar información adicional relacionada con la imagen satelital y los datos mostrados en la cuadrícula. Esto podría incluir descripciones, análisis o cualquier otro contenido relevante.</p>
-            </div>
-          </div>
 
-        
+            </div>
+            </div>
+          </div>
     </div>
     <!-- jQuery and Bootstrap Bundle -->
     <script src="js/jquery-3.3.1.min.js"></script>
