@@ -356,10 +356,14 @@ thead th {
         margin-left: 100px; /* Ajustar el margen izquierdo */
     }
 
-    .satellite-image,
-    .data-grid {
+    .satellite-image {
         flex: 1;
         max-height: 400px; /* Reducir la altura máxima */
+    }
+    
+    .data-grid {
+        flex: 1;
+        max-height: 600px; /* Reducir la altura máxima */
     }
 
     .top-content {
@@ -368,7 +372,7 @@ thead th {
 
     .fila-graficos {
         flex-direction: column; /* Cambiar la dirección a columna */
-        align-items: stretch;
+        align-items: center;
     }
 
     .chart {
@@ -413,7 +417,7 @@ thead th {
     .satellite-image,
     .data-grid {
         flex: 1;
-        max-height: 300px; /* Reducir más la altura máxima */
+        max-height: 600px; /* Reducir más la altura máxima */
     }
 
     .top-content {
@@ -423,6 +427,11 @@ thead th {
     .chart {
         margin-bottom: 15px; /* Reducir el margen inferior */
     }
+    .fila-graficos {
+        flex-direction: column; /* Cambiar la dirección a columna */
+        align-items: center;
+    }
+
 
     .tablink {
         font-size: 12px;
@@ -485,6 +494,11 @@ thead th {
     table {
         font-size: 10px;
     }
+    .fila-graficos {
+        flex-direction: column; /* Cambiar la dirección a columna */
+        align-items: center;
+    }
+
 }
 
 /* Para dispositivos con un ancho mínimo de 1025px y máximo de 1366px (pantallas grandes, laptops) */
@@ -526,6 +540,11 @@ thead th {
     table {
         font-size: 12px;
     }
+    .fila-graficos {
+        flex-direction: column; /* Cambiar la dirección a columna */
+        align-items: center;
+    }
+
 }
 
 /* Para dispositivos con un ancho mínimo de 1367px y máximo de 1920px (pantallas Full HD) */
@@ -567,6 +586,11 @@ thead th {
     table {
         font-size: 14px;
     }
+    .fila-graficos {
+        flex-direction: column; /* Cambiar la dirección a columna */
+        align-items: center;
+    }
+
 }
 
 /* Para dispositivos con un ancho mínimo de 1921px (pantallas muy grandes, Ultra HD y superiores) */
@@ -608,4 +632,9 @@ thead th {
     table {
         font-size: 16px;
     }
+    .fila-graficos {
+        flex-direction: column; /* Cambiar la dirección a columna */
+        align-items: center;
+    }
+
 }

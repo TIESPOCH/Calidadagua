@@ -218,7 +218,7 @@ tr td:last-child {
 
 /* Para pantallas de hasta 1200px */
 @media (max-width: 1200px) {
-    .top-section, .bottom-section .grafico, #tabla2 {
+    .top-section, .bottom-section, .grafico, #tabla2 {
         height: 500px;
     }
 }
@@ -232,8 +232,11 @@ tr td:last-child {
         margin-left: 120px;
         width: calc(100% - 120px);
     }
-    .top-section, .bottom-section .grafico, #tabla2 {
+    .top-section, .bottom-section, .grafico{
         height: 450px;
+    }
+    #tabla2,#data-grid {
+        display: none; /* Oculta el gráfico y la tabla */
     }
 }
 
@@ -246,8 +249,11 @@ tr td:last-child {
         margin-left: 100px;
         width: calc(100% - 100px);
     }
-    .top-section, .bottom-section .grafico, #tabla2 {
+    .top-section, .bottom-section, .grafico{
         height: 400px;
+    }
+    #tabla2,.data-grid,.fas.fa-table {
+        display: none; /* Oculta el gráfico y la tabla */
     }
 }
 
@@ -264,7 +270,7 @@ tr td:last-child {
     .top-section {
         flex-direction: column;
     }
-    .top-section, .bottom-section .grafico, #tabla2 {
+    .top-section, .bottom-section ,.grafico{
         height: 350px;
     }
     .controls {
@@ -272,6 +278,9 @@ tr td:last-child {
         align-items: flex-start;
         gap: 10px;
         padding-right: 0;
+    }
+    #tabla2 , .data-grid,.fas.fa-table{
+        display: none; /* Oculta el gráfico y la tabla */
     }
 }
 
@@ -288,7 +297,10 @@ tr td:last-child {
     .top-section {
         flex-direction: column;
     }
-    .top-section, .bottom-section .grafico, #tabla2 {
+    .top-section, .bottom-section, .grafico {
         max-height: 300px;
+    }
+    #tabla2, .data-grid,.fas.fa-table {
+        display: none; /* Oculta el gráfico y la tabla */
     }
 }

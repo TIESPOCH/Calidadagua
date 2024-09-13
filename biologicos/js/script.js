@@ -1,47 +1,11 @@
 let datosCSV = [];
 let datosBiologicos = [];
 let rios = [
-  "RIO HUASAGA",
-  "RIO CHAPIZA",
-  "RIO ZAMORA",
-  "RIO UPANO",
-  "RIO JURUMBAINO",
-  "RIO KALAGLAS",
-  "RIO YUQUIPA",
-  "RIO PAN DE AZÚCAR",
-  "RIO BLANCO",
-  "RIO TUTANANGOZA",
-  "RIO INDANZA",
-  "RIO MIRIUMI ",
-  "RIO YUNGANZA",
-  "RIO CUYES",
-  "RIO ZAMORA",
-  "RIO EL IDEAL",
-  "RIO MORONA",
-  "RIO MUCHINKIN",
-  "RIO NAMANGOZA",
-  "RIO SANTIAGO",
-  "RIO PASTAZA",
-  "RIO CHIWIAS",
-  "RIO TUNA CHIGUAZA",
-  "RÍO PALORA",
-  "RIO LUSHIN",
-  "RIO SANGAY",
-  "RIO NAMANGOZA",
-  "RIO PAUTE",
-  "RIO YAAPI",
-  "RIO HUAMBIAZ",
-  "RIO TZURIN",
-  "RIO MANGOSIZA",
-  "RIO PUCHIMI",
-  "RIO EL CHURO",
-  "RIO MACUMA",
-  "RIO PANGUIETZA",
-  "RIO PASTAZA",
-  "RIO PALORA",
-  "RIO TUNA ",
-  "RIO WAWAIM GRANDE",
-  "RIO LUSHIN",
+  "RIO HUASAGA","RIO CHAPIZA","RIO ZAMORA","RIO UPANO","RIO JURUMBAINO","RIO KALAGLAS","RIO YUQUIPA",
+  "RIO PAN DE AZÚCAR","RIO BLANCO","RIO TUTANANGOZA","RIO INDANZA","RIO MIRIUMI ",
+  "RIO YUNGANZA","RIO CUYES","RIO ZAMORA","RIO EL IDEAL","RIO MORONA","RIO MUCHINKIN",
+  "RIO NAMANGOZA","RIO SANTIAGO","RIO PASTAZA","RIO CHIWIAS","RIO TUNA CHIGUAZA","RÍO PALORA", "RIO LUSHIN","RIO SANGAY","RIO NAMANGOZA","RIO PAUTE","RIO YAAPI","RIO HUAMBIAZ","RIO TZURIN","RIO MANGOSIZA","RIO PUCHIMI","RIO EL CHURO","RIO MACUMA",
+"RIO PANGUIETZA","RIO PASTAZA","RIO PALORA","RIO TUNA ","RIO WAWAIM GRANDE","RIO LUSHIN",
 ];
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -393,15 +357,15 @@ function generarGrafico5(datos, contenedor) {
   }
 }
 function generarGrafico(data, puntoSeleccionado, contenedor) {
-  // Convertir fechas y el índice BMWP/Col a números
+  // Convertir fechas y el índice DIVERSIDAD SEGÚN SHANNON a números
+
   data.forEach((d) => {
     d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
-    d["ÍNDICE BMWP/Col"] = +d["ÍNDICE BMWP/Col"]; // Asegurarse de que ÍNDICE BMWP/Col es un número
+    d["ÍNDICE BMWP/Col"] = +d["ÍNDICE BMWP/Col"]; // Asegurarse de que DIVERSIDAD SEGÚN SHANNON es un número
   });
 
-  // Encontrar la fecha mínima y máxima en los datos
+  // Encontrar la fecha mínima en los datos para definir el inicio del eje x
   const minFecha = d3.min(data, (d) => d.FECHA);
-  const maxFecha = new Date(2024, 0, 1); // Extender la fecha máxima hasta enero del 2024
 
   // Filtrar los datos para empezar desde la fecha mínima encontrada
   data = data.filter((d) => d.FECHA >= minFecha);
@@ -409,22 +373,23 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
   // Ordenar los datos por fecha nuevamente
   data.sort((a, b) => a.FECHA - b.FECHA);
 
-  // Ajustar el dominio del eje X dinámicamente según la densidad de las muestras
-  let timeDiff = maxFecha - minFecha;
-  let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-  let ticksCount;
+  // Definir el número de ticks en el eje x dependiendo de la cantidad de datos
+  let ticksCount =
+    data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
 
-  if (daysDiff <= 180) {
-    ticksCount = d3.timeMonth.every(1); // Si la diferencia es menor o igual a 6 meses
-  } else if (daysDiff <= 365) {
-    ticksCount = d3.timeMonth.every(3); // Si la diferencia es menor o igual a 1 año
-  } else {
-    ticksCount = d3.timeMonth.every(6); // Si la diferencia es mayor a 1 año
-  }
+  // Definir el dominio del eje y extendido
+  const yDomain = [20, 130];
+
+  // Obtener las dimensiones del contenedor
+  const containerWidth = d3.select(contenedor).node().getBoundingClientRect().width;
+  const containerHeight = d3.select(contenedor).node().getBoundingClientRect().height;
 
   const margin = { top: 50, right: 20, bottom: 70, left: 50 },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = containerWidth - margin.left - margin.right,
+    height = containerHeight - margin.top - margin.bottom;
+
+  // Eliminar cualquier SVG existente dentro del contenedor
+  d3.select(contenedor).selectAll("svg").remove();
 
   const svg = d3
     .select(contenedor)
@@ -434,16 +399,20 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  const x = d3.scaleTime().domain([minFecha, maxFecha]).range([0, width]);
+  const x = d3
+    .scaleTime()
+    .domain([minFecha, d3.timeMonth.offset(new Date(2024, 6, 1), -6)]) // Ajustar el dominio de las fechas
+    .range([0, width]);
 
   const y = d3
     .scaleLinear()
-    .domain([20, 130]) // Ajustar el dominio del eje Y con un máximo de 130
+    .domain(yDomain)
+    .nice() // Mejorar el aspecto del eje y extendido
     .range([height, 0]);
 
   const line = d3
     .line()
-    .curve(d3.curveMonotoneX)
+    .curve(d3.curveMonotoneX) // Aplicar la interpolación que pasa por los puntos
     .x((d) => x(d.FECHA))
     .y((d) => y(d["ÍNDICE BMWP/Col"]));
 
@@ -458,30 +427,27 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .attr("dy", ".15em")
     .attr("transform", "rotate(-65)");
 
-  svg.append("g").call(d3.axisLeft(y).ticks(10)); // Ajustar los ticks del eje Y a intervalos de 10
+  svg.append("g").call(d3.axisLeft(y));
 
-  // Agregar líneas horizontales para los rangos de calidad del agua
-  const yLines = d3.range(20, 135, 10);
-  svg
-    .selectAll("line.horizontal-grid")
-    .data(yLines)
-    .enter()
-    .append("line")
-    .attr("class", "horizontal-grid")
-    .attr("x1", 0)
-    .attr("x2", width)
-    .attr("y1", (d) => y(d))
-    .attr("y2", (d) => y(d))
-    .attr("stroke", (d) => {
-      if (d <= 36) return "#D32F2F"; // Rojo para 0-35
-      else if (d <= 49) return "#FBC02D"; // Amarillo para 36-49
-      else if (d <= 85) return "#228B22"; // Verde para 50-84
-      else return "#00008B"; // Azul para 85-100
-    })
-    .attr("stroke-width", 1)
-    .attr("stroke-dasharray", "5,5"); // Línea entrecortada
+  // Definir la escala de colores
+  const colorScale = d3.scaleLinear()
+    .domain([36,49,85,86])
+    .range(["#D32F2F", "#FBC02D", "#228B22","#00008B"]);
 
-  // Agregar la línea negra
+  // Agregar líneas entrecortadas de colores cada 0.5 unidades en la escala Y
+  for (let i = 20; i <= 130; i += 5) {
+    svg
+      .append("line")
+      .attr("x1", 0)
+      .attr("x2", width)
+      .attr("y1", y(i))
+      .attr("y2", y(i))
+      .attr("stroke", colorScale(i))
+      .attr("stroke-width", 2)
+      .attr("stroke-dasharray", "5,5");
+  }
+
+  // Agregar la línea de datos
   svg
     .append("path")
     .datum(data)
@@ -498,72 +464,82 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .append("circle")
     .attr("cx", (d) => x(d.FECHA))
     .attr("cy", (d) => y(d["ÍNDICE BMWP/Col"]))
-    .attr("r", 5)
-    .attr("fill", "black")
-    .attr("stroke", "white")
-    .on("mouseover", function(event, d) {
-        d3.select(this).transition().duration(200).attr("r", 6);
+    .attr("r", 5) // Aumentar el tamaño de los puntos para una mejor visualización
+    .attr("fill", "black") // Puntos en color negro
+    .attr("stroke", "white") // Borde blanco para destacar los puntos
+    .on("mouseover", function (event, d) {
+      d3.select(this).transition().duration(200).attr("r", 8); // Agrandar el punto al pasar el mouse
 
-        const tooltipGroup = svg.append("g")
-            .attr("class", "tooltip-group")
-            .attr("transform", `translate(${x(d.FECHA) + 50},${y(d['ÍNDICE BMWP/Col']) + 50})`);
-        const background = tooltipGroup.append("rect")
-            .attr("fill", "white")
-            .attr("stroke", "black")
-            .attr("rx", 5)
-            .attr("ry", 5);
+      const tooltipGroup = svg.append("g").attr("class", "tooltip-group");
 
-        const text1 = tooltipGroup.append("text")
-            .attr("x", 0)
-            .attr("y", -18)
-            .attr("text-anchor", "middle")
-            .style("font-size", "12px")
-            .text("CALIDAD DE AGUA NSF: " + d['ÍNDICE BMWP/Col']);
+      const background = tooltipGroup
+        .append("rect")
+        .attr("fill", "white")
+        .attr("stroke", "black")
+        .attr("rx", 5)
+        .attr("ry", 5);
 
-        const text2 = tooltipGroup.append("text")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("text-anchor", "middle")
-            .style("font-size", "12px")
-            .text("FECHA DE MUESTRA: " + d3.timeFormat("%d/%m/%Y")(d.FECHA));
+      const text1 = tooltipGroup
+        .append("text")
+        .attr("x", 0)
+        .attr("y", -18)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .text("FECHA DE MUESTRA: " + d3.timeFormat("%d/%m/%Y")(d.FECHA));
 
-        const text3 = tooltipGroup.append("text")
-            .attr("x", 0)
-            .attr("y", 18)
-            .attr("text-anchor", "middle")
-            .style("font-size", "12px")
-            .text("ÍNDICE BMWP/Col.1: " + d['ÍNDICE BMWP/Col.1']);
+      const text2 = tooltipGroup
+        .append("text")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .text("ÍNDICE BMWP/Col:" + d["ÍNDICE BMWP/Col"]);
 
-        const bbox = tooltipGroup.node().getBBox();
-        background
-            .attr("x", bbox.x - 10)
-            .attr("y", bbox.y - 5)
-            .attr("width", bbox.width + 20)
-            .attr("height", bbox.height + 10);
+      const text3 = tooltipGroup
+        .append("text")
+        .attr("x", 0)
+        .attr("y", 18)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .text(
+          "ÍNDICE BMWP/Col:" +
+            d["ÍNDICE BMWP/Col"]
+        );
 
-        // Ajuste de la posición del tooltip para que no se salga del gráfico
-        let tooltipX = x(d.FECHA);
-        let tooltipY = y(d["ÍNDICE BMWP/Col"]) - 40;
+      const bbox = tooltipGroup.node().getBBox();
+      background
+        .attr("x", bbox.x - 10)
+        .attr("y", bbox.y - 5)
+        .attr("width", bbox.width + 20)
+        .attr("height", bbox.height + 10);
 
-        if (tooltipX + bbox.width / 2 + 10 > width) {
-          tooltipX = width - bbox.width / 2 - 10;
-        } else if (tooltipX - bbox.width / 2 - 10 < 0) {
-          tooltipX = bbox.width / 2 + 10;
-        }
+      // Asegurar que el tooltip se muestre completamente dentro de los límites del gráfico
+      let tooltipX = x(d.FECHA);
+      let tooltipY = y(d["ÍNDICE BMWP/Col"]) - 40;
 
-        if (tooltipY - bbox.height - 10 < 0) {
-          tooltipY = y(d["ÍNDICE BMWP/Col"]) + bbox.height + 10;
-        }
+      if (tooltipX + bbox.width / 2 + 10 > width) {
+        tooltipX = width - bbox.width / 2 - 10;
+      } else if (tooltipX - bbox.width / 2 - 10 < 0) {
+        tooltipX = bbox.width / 2 + 10;
+      }
 
-        tooltipGroup.attr("transform", `translate(${tooltipX},${tooltipY})`);
+      if (tooltipY - bbox.height - 10 < 0) {
+        tooltipY = y(d["ÍNDICE BMWP/Col]) + bbox.height + 10"]);
+      }
+
+      tooltipGroup.attr("transform", `translate(${tooltipX},${tooltipY})`);
     })
-    .on("mouseout", function() {
-        d3.select(this).transition().duration(200).attr("r", 5);
-        svg.select(".tooltip-group").remove();
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).attr("r", 5); // Restaurar tamaño original del punto
+      svg.select(".tooltip-group").remove();
     });
 
   // Agregar título
-  const titulo = "ÍNDICE BMWP/Col." + data[0].RIO + " en el punto " + puntoSeleccionado;
+  const titulo =
+    "ÍNDICE BMWP/Coll en el río " +
+    data[0].RIO +
+    " en el punto " +
+    puntoSeleccionado;
   svg
     .append("text")
     .attr("x", width / 2)
@@ -577,7 +553,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
   const infoIcon = svg
     .append("g")
     .attr("class", "info-icon")
-    .attr("transform", `translate(730, -30)`)
+    .attr("transform", `translate(${width - 30}, -30)`)
     .on("mouseover", function () {
       legendGroup.style("display", "block");
     })
@@ -608,18 +584,18 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
   const legendBackground = legendGroup
     .append("rect")
-    .attr("x", 625)
+    .attr("x", width - 235)
     .attr("y", 0)
-    .attr("width", 180)
-    .attr("height", 120)
+    .attr("width", 235)
+    .attr("height", 100)
     .attr("fill", "white")
     .attr("stroke", "black");
 
   const legendData = [
-    { color: "#D32F2F", label: "Calidad Mala (0-35)" },
-    { color: "#FBC02D", label: "Calidad Aceptable (36-49)" },
-    { color: "#228B22", label: "Calidad Buena (50-84)" },
-    { color: "#00008B", label: "Calidad Excelente (85-100)" },
+    { color: "#D32F2F", label: "Contaminación alta (0-35)" },
+    { color: "#FBC02D", label: "Contaminación Moderada (36-49)" },
+    { color: "#228B22", label: "Poca Contaminación (50-84)" },
+    { color: "#00008B", label: "Poca Contaminación (85>)" },
   ];
 
   legendGroup
@@ -628,7 +604,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .enter()
     .append("rect")
     .attr("class", "legend-item")
-    .attr("x", 630)
+    .attr("x", width - 230)
     .attr("y", (d, i) => 20 + i * 20)
     .attr("width", 18)
     .attr("height", 18)
@@ -640,7 +616,7 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
     .enter()
     .append("text")
     .attr("class", "legend-item")
-    .attr("x", 650)
+    .attr("x", width - 210)
     .attr("y", (d, i) => 29 + i * 20)
     .attr("dy", ".35em")
     .attr("font-size", "12px")
