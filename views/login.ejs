@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="resources/css/style.css">
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card p-4 shadow login-card" id="loginCard">
+            <h2 class="text-center mb-4">Iniciar Sesión</h2>
+    
+            <% if (typeof alert !== "undefined" && alert) { %>
+                <div class="alert alert-<%= alertIcon === 'error' ? 'danger' : 'success' %> text-center" role="alert">
+                    <strong><%= alertTitle %></strong> - <%= alertMessage %>
+                </div>
+            <% } %>
+    
+            <form id="loginForm" action="/auth" method="post">
+                <div class="mb-3">
+                    <label for="loginEmail" class="form-label">Correo Electrónico</label>
+                    <input type="email" name="user" 
+                        class="form-control <%= (typeof alertTitle !== 'undefined' && alertTitle === 'Error') ? 'is-invalid' : '' %>" 
+                        id="loginEmail" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Contraseña</label>
+                    <input type="password" name="pass" 
+                        class="form-control <%= (typeof alertTitle !== 'undefined' && alertTitle === 'Error') ? 'is-invalid' : '' %>" 
+                        id="loginPassword" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+            </form>
+    
+            <div class="text-center mt-3">
+                <p>¿No tienes una cuenta? <a href="register" id="showRegister">Regístrate</a></p>
+              
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

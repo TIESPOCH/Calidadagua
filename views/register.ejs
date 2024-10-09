@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="resources/css/login/style.css">
+   
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card p-4 shadow login-card" id="registerCard">
+            <h2 class="text-center mb-4">Registro de Usuario</h2>
+            <form id="register" method="post">
+                <div class="mb-3">
+                    <label for="registerNombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="registerNombre" name="registerNombre" placeholder="Nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerApellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="registerApellido" name="registerApellido" placeholder="Apellido" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerEdad" class="form-label">Edad</label>
+                    <input type="number" class="form-control" id="registerEdad" name="registerEdad" placeholder="Edad" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerPais" class="form-label">País</label>
+                    <input type="text" class="form-control" id="registerPais" name="registerPais" placeholder="País" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerProvincia" class="form-label">Provincia</label>
+                    <input type="text" class="form-control" id="registerProvincia" name="registerProvincia" placeholder="Provincia" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerCiudad" class="form-label">Ciudad</label>
+                    <input type="text" class="form-control" id="registerCiudad" name="registerCiudad" placeholder="Ciudad" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerEmpleo" class="form-label">Empleo</label>
+                    <select class="form-select" id="registerEmpleo" name="registerEmpleo" required>
+                        <option value="" selected disabled>Selecciona...</option>
+                        <option value="inicial">Educación Inicial</option>
+                              <option value="elemental">Básica Elemental</option>
+                              <option value="media">Básica Media</option>
+                              <option value="superior">Básica Superior</option>
+                              <option value="bgu">Bachillerato General Unificado (BGU)</option>
+                              <option value="tecnico">Bachillerato Técnico</option>
+                              <option value="tecnica">Educación Técnica y Tecnológica</option>
+                              <option value="universitaria">Educación Universitaria</option>
+                              <option value="maestria">Maestría</option>
+                              <option value="doctorado">Doctorado</option>
+                              <option value="ninguno">Ninguno</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="registerEmail" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="registerEmail" name="registerEmail" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerPassword" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="registerPassword" name="registerContraseña" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            </form>
+            <div class="text-center mt-3">
+                <p>¿Ya tienes una cuenta? <a href="login" id="showLogin">Inicia sesión</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+    <% if (typeof alert != "undefined") { %>
+        <script>
+           Swal.fire({
+              title: '<%= alertTitle %>',
+              text: '<%= alertMessage %>',
+              showConfirmButton: <%= showConfirmation %>,
+              timer: <%= timer %>
+           }).then(() => {
+              window.location = '<%= ruta %>';
+           });
+        </script>
+    <% } %>
+    
+</body>
+</html>

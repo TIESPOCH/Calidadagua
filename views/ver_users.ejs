@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title></title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="resources/panel/ver_users/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="resources/panel/ver_users/css/custom.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="resources/panel/ver_users/css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="resources/panel/ver_users/css/styles.css"/>
+    <!-- D3 -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="resources/panel/ver_users/js/script.js" defer></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="body-overlay"></div>
+      <!-- Sidebar -->
+      <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><img src="resources/calinagua/img/logo.png" class="img-fluid"/><span>CALINAGUA</span></h3>
+        </div>
+        <ul class="list-unstyled components">
+          <li  class="active">
+               <a href="admin" class="dashboard"><i class="material-icons">dashboard</i><span>Usuarios</span></a>
+           </li>
+ 
+           <li  class="active">
+             <a href="ver_users" class="dashboard"><i class="material-icons">aspect_ratio</i><span>Ver usuarios</span></a>
+          </li>
+          <li  class="active">
+             <a href="ingreso_usuarios" class="dashboard"><i class="material-icons">aspect_ratio</i><span>Ingresos users</span></a>
+          </li>
+          <li  class="active">
+           <a href="registro_admins" class="dashboard"><i class="material-icons">aspect_ratio</i><span>Administradores</span></a>
+         </li>
+         <li  class="active">
+         <a href="ver_admins" class="dashboard"><i class="material-icons">aspect_ratio</i><span>Ver admins</span></a>
+         </li>
+         <li  class="active">
+         <a href="ingreso_admins" class="dashboard"><i class="material-icons">aspect_ratio</i><span>Ingresos admins</span></a>
+         </li>
+         
+   </ul>
+      
+    </nav>
+
+      <!-- Page Content -->
+      <div id="content">
+        <div class="top-navbar">
+          <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+              <!-- Botón de colapso del sidebar -->
+              <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
+                <span class="material-icons">arrow_back_ios</span>
+              </button>
+        
+              <!-- Título centrado -->
+              <a class="navbar-brand mx-auto text-center">
+                <h2 style="color: white; font-weight: bold; font-size: 2rem;">Panel de administración / Ver Usuarios</h2>
+              </a>
+             
+              <!-- Botón de menú móvil -->
+              <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="material-icons">more_vert</span>
+              </button>
+        
+              <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none" id="navbarSupportedContent">
+                <ul class="nav navbar-nav ml-auto">
+                  <!-- Aquí puedes añadir elementos adicionales si es necesario -->
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+        <div class="main-content">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead class="thead-dark">
+                  <tr>
+                      <th>Id</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Edad</th>
+                      <th>Pais</th>
+                      <th>Provincia</th>
+                      <th>Ciudad</th>
+                      <th>Empleo</th>
+                      <th>Correo</th>
+                      <th>Contraseña</th>
+                      <th>Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+                <% if (results && results.length > 0) { %>
+                    <% results.forEach((usuario) => { %>
+                        <tr>
+                            <td contenteditable="false"><%= usuario.id_us %></td>
+                            <td contenteditable="true"><%= usuario.nombre_us %></td>
+                            <td contenteditable="true"><%= usuario.apellido_us %></td>
+                            <td contenteditable="true"><%= usuario.edad_us %></td>
+                            <td contenteditable="true"><%= usuario.pais_us %></td>
+                            <td contenteditable="true"><%= usuario.provincia_us %></td>
+                            <td contenteditable="true"><%= usuario.ciudad_us %></td>
+                            <td contenteditable="true"><%= usuario.empleo_us %></td>
+                            <td contenteditable="true"><%= usuario.correo_us %></td>
+                            <td contenteditable="true"><%= usuario.contrasenia_us %></td>
+                            <td>
+                                <!-- Botón para guardar cambios -->
+                                <button class="btn btn-outline-info" onclick="actualizarUsuario(<%= usuario.id_us %>, this)">Guardar</button>
+                                <!-- Botón para eliminar registro -->
+                                <button class="btn btn-outline-danger" onclick="eliminarUsuario(<%= usuario.id_us %>)">Eliminar</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="11">No hay usuarios para mostrar</td>
+                    </tr>
+                <% } %>
+              </tbody>
+          </table>
+          
+          
+                
+                
+            </div>
+            
+            <script>
+              // Cambiar el placeholder del campo de búsqueda dependiendo del campo seleccionado
+              document.getElementById('campoBusqueda').addEventListener('change', function() {
+                const campoSeleccionado = this.value;
+                const placeholderInput = document.getElementById('valorBusqueda');
+            
+                // Condicional para agregar "el" o "la" dependiendo del campo seleccionado
+                if (['id_us','nombre_us', 'apellido_us', 'pais_us', 'empleo_us', 'correo_us'].includes(campoSeleccionado)) {
+                  placeholderInput.placeholder = `Ingrese el ${this.options[this.selectedIndex].text.toLowerCase()}`;
+                } else {
+                  placeholderInput.placeholder = `Ingrese la ${this.options[this.selectedIndex].text.toLowerCase()}`;
+                }
+              });
+            </script>
+            </div>
+            </div>
+          </div>
+    </div>
+    <!-- jQuery and Bootstrap Bundle -->
+    <script src="resources/panel/ver_users/js/jquery-3.3.1.min.js"></script>
+    <script src="resources/panel/ver_users/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="resources/panel/ver_users/js/custom.js"></script>
+  </body>
+</html>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+              $('#sidebarCollapse').on('click', function () {
+                  $('#sidebar').toggleClass('active');
+                  $('#content').toggleClass('active');
+              });
+              
+               $('.more-button,.body-overlay').on('click', function () {
+                  $('#sidebar,.body-overlay').toggleClass('show-nav');
+              });
+              
+          });
+  
+  
+       
+             
+         
+  </script>
+    
+    

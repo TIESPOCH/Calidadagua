@@ -1,0 +1,118 @@
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    padding-right: 30px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.controls label {
+    font-weight: bold;
+}
+
+.controls select {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    appearance: none;
+}
+
+.controls select:hover {
+    border-color: #888;
+}
+
+.controls select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 4px rgba(0, 86, 179, 0.5);
+    outline: none;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Ajuste del tamaño del formulario hacia la derecha */
+#userForm {
+    max-width: 100%;
+    margin-right: 10px;
+}
+
+#userForm .form-control, 
+#userForm .form-select {
+    font-size: 16px;
+    padding: 10px;
+    height: auto;
+}
+
+/* Media Queries adaptadas */
+@media (max-width: 1200px) {
+    .top-content, .col-md-9, .col-md-3 {
+        height: auto;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 120px;
+    }
+    #content {
+        margin-left: 120px;
+    }
+    .top-content, .col-md-9, .col-md-3 {
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100px;
+    }
+    #content {
+        margin-left: 100px;
+    }
+    .top-content, .col-md-9, .col-md-3 {
+        height: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        width: 80px;
+    }
+    #content {
+        margin-left: 80px;
+    }
+    .controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .sidebar {
+        width: 20px;
+    }
+    #content {
+        margin-left: 1px;
+    }
+}

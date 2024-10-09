@@ -1,0 +1,62 @@
+-- Crear la base de datos
+CREATE DATABASE rios_prueba;
+USE rios_prueba;
+
+-- Tabla usuarios
+CREATE TABLE usuarios (
+    id_us INT(11) AUTO_INCREMENT PRIMARY KEY,
+    nombre_us VARCHAR(50),
+    apellido_us VARCHAR(50),
+    edad_us INT(3),
+    pais_us VARCHAR(25),
+    provincia_us VARCHAR(50),
+    ciudad_us VARCHAR(50),
+    empleo_us VARCHAR(50),
+    correo_us VARCHAR(100),
+    contrasenia_us VARCHAR(255)
+);
+
+-- Tabla ingresos_users
+CREATE TABLE ingresos_users (
+    id_ingus INT(11) AUTO_INCREMENT PRIMARY KEY,
+    hora_ingus TIME,
+    fecha_ingus DATE,
+    id_user INT(11),
+    FOREIGN KEY (id_user) REFERENCES usuarios(id_us)
+);
+
+-- Tabla monitoreo
+CREATE TABLE monitoreo (
+    id_moni INT(11) AUTO_INCREMENT PRIMARY KEY,
+    fecha_moni DATE,
+    descripcion_moni VARCHAR(100),
+    id_use INT(11),
+    id_ad INT(11),
+    FOREIGN KEY (id_use) REFERENCES usuarios(id_us),
+    FOREIGN KEY (id_ad) REFERENCES administradores(id_ad)
+);
+
+-- Tabla administradores
+CREATE TABLE administradores (
+    id_ad INT(11) AUTO_INCREMENT PRIMARY KEY,
+    nombre_ad VARCHAR(50),
+    apellido_ad VARCHAR(50),
+    cargo_ad VARCHAR(50),
+    usuario_ad VARCHAR(50),
+    contrasenia_ad VARCHAR(255),
+    correo_ad VARCHAR(100)
+);
+
+-- Tabla ingresos_admins
+CREATE TABLE ingresos_admins (
+    id_ingad INT(11) AUTO_INCREMENT PRIMARY KEY,
+    hora_ingad TIME,
+    fecha_ingad DATE,
+    id_ad INT(11),
+    FOREIGN KEY (id_ad) REFERENCES administradores(id_ad)
+);
+
+
+--creación del admin root
+INSERT INTO administradores (nombre_ad, apellido_ad, cargo_ad, usuario_ad, contrasenia_ad, correo_ad) 
+VALUES ('Root', 'Admin', 'Superadmin', 'root', root, 'root@admin.com');
