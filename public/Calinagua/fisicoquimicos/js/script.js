@@ -1,122 +1,227 @@
 let datosCSV = [];
 let datosFisicoquimicos = [];
 let rios = [
-    "RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
-    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR",
-    "RIO BLANCO", "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI ",
-    "RIO YUNGANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
-    "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
-    "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
-    "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
-    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA ",
-    "RIO WAWAIM GRANDE", "RIO LUSHIN"
-];
+    "RIO BLANCO", "RIO CHAPIZA", "RIO CHIWIAS", "RIO EL CHURO", "RIO EL IDEAL",
+    "RIO HUASAGA", "RIO JURUMBAINO", "RIO KALAGLAS", "RIO LUSHIN", "RIO LUSHIN",
+    "RIO MANGOSIZA", "RIO MIRIUMI", "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO NAMANGOZA",
+    "RIO PAN DE AZÚCAR", "RIO PALORA", "RIO PALORA", "RIO PANGUIETZA", "RIO PASTAZA",
+    "RIO PASTAZA", "RIO PUCHIMI", "RIO SANGAY", "RIO SANTIAGO", "RIO TUNA",
+    "RIO TUNA CHIGUAZA", "RIO TZURIN", "RIO UPANO", "RIO WAWAIM GRANDE", "RIO YAAPI",
+    "RIO YUQUIPA", "RIO YUNGANZA", "RIO ZAMORA", "RIO ZAMORA", "RIO TUTANANGOZA"
+  ];
+  
 
-document.addEventListener("DOMContentLoaded", function () {
-    const selectRio = document.getElementById('rio-select');
-    const selectPuntos = document.getElementById('puntos-select');
-    rios.forEach(rio => {
-        const option = document.createElement('option');
-        option.value = rio;
-        option.text = rio;
-        selectRio.add(option);
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectRio = document.getElementById("rio-select");
+    const selectPuntos = document.getElementById("puntos-select");
+    const selectAnio = document.getElementById("anio-select");
+    let datosBiologicos = [];
+  
+    // Poblado del select de ríos
+    rios.forEach((rio) => {
+      const option = document.createElement("option");
+      option.value = rio;
+      option.text = rio;
+      selectRio.add(option);
     });
-
-    selectRio.addEventListener('change', function() {
-        limpiarGrafico(); // Solo limpiar gráficos, no la tabla
-        const nombreRioSeleccionado = selectRio.value;
-        if (!nombreRioSeleccionado) {
-            mostrarPopupError("Por favor, seleccione un río.");
-            return;
-        }
-        const puntos = datosFisicoquimicos
-            .filter(dato => dato.RIO === nombreRioSeleccionado)
-            .map(dato => dato.PUNTO) // Cambia 'PUNTO' por el nombre de la columna que tiene los puntos
-            .filter((v, i, a) => a.indexOf(v) === i); // Eliminar duplicados
-
-        selectPuntos.innerHTML = '<option value="">Seleccione un punto</option>';
-        puntos.forEach(punto => {
-            const option = document.createElement('option');
-            option.value = punto;
-            option.text = punto;
-            selectPuntos.add(option);
-        });
+  
+    // Evento cuando se selecciona un río
+    selectRio.addEventListener("change", function () {
+      const nombreRioSeleccionado = selectRio.value;
+      if (!nombreRioSeleccionado) return mostrarPopupError("Seleccione un río.");
+  
+      limpiarSelects(selectPuntos, selectAnio);
+      poblarSelectPuntos(nombreRioSeleccionado);
     });
-
-    selectPuntos.addEventListener('change', function() {
-        buscarDatos();
+  
+    // Evento cuando se selecciona un punto
+    selectPuntos.addEventListener("change", function () {
+      const puntoSeleccionado = selectPuntos.value;
+      if (!puntoSeleccionado) return mostrarPopupError("Seleccione un punto.");
+  
+      limpiarSelects(selectAnio);
+      poblarSelectAnios(puntoSeleccionado);
     });
-
-    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
-    const toggleBtn = document.getElementById('sidebar-toggle-btn');
-    toggleBtn.addEventListener("click", function () {
-        const sidebar = document.querySelector(".sidebar");
-        const content = document.querySelector(".content");
-        const icon = toggleBtn.querySelector("i");
-    
-        sidebar.classList.toggle("collapsed");
-        content.classList.toggle("expanded");
-    
-        if (sidebar.classList.contains("collapsed")) {
-          icon.classList.remove("fa-chevron-right");
-          icon.classList.add("fa-chevron-left");
-        } else {
-          icon.classList.remove("fa-chevron-left");
-          icon.classList.add("fa-chevron-right");
-        }
+  
+    // Evento cuando se selecciona un año
+    selectAnio.addEventListener("change", function () {
+      if (selectAnio.value) buscarDatos();
+    });
+  
+    // Función para limpiar selects
+    function limpiarSelects(...selects) {
+      selects.forEach((select) => {
+        select.innerHTML = '<option value="">Seleccione una opción</option>';
       });
-});
-
-function cargarDatosCSV(url, tablaId) {
-    Papa.parse(url, {
+    }
+  
+    // Función para poblar el select de puntos
+    function poblarSelectPuntos(rio) {
+      const puntos = datosBiologicos
+        .filter((dato) => dato.RIO === rio)
+        .map((dato) => dato.PUNTO)
+        .filter((v, i, a) => a.indexOf(v) === i); // Eliminar duplicados
+  
+      puntos.forEach((punto) => {
+        const option = document.createElement("option");
+        option.value = punto;
+        option.text = punto;
+        selectPuntos.add(option);
+      });
+    }
+  
+    function poblarSelectAnios() {
+        // Limpiar opciones del select
+        selectAnio.innerHTML = '';
+      
+        const aniosSet = new Set(); // Usar un Set para evitar duplicados
+      
+        datosBiologicos.forEach(dato => {
+            let anio; // Variable para almacenar el año
+        
+            if (dato.FECHA instanceof Date) {
+                // Si FECHA es un objeto Date, obtener el año
+                anio = dato.FECHA.getFullYear();
+            } else if (typeof dato.FECHA === "string") {
+                // Si FECHA es una cadena, dividir para obtener el año
+                const fechaParts = dato.FECHA.split(/[-\/]/);
+                anio = fechaParts[0].length === 4 ? fechaParts[0] : fechaParts[2];
+            } else {
+                console.warn("Formato de fecha no válido:", dato.FECHA); // Advertencia
+                return; // Salir si el formato no es válido
+            }
+        
+            // Convertir el año en número para evitar inconsistencias de formato
+            anio = Number(anio);
+            
+            // Agregar el año al Set
+            if (!isNaN(anio)) {
+                aniosSet.add(anio);  // Solo agregar si el año es válido
+            }
+        });
+      
+        // Convertir el Set a un Array y ordenarlo
+        const aniosOrdenados = Array.from(aniosSet).sort((a, b) => a - b);
+      
+        // Agregar las opciones al select
+        aniosOrdenados.forEach(anio => {
+            const option = document.createElement('option');
+            option.value = anio;
+            option.textContent = anio;
+            selectAnio.appendChild(option);
+        });
+      
+        // Agregar opción para "Todos"
+        const optionTodos = document.createElement('option');
+        optionTodos.value = "Todos";
+        optionTodos.textContent = "Todos";
+        selectAnio.appendChild(optionTodos);
+    }
+    
+    function buscarDatos() {
+      const nombreRioSeleccionado = selectRio.value;
+      const puntoSeleccionado = selectPuntos.value;
+      const anioSeleccionado = selectAnio.value;
+    
+      // Filtrar datos por río y punto
+      let datosFiltrados = datosBiologicos.filter(
+        (dato) =>
+          dato.RIO === nombreRioSeleccionado && dato.PUNTO === puntoSeleccionado
+      );
+    
+      if (anioSeleccionado !== "Todos") {
+        datosFiltrados = datosFiltrados.filter((dato) => {
+          let anio;
+    
+          // Verificar si FECHA es un objeto Date o una cadena
+          if (dato.FECHA instanceof Date) {
+            anio = dato.FECHA.getFullYear(); // Si es Date, obtener año
+          } else if (typeof dato.FECHA === "string") {
+            const fechaParts = dato.FECHA.split(/[-\/]/);
+            anio = fechaParts[0].length === 4 ? fechaParts[0] : fechaParts[2];
+          } else {
+            console.warn("Dato sin fecha válida:", dato); // Advertencia
+            return false; // Excluir datos sin fecha válida
+          }
+    
+          return anio == anioSeleccionado; // Comparación segura
+        });
+      }
+    
+      console.log("Datos filtrados:", datosFiltrados); // Depuración
+    
+      actualizarTabla(datosFiltrados, "tabla2"); // Actualizar tabla
+      limpiarGrafico(); // Limpiar gráfico anterior
+    
+      if (datosFiltrados.length > 0) {
+        actualizarGraficas(datosFiltrados, puntoSeleccionado); // Generar gráficos
+      }
+    
+    
+    
+      // Asegurar que siempre se actualice la tabla y los gráficos
+      console.log("Datos filtrados:", datosFiltrados); // Depuración
+    
+      actualizarTabla(datosFiltrados, "tabla2"); // Llenar la tabla con los datos nuevos
+      limpiarGrafico(); // Asegurar que los gráficos se eliminen antes de generar nuevos
+    
+      if (datosFiltrados.length > 0) {
+        actualizarGraficas(datosFiltrados, puntoSeleccionado); // Generar gráficos nuevos
+      } else {
+        mostrarPopupError("No hay datos disponibles para esta selección.");
+      }
+    }
+    
+    
+    function actualizarGraficas(datos, punto) {
+        limpiarGrafico();
+        // Generar nuevo gráfico usando el parámetro 'datos'
+        generarGrafico(datos, punto, '#grafico1');
+        generarGrafico2(datos, '#grafico2');
+        generarGrafico3(datos, '#grafico3');
+        generarGrafico4(datos, '#grafico4');
+        generarGrafico5(datos, '#grafico5');
+        generarGrafico6(datos, '#grafico6');
+        generarGrafico7(datos, '#grafico7');
+        generarGrafico8(datos, '#grafico8');
+        generarGrafico9(datos, '#grafico9');
+      }
+      
+      
+    // Cargar los datos CSV al cargar la página
+    cargarDatosCSV('https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/Parametrosfisio.csv', 'tabla2');
+   // Limpiar cualquier gráfico previo
+    function cargarDatosCSV(url, tablaId) {
+      Papa.parse(url, {
         download: true,
         header: true,
-        complete: function(results) {
-            datosFisicoquimicos = results.data;
-            actualizarTabla(datosFisicoquimicos, tablaId); // Actualizar la tabla después de cargar los datos
+        complete: function (results) {
+          datosBiologicos = results.data;
+          actualizarTabla(datosBiologicos, tablaId);
         },
-        error: function(error) {
-            mostrarPopupError("Error al cargar el archivo CSV: " + error.message);
-        }
+        error: function (error) {
+          mostrarPopupError("Error al cargar CSV: " + error.message);
+        },
+      });
+    }
+  
+    const toggleBtn = document.getElementById("sidebar-toggle-btn");
+    toggleBtn.addEventListener("click", function () {
+      const sidebar = document.querySelector(".sidebar");
+      const content = document.querySelector(".content");
+      const icon = toggleBtn.querySelector("i");
+  
+      sidebar.classList.toggle("collapsed");
+      content.classList.toggle("expanded");
+  
+      icon.classList.toggle("fa-chevron-right", sidebar.classList.contains("collapsed"));
+      icon.classList.toggle("fa-chevron-left", !sidebar.classList.contains("collapsed"));
     });
-}
-
-function buscarDatos() {
-    const selectRios = document.getElementById('rio-select');
-    const selectPuntos = document.getElementById('puntos-select');
-    const nombreRioSeleccionado = selectRios.value;
-    const puntoSeleccionado = selectPuntos.value;
-
-    if (!nombreRioSeleccionado) {
-        mostrarPopupError("Por favor, seleccione un río.");
-        return;
-    }
-
-    if (!puntoSeleccionado) {
-        mostrarPopupError("Por favor, seleccione un punto.");
-        return;
-    }
-
-    let datosFiltrados = datosFisicoquimicos.filter(dato => dato.RIO === nombreRioSeleccionado && dato.PUNTO === puntoSeleccionado);
-    
-    actualizarTabla(datosFiltrados, 'tabla2');
-    
-    // Limpiar cualquier gráfico previo
-    limpiarGrafico();
-
-    // Generar nuevo gráfico
-    generarGrafico(datosFiltrados, puntoSeleccionado, '#grafico1');
-    generarGrafico2(datosFiltrados, '#grafico2');
-    generarGrafico3(datosFiltrados, '#grafico3');
-    generarGrafico4(datosFiltrados, '#grafico4');
-    generarGrafico5(datosFiltrados, '#grafico5');
-    generarGrafico6(datosFiltrados, '#grafico6');
-    generarGrafico7(datosFiltrados, '#grafico7');
-    generarGrafico8(datosFiltrados, '#grafico8');
-    generarGrafico9(datosFiltrados, '#grafico9');
-}
-
-function limpiarGrafico() {
+  });
+  
+  
+  
+  function limpiarGrafico() {
     d3.select("#grafico1 svg").remove();
     d3.select("#grafico2 svg").remove();
     d3.select("#grafico3 svg").remove();
@@ -128,18 +233,19 @@ function limpiarGrafico() {
     d3.select("#grafico9 svg").remove();
 }
 
-function mostrarPopupError(mensaje) {
-    const popup = document.getElementById('error-popup');
-    const popupText = document.getElementById('error-popup-text');
+  
+  function mostrarPopupError(mensaje) {
+    const popup = document.getElementById("error-popup");
+    const popupText = document.getElementById("error-popup-text");
     popupText.textContent = mensaje;
-    popup.style.display = 'block';
-}
-
-function cerrarPopup() {
-    const popup = document.getElementById('error-popup');
-    popup.style.display = 'none';
-}
-
+    popup.style.display = "block";
+  }
+  
+  function cerrarPopup() {
+    const popup = document.getElementById("error-popup");
+    popup.style.display = "none";
+  }
+  
 function actualizarTabla(datos, tablaId) {
     const tabla = document.getElementById(tablaId);
     const thead = tabla.querySelector('thead tr');
@@ -715,48 +821,71 @@ function generarGrafico9(datos, contenedor) {
 
 
 function generarGrafico(data, puntoSeleccionado, contenedor) {
-    // Convertir fechas y calidad del agua a números
-    data.forEach(d => {
-        d.FECHA = new Date(d.FECHA);
-        d['CALIDAD AGUA NSF'] = +d['CALIDAD AGUA NSF'];
-    });
+   // Convertir fechas y calidad del agua a números
+data.forEach(d => {
+    d.FECHA = new Date(d.FECHA);  // Convertir FECHA a un objeto Date
+    d['CALIDAD AGUA NSF'] = +d['CALIDAD AGUA NSF'];  // Asegurar que CALIDAD AGUA NSF es un número
+});
 
-    // Ordenar los datos por fecha
-    data.sort((a, b) => a.FECHA - b.FECHA);
+// Encontrar la fecha mínima y máxima en los datos para definir el dominio del eje X
+const minFecha = d3.min(data, d => d.FECHA);
+const maxFecha = d3.max(data, d => d.FECHA);
 
-    // Definir los colores para los rangos de calidad del agua
-    const colorScale = d3.scaleThreshold()
-        .domain([50.09, 68.25])
-        .range(['#D32F2F', '#FBC02D', '#388E3C']); 
+// Añadir un mes a la última fecha
+const maxFechaExtendida = d3.timeMonth.offset(maxFecha, 0.5);
 
-    // Encontrar el mínimo y máximo de CALIDAD AGUA NSF en los datos filtrados
-    const minCalidadAgua = d3.min(data, d => d['CALIDAD AGUA NSF']);
-    const maxCalidadAgua = d3.max(data, d => d['CALIDAD AGUA NSF']);
+// Filtrar los datos para empezar desde la fecha mínima encontrada (opcional)
+data = data.filter(d => d.FECHA >= minFecha);
 
-    // Definir el dominio del eje y extendido
-    const yDomain = [Math.min(40, minCalidadAgua), Math.max(75, maxCalidadAgua)];
+// Ordenar los datos por fecha nuevamente
+data.sort((a, b) => a.FECHA - b.FECHA);
 
-    // Obtener las dimensiones del contenedor
-    const containerWidth = d3.select(contenedor).node().clientWidth;
-    const containerHeight = d3.select(contenedor).node().clientHeight;
+// Definir los colores para los rangos de calidad del agua
+const colorScale = d3.scaleThreshold()
+    .domain([50.09, 68.25])
+    .range(['#D32F2F', '#FBC02D', '#388E3C']);
 
-    const margin = { top: 20, right: 20, bottom: 70, left: 50 },
-        width = containerWidth - margin.left - margin.right,
-        height = containerHeight - margin.top - margin.bottom;
+// Encontrar el mínimo y máximo de CALIDAD AGUA NSF en los datos
+const minCalidadAgua = d3.min(data, d => d['CALIDAD AGUA NSF']);
+const maxCalidadAgua = d3.max(data, d => d['CALIDAD AGUA NSF']);
 
-    const svg = d3.select(contenedor).append("svg")
-        .attr("width", containerWidth)
-        .attr("height", containerHeight)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// Definir el dominio del eje y extendido
+const yDomain = [Math.min(40, minCalidadAgua), Math.max(75, maxCalidadAgua)];
 
-    const x = d3.scaleTime()
-        .domain([d3.min(data, d => d.FECHA), new Date(2024, 0, 1)]) // Extender hasta 2024
-        .range([0, width]);
+// Definir el número de ticks en el eje x dependiendo de la cantidad de datos
+let ticksCount = data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
 
-    const y = d3.scaleLinear()
-        .domain(yDomain)
-        .range([height, 0]);
+// Obtener las dimensiones del contenedor
+const containerWidth = d3.select(contenedor).node().getBoundingClientRect().width;
+const containerHeight = d3.select(contenedor).node().getBoundingClientRect().height;
+
+const margin = { top: 20, right: 20, bottom: 70, left: 50 },
+    width = containerWidth - margin.left - margin.right,
+    height = containerHeight - margin.top - margin.bottom;
+
+// Eliminar cualquier SVG existente dentro del contenedor
+d3.select(contenedor).selectAll("svg").remove();
+
+// Crear el contenedor SVG
+const svg = d3.select(contenedor).append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Definir la escala del eje X (fechas) desde la fecha mínima hasta un mes después de la última fecha
+const x = d3.scaleTime()
+    .domain([minFecha, maxFechaExtendida]) // Extender el dominio del eje X con un mes extra
+    .range([0, width]);
+
+// Definir la escala del eje Y (calidad del agua)
+const y = d3.scaleLinear()
+    .domain(yDomain)
+    .nice()  // Mejorar la apariencia del eje Y
+    .range([height, 0]);
+
+// Aquí se puede seguir implementando los ejes, líneas o barras del gráfico como corresponda
+
 
     // Añadir líneas entrecortadas cada 5 unidades en el eje Y con colores de rango
     const yTickValues = d3.range(Math.floor(yDomain[0] / 5) * 5, Math.ceil(yDomain[1] / 5) * 5 + 5, 5);

@@ -1,16 +1,23 @@
 let datosCSV = [];
 let datosBiologicos = [];
 let rios = [
-  "RIO HUASAGA","RIO CHAPIZA","RIO ZAMORA","RIO UPANO","RIO JURUMBAINO","RIO KALAGLAS","RIO YUQUIPA",
-  "RIO PAN DE AZÚCAR","RIO BLANCO","RIO TUTANANGOZA","RIO INDANZA","RIO MIRIUMI ",
-  "RIO YUNGANZA","RIO CUYES","RIO ZAMORA","RIO EL IDEAL","RIO MORONA","RIO MUCHINKIN",
-  "RIO NAMANGOZA","RIO SANTIAGO","RIO PASTAZA","RIO CHIWIAS","RIO TUNA CHIGUAZA","RÍO PALORA", "RIO LUSHIN","RIO SANGAY","RIO NAMANGOZA","RIO PAUTE","RIO YAAPI","RIO HUAMBIAZ","RIO TZURIN","RIO MANGOSIZA","RIO PUCHIMI","RIO EL CHURO","RIO MACUMA",
-"RIO PANGUIETZA","RIO PASTAZA","RIO PALORA","RIO TUNA ","RIO WAWAIM GRANDE","RIO LUSHIN",
+  "RIO BLANCO", "RIO CHAPIZA", "RIO CHIWIAS", "RIO EL CHURO", "RIO EL IDEAL",
+  "RIO HUASAGA", "RIO JURUMBAINO", "RIO KALAGLAS", "RIO LUSHIN", "RIO LUSHIN",
+  "RIO MANGOSIZA", "RIO MIRIUMI", "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO NAMANGOZA",
+  "RIO PAN DE AZÚCAR", "RIO PALORA", "RIO PALORA", "RIO PANGUIETZA", "RIO PASTAZA",
+  "RIO PASTAZA", "RIO PUCHIMI", "RIO SANGAY", "RIO SANTIAGO", "RIO TUNA",
+  "RIO TUNA CHIGUAZA", "RIO TZURIN", "RIO UPANO", "RIO WAWAIM GRANDE", "RIO YAAPI",
+  "RIO YUQUIPA", "RIO YUNGANZA", "RIO ZAMORA", "RIO ZAMORA", "RIO TUTANANGOZA"
 ];
+
 
 document.addEventListener("DOMContentLoaded", function () {
   const selectRio = document.getElementById("rio-select");
   const selectPuntos = document.getElementById("puntos-select");
+  const selectAnio = document.getElementById("anio-select");
+  let datosBiologicos = [];
+
+  // Poblado del select de ríos
   rios.forEach((rio) => {
     const option = document.createElement("option");
     option.value = rio;
@@ -18,38 +25,184 @@ document.addEventListener("DOMContentLoaded", function () {
     selectRio.add(option);
   });
 
+  // Evento cuando se selecciona un río
   selectRio.addEventListener("change", function () {
-    // Limpiar solo los gráficos, no la tabla
-    limpiarGrafico();
     const nombreRioSeleccionado = selectRio.value;
-    if (!nombreRioSeleccionado) {
-      mostrarPopupError("Por favor, seleccione un río.");
-      return;
-    }
+    if (!nombreRioSeleccionado) return mostrarPopupError("Seleccione un río.");
+
+    limpiarSelects(selectPuntos, selectAnio);
+    poblarSelectPuntos(nombreRioSeleccionado);
+  });
+
+  // Evento cuando se selecciona un punto
+  selectPuntos.addEventListener("change", function () {
+    const puntoSeleccionado = selectPuntos.value;
+    if (!puntoSeleccionado) return mostrarPopupError("Seleccione un punto.");
+
+    limpiarSelects(selectAnio);
+    poblarSelectAnios(puntoSeleccionado);
+  });
+
+  // Evento cuando se selecciona un año
+  selectAnio.addEventListener("change", function () {
+    if (selectAnio.value) buscarDatos();
+  });
+
+  // Función para limpiar selects
+  function limpiarSelects(...selects) {
+    selects.forEach((select) => {
+      select.innerHTML = '<option value="">Seleccione una opción</option>';
+    });
+  }
+
+  // Función para poblar el select de puntos
+  function poblarSelectPuntos(rio) {
     const puntos = datosBiologicos
-      .filter((dato) => dato.RIO === nombreRioSeleccionado)
+      .filter((dato) => dato.RIO === rio)
       .map((dato) => dato.PUNTO)
       .filter((v, i, a) => a.indexOf(v) === i); // Eliminar duplicados
 
-    selectPuntos.innerHTML = '<option value="">Seleccione un punto</option>';
     puntos.forEach((punto) => {
       const option = document.createElement("option");
       option.value = punto;
       option.text = punto;
       selectPuntos.add(option);
     });
-  });
+  }
 
-  selectPuntos.addEventListener("change", function () {
-    buscarDatos();
-  });
+  function poblarSelectAnios() {
+    // Limpiar opciones del select
+    selectAnio.innerHTML = '';
+  
+    const aniosSet = new Set(); // Usar un Set para evitar duplicados
+  
+    datosBiologicos.forEach(dato => {
+        let anio; // Variable para almacenar el año
+    
+        if (dato.FECHA instanceof Date) {
+            // Si FECHA es un objeto Date, obtener el año
+            anio = dato.FECHA.getFullYear();
+        } else if (typeof dato.FECHA === "string") {
+            // Si FECHA es una cadena, dividir para obtener el año
+            const fechaParts = dato.FECHA.split(/[-\/]/);
+            anio = fechaParts[0].length === 4 ? fechaParts[0] : fechaParts[2];
+        } else {
+            console.warn("Formato de fecha no válido:", dato.FECHA); // Advertencia
+            return; // Salir si el formato no es válido
+        }
+    
+        // Convertir el año en número para evitar inconsistencias de formato
+        anio = Number(anio);
+        
+        // Agregar el año al Set
+        if (!isNaN(anio)) {
+            aniosSet.add(anio);  // Solo agregar si el año es válido
+        }
+    });
+  
+    // Convertir el Set a un Array y ordenarlo
+    const aniosOrdenados = Array.from(aniosSet).sort((a, b) => a - b);
+  
+    // Agregar las opciones al select
+    aniosOrdenados.forEach(anio => {
+        const option = document.createElement('option');
+        option.value = anio;
+        option.textContent = anio;
+        selectAnio.appendChild(option);
+    });
+  
+    // Agregar opción para "Todos"
+    const optionTodos = document.createElement('option');
+    optionTodos.value = "Todos";
+    optionTodos.textContent = "Todos";
+    selectAnio.appendChild(optionTodos);
+}
+  function buscarDatos() {
+    const nombreRioSeleccionado = selectRio.value;
+    const puntoSeleccionado = selectPuntos.value;
+    const anioSeleccionado = selectAnio.value;
+  
+    // Filtrar datos por río y punto
+    let datosFiltrados = datosBiologicos.filter(
+      (dato) =>
+        dato.RIO === nombreRioSeleccionado && dato.PUNTO === puntoSeleccionado
+    );
+  
+    if (anioSeleccionado !== "Todos") {
+      datosFiltrados = datosFiltrados.filter((dato) => {
+        let anio;
+  
+        // Verificar si FECHA es un objeto Date o una cadena
+        if (dato.FECHA instanceof Date) {
+          anio = dato.FECHA.getFullYear(); // Si es Date, obtener año
+        } else if (typeof dato.FECHA === "string") {
+          const fechaParts = dato.FECHA.split(/[-\/]/);
+          anio = fechaParts[0].length === 4 ? fechaParts[0] : fechaParts[2];
+        } else {
+          console.warn("Dato sin fecha válida:", dato); // Advertencia
+          return false; // Excluir datos sin fecha válida
+        }
+  
+        return anio == anioSeleccionado; // Comparación segura
+      });
+    }
+  
+    console.log("Datos filtrados:", datosFiltrados); // Depuración
+  
+    actualizarTabla(datosFiltrados, "tabla2"); // Actualizar tabla
+    limpiarGrafico(); // Limpiar gráfico anterior
+  
+    if (datosFiltrados.length > 0) {
+      actualizarGraficas(datosFiltrados, puntoSeleccionado); // Generar gráficos
+    }
+  
+  
+  
+    // Asegurar que siempre se actualice la tabla y los gráficos
+    console.log("Datos filtrados:", datosFiltrados); // Depuración
+  
+    actualizarTabla(datosFiltrados, "tabla2"); // Llenar la tabla con los datos nuevos
+    limpiarGrafico(); // Asegurar que los gráficos se eliminen antes de generar nuevos
+  
+    if (datosFiltrados.length > 0) {
+      actualizarGraficas(datosFiltrados, puntoSeleccionado); // Generar gráficos nuevos
+    } else {
+      mostrarPopupError("No hay datos disponibles para esta selección.");
+    }
+  }
+  
+  
+  // Función para actualizar las gráficas
+  function actualizarGraficas(datos, punto) {
+    limpiarGrafico(); // Asegurar que las gráficas anteriores se eliminen
+    generarGrafico(datos, punto, "#grafico1");
+    generarGraficoshanon(datos, punto, "#grafico2");
+    generarGrafico3(datos, "#grafico3");
+    generarGrafico4(datos, "#grafico4");
+    generarGrafico5(datos, "#grafico5");
+  }
 
+  // Cargar los datos CSV al cargar la página
   cargarDatosCSV(
     "https://raw.githubusercontent.com/TIESPOCH/Calidadagua/EdisonFlores/tablabio.csv",
     "tabla2"
   );
-  const toggleBtn = document.getElementById("sidebar-toggle-btn");
 
+  function cargarDatosCSV(url, tablaId) {
+    Papa.parse(url, {
+      download: true,
+      header: true,
+      complete: function (results) {
+        datosBiologicos = results.data;
+        actualizarTabla(datosBiologicos, tablaId);
+      },
+      error: function (error) {
+        mostrarPopupError("Error al cargar CSV: " + error.message);
+      },
+    });
+  }
+
+  const toggleBtn = document.getElementById("sidebar-toggle-btn");
   toggleBtn.addEventListener("click", function () {
     const sidebar = document.querySelector(".sidebar");
     const content = document.querySelector(".content");
@@ -58,63 +211,12 @@ document.addEventListener("DOMContentLoaded", function () {
     sidebar.classList.toggle("collapsed");
     content.classList.toggle("expanded");
 
-    if (sidebar.classList.contains("collapsed")) {
-      icon.classList.remove("fa-chevron-right");
-      icon.classList.add("fa-chevron-left");
-    } else {
-      icon.classList.remove("fa-chevron-left");
-      icon.classList.add("fa-chevron-right");
-    }
+    icon.classList.toggle("fa-chevron-right", sidebar.classList.contains("collapsed"));
+    icon.classList.toggle("fa-chevron-left", !sidebar.classList.contains("collapsed"));
   });
 });
 
-function cargarDatosCSV(url, tablaId) {
-  Papa.parse(url, {
-    download: true,
-    header: true,
-    complete: function (results) {
-      datosBiologicos = results.data;
-      actualizarTabla(datosBiologicos, tablaId); // Actualizar la tabla después de cargar los datos
-    },
-    error: function (error) {
-      mostrarPopupError("Error al cargar el archivo CSV: " + error.message);
-    },
-  });
-}
 
-function buscarDatos() {
-  const selectRios = document.getElementById("rio-select");
-  const selectPuntos = document.getElementById("puntos-select");
-  const nombreRioSeleccionado = selectRios.value;
-  const puntoSeleccionado = selectPuntos.value;
-
-  if (!nombreRioSeleccionado) {
-    mostrarPopupError("Por favor, seleccione un río.");
-    return;
-  }
-
-  if (!puntoSeleccionado) {
-    mostrarPopupError("Por favor, seleccione un punto.");
-    return;
-  }
-
-  let datosFiltrados = datosBiologicos.filter(
-    (dato) =>
-      dato.RIO === nombreRioSeleccionado && dato.PUNTO === puntoSeleccionado
-  );
-
-  actualizarTabla(datosFiltrados, "tabla2");
-
-  // Limpiar cualquier gráfico previo
-  limpiarGrafico();
-
-  // Generar nuevos gráficos
-  generarGrafico(datosFiltrados, puntoSeleccionado, "#grafico1");
-  generarGraficoshanon(datosFiltrados, puntoSeleccionado, "#grafico2");
-  generarGrafico3(datosFiltrados, '#grafico3');
-  generarGrafico4(datosFiltrados, '#grafico4');
-  generarGrafico5(datosFiltrados, '#grafico5');
-}
 
 function limpiarGrafico() {
   d3.select("#grafico1 svg").remove();
@@ -357,58 +459,64 @@ function generarGrafico5(datos, contenedor) {
   }
 }
 function generarGrafico(data, puntoSeleccionado, contenedor) {
-  // Convertir fechas y el índice DIVERSIDAD SEGÚN SHANNON a números
+// Convertir fechas y el índice DIVERSIDAD SEGÚN SHANNON a números
+data.forEach((d) => {
+  d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
+  d["ÍNDICE BMWP/Col"] = +d["ÍNDICE BMWP/Col"]; // Asegurarse de que DIVERSIDAD SEGÚN SHANNON es un número
+});
 
-  data.forEach((d) => {
-    d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
-    d["ÍNDICE BMWP/Col"] = +d["ÍNDICE BMWP/Col"]; // Asegurarse de que DIVERSIDAD SEGÚN SHANNON es un número
-  });
+// Encontrar la fecha mínima y máxima en los datos para definir el dominio del eje x
+const minFecha = d3.min(data, (d) => d.FECHA);
+const maxFecha = d3.max(data, (d) => d.FECHA);
 
-  // Encontrar la fecha mínima en los datos para definir el inicio del eje x
-  const minFecha = d3.min(data, (d) => d.FECHA);
+// Añadir un mes a la última fecha
+const maxFechaExtendida = d3.timeMonth.offset(maxFecha, 0.5);
 
-  // Filtrar los datos para empezar desde la fecha mínima encontrada
-  data = data.filter((d) => d.FECHA >= minFecha);
+// Filtrar los datos para empezar desde la fecha mínima encontrada (opcional)
+data = data.filter((d) => d.FECHA >= minFecha);
 
-  // Ordenar los datos por fecha nuevamente
-  data.sort((a, b) => a.FECHA - b.FECHA);
+// Ordenar los datos por fecha nuevamente
+data.sort((a, b) => a.FECHA - b.FECHA);
 
-  // Definir el número de ticks en el eje x dependiendo de la cantidad de datos
-  let ticksCount =
-    data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
+// Definir el número de ticks en el eje x dependiendo de la cantidad de datos
+let ticksCount = data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
 
-  // Definir el dominio del eje y extendido
-  const yDomain = [20, 130];
+// Definir el dominio del eje y extendido
+const yDomain = [20, 130];
 
-  // Obtener las dimensiones del contenedor
-  const containerWidth = d3.select(contenedor).node().getBoundingClientRect().width;
-  const containerHeight = d3.select(contenedor).node().getBoundingClientRect().height;
+// Obtener las dimensiones del contenedor
+const containerWidth = d3.select(contenedor).node().getBoundingClientRect().width;
+const containerHeight = d3.select(contenedor).node().getBoundingClientRect().height;
 
-  const margin = { top: 50, right: 20, bottom: 70, left: 50 },
-    width = containerWidth - margin.left - margin.right,
-    height = containerHeight - margin.top - margin.bottom;
+const margin = { top: 50, right: 20, bottom: 70, left: 50 },
+  width = containerWidth - margin.left - margin.right,
+  height = containerHeight - margin.top - margin.bottom;
 
-  // Eliminar cualquier SVG existente dentro del contenedor
-  d3.select(contenedor).selectAll("svg").remove();
+// Eliminar cualquier SVG existente dentro del contenedor
+d3.select(contenedor).selectAll("svg").remove();
 
-  const svg = d3
-    .select(contenedor)
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+const svg = d3
+  .select(contenedor)
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  const x = d3
-    .scaleTime()
-    .domain([minFecha, d3.timeMonth.offset(new Date(2024, 6, 1), -6)]) // Ajustar el dominio de las fechas
-    .range([0, width]);
+// Ajustar el dominio del eje X desde la fecha mínima hasta un mes después de la última fecha
+const x = d3
+  .scaleTime()
+  .domain([minFecha, maxFechaExtendida]) // Establecer el dominio del eje x con un mes extra
+  .range([0, width]);
 
-  const y = d3
-    .scaleLinear()
-    .domain(yDomain)
-    .nice() // Mejorar el aspecto del eje y extendido
-    .range([height, 0]);
+const y = d3
+  .scaleLinear()
+  .domain(yDomain)
+  .nice() // Mejorar el aspecto del eje y extendido
+  .range([height, 0]);
+
+// Continuar con el resto del código (ejes, línea, puntos, etc.)
+
 
   const line = d3
     .line()
@@ -641,56 +749,62 @@ function generarGrafico(data, puntoSeleccionado, contenedor) {
 
 function generarGraficoshanon(data, puntoSeleccionado, contenedor) {
   // Convertir fechas y el índice DIVERSIDAD SEGÚN SHANNON a números
-  data.forEach((d) => {
-    d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
-    d["DIVERSIDAD SEGÚN SHANNON"] = +d["DIVERSIDAD SEGÚN SHANNON"]; // Asegurarse de que DIVERSIDAD SEGÚN SHANNON es un número
-  });
+data.forEach((d) => {
+  d.FECHA = new Date(d.FECHA); // Convertir la fecha a un objeto de fecha
+  d["DIVERSIDAD SEGÚN SHANNON"] = +d["DIVERSIDAD SEGÚN SHANNON"]; // Asegurarse de que DIVERSIDAD SEGÚN SHANNON es un número
+});
 
-  // Encontrar la fecha mínima en los datos para definir el inicio del eje x
-  const minFecha = d3.min(data, (d) => d.FECHA);
+// Encontrar la fecha mínima y máxima en los datos para definir el dominio del eje x
+const minFecha = d3.min(data, (d) => d.FECHA);
+const maxFecha = d3.max(data, (d) => d.FECHA);
 
-  // Filtrar los datos para empezar desde la fecha mínima encontrada
-  data = data.filter((d) => d.FECHA >= minFecha);
+// Añadir un mes a la última fecha
+const maxFechaExtendida = d3.timeMonth.offset(maxFecha, 0.5);
 
-  // Ordenar los datos por fecha nuevamente
-  data.sort((a, b) => a.FECHA - b.FECHA);
+// Filtrar los datos para empezar desde la fecha mínima encontrada (opcional)
+data = data.filter((d) => d.FECHA >= minFecha);
 
-  // Definir el número de ticks en el eje x dependiendo de la cantidad de datos
-  let ticksCount =
-    data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
+// Ordenar los datos por fecha nuevamente
+data.sort((a, b) => a.FECHA - b.FECHA);
 
-  // Definir el dominio del eje y extendido
-  const yDomain = [0, 5];
+// Definir el número de ticks en el eje x dependiendo de la cantidad de datos
+let ticksCount = data.length > 50 ? d3.timeMonth.every(3) : d3.timeMonth.every(6);
 
-  // Obtener las dimensiones del contenedor
-  const containerWidth = d3.select(contenedor).node().getBoundingClientRect().width;
-  const containerHeight = d3.select(contenedor).node().getBoundingClientRect().height;
+// Definir el dominio del eje y extendido
+const yDomain = [0, 5];
 
-  const margin = { top: 50, right: 20, bottom: 70, left: 50 },
-    width = containerWidth - margin.left - margin.right,
-    height = containerHeight - margin.top - margin.bottom;
+// Obtener las dimensiones del contenedor
+const containerWidth = d3.select(contenedor).node().getBoundingClientRect().width;
+const containerHeight = d3.select(contenedor).node().getBoundingClientRect().height;
 
-  // Eliminar cualquier SVG existente dentro del contenedor
-  d3.select(contenedor).selectAll("svg").remove();
+const margin = { top: 50, right: 20, bottom: 70, left: 50 },
+  width = containerWidth - margin.left - margin.right,
+  height = containerHeight - margin.top - margin.bottom;
 
-  const svg = d3
-    .select(contenedor)
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// Eliminar cualquier SVG existente dentro del contenedor
+d3.select(contenedor).selectAll("svg").remove();
 
-  const x = d3
-    .scaleTime()
-    .domain([minFecha, d3.timeMonth.offset(new Date(2024, 6, 1), -6)]) // Ajustar el dominio de las fechas
-    .range([0, width]);
+const svg = d3
+  .select(contenedor)
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  const y = d3
-    .scaleLinear()
-    .domain(yDomain)
-    .nice() // Mejorar el aspecto del eje y extendido
-    .range([height, 0]);
+// Ajustar el dominio del eje X desde la fecha mínima hasta un mes después de la última fecha
+const x = d3
+  .scaleTime()
+  .domain([minFecha, maxFechaExtendida]) // Establecer el dominio del eje x con un mes extra
+  .range([0, width]);
+
+const y = d3
+  .scaleLinear()
+  .domain(yDomain)
+  .nice() // Mejorar el aspecto del eje y extendido
+  .range([height, 0]);
+
+// Continúa con el resto de tu código para agregar ejes, líneas, puntos, etc.
 
   const line = d3
     .line()
