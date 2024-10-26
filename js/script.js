@@ -5,24 +5,26 @@ let filaSeleccionada = null;
 let datosCSV = [];
 let datosBiologicos = [];
 let datosFisicoquimicos = [];
-let rios = ["RIO HUASAGA", "RIO CHAPIZA", "RIO ZAMORA", "RIO UPANO", "RIO JURUMBAINO",
-    "RIO KALAGLAS", "RIO YUQUIPA", "RIO PAN DE AZÚCAR",
-    "RIO BLANCO", 
-    "RIO TUTANANGOZA", "RIO INDANZA", "RIO MIRIUMI ",
-    "RIO YUNGANZA", "RIO CUYES", "RIO ZAMORA", "RIO EL IDEAL", "RIO MORONA",
-    "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO SANTIAGO", "RIO PASTAZA", "RIO CHIWIAS",
-    "RIO TUNA CHIGUAZA", "RÍO PALORA", "RIO LUSHIN", "RIO SANGAY", "RIO NAMANGOZA",
-    "RIO PAUTE", "RIO YAAPI", "RIO HUAMBIAZ", "RIO TZURIN", "RIO MANGOSIZA", "RIO PUCHIMI",
-    "RIO EL CHURO", "RIO MACUMA", "RIO PANGUIETZA", "RIO PASTAZA", "RIO PALORA", "RIO TUNA ",
-    "RIO WAWAIM GRANDE","RIO LUSHIN"];
-
-// Función para inicializar el mapa
+let rios = [
+    "RIO BLANCO", "RIO CHAPIZA", "RIO CHIWIAS", "RIO EL CHURO", "RIO EL IDEAL",
+    "RIO HUASAGA", "RIO JURUMBAINO", "RIO KALAGLAS", "RIO LUSHIN", "RIO LUSHIN",
+    "RIO MANGOSIZA", "RIO MIRIUMI", "RIO MUCHINKIN", "RIO NAMANGOZA", "RIO NAMANGOZA",
+    "RIO PAN DE AZÚCAR", "RIO PALORA", "RIO PALORA", "RIO PANGUIETZA", "RIO PASTAZA",
+    "RIO PASTAZA", "RIO PUCHIMI", "RIO SANGAY", "RIO SANTIAGO", "RIO TUNA",
+    "RIO TUNA CHIGUAZA", "RIO TZURIN", "RIO UPANO", "RIO WAWAIM GRANDE", "RIO YAAPI",
+    "RIO YUQUIPA", "RIO YUNGANZA", "RIO ZAMORA", "RIO ZAMORA", "RIO TUTANANGOZA"
+  ];
+  
+  
+  
+   // Función para inicializar el mapa
 function inicializarMapa() {
     map = L.map('map').setView([-1.831239, -78.183406], 6.60); // Coordenadas y zoom para ver Ecuador
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 }
+
 
 // Función para mostrar en el mapa y en la consola los campos especificados
 function mostrarEnMapa(registro, fila) {
@@ -91,17 +93,7 @@ function mostrarEnMapa(registro, fila) {
     });
     map.setView([coordenadas.latitude, coordenadas.longitude], 15);
 
-    // Mostrar los campos solicitados en la consola
-    console.log("Nivel 10: ", registro['Nivel 10']);
-    console.log("Nivel 9: ", registro['Nivel 9 ']);
-    console.log("Nivel 8: ", registro['Nivel 8']);
-    console.log("Nivel 7: ", registro['Nivel 7']);
-    console.log("Nivel 6: ", registro['Nivel 6']);
-    console.log("Nivel 5: ", registro['Nivel 5']);
-    console.log("Nivel 4: ", registro['Nivel 4']);
-    console.log("Nivel 3: ", registro['Nivel 3']);
-    console.log("Nivel 2: ", registro['Nivel 2']);
-    console.log("Nivel 1: ", registro['Nivel 1']);
+    
 
    
 }
@@ -198,30 +190,122 @@ function actualizarTabla(datos, tablaId) {
     });
 }
 
-// Función para buscar datos y filtrarlos según el río seleccionado
-function buscarDatos() {
-    const selectRios = document.getElementById('rio-select');
-    const nombreRioSeleccionado = selectRios.value;
-    const tabla1 = document.getElementById('tabla1');
-    const tabla2 = document.getElementById('tabla2');
+// Mapeo de opciones amigables a los nombres de los campos del dataset
+const mapeoCamposFisicoquimicos = {
+    "Busqueda por río": "RIO",
+    "Busqueda por calidad del agua": "CALIDAD AGUA NSF",
+    "Busqueda por coliformes fecales": "Coliformes fecales",
+    "Busqueda por DBO5": "DBO5",
+    "Busqueda por turbiedad": "Turbiedad",
+    "Busqueda por fosfatos": "Fosfatos",
+    "Busqueda por nitratos": "Nitratos",
+    "Busqueda por sólidos totales": "Solidos_Totales",
+    "Busqueda por oxígeno disuelto": "Oxigeno disuelto",
+    "Busqueda por pH": "Ph",
+    "Busqueda por temperatura": "Temperatura"
+};
 
-    if (!nombreRioSeleccionado) {
-        mostrarPopupError("Por favor, seleccione un río.");
-        return;
+const mapeoCamposBiologicos = {
+    "Busqueda por río": "RIO",
+    "Busqueda por riqueza absoluta": "RIQUEZA ABSOLUTA",
+    "Busqueda por diversidad (Shannon)": "DIVERSIDAD SEGÚN SHANNON",
+    "Busqueda por calidad del agua (Shannon)": "CALIDAD DEL AGUA SEGÚN SHANNON",
+    "Busqueda por índice BMWP/Col": "ÍNDICE BMWP/Col"
+};
+
+// Actualiza las opciones del desplegable según la pestaña seleccionada
+function actualizarOpciones(tipo) {
+    const parametroSelect = document.getElementById('parametro-select');
+    parametroSelect.innerHTML = '<option value="">Seleccione un criterio</option>';
+
+    const opciones = tipo === 'fisicoquimicos' 
+        ? Object.keys(mapeoCamposFisicoquimicos)
+        : Object.keys(mapeoCamposBiologicos);
+
+    opciones.forEach(opcion => {
+        const option = document.createElement('option');
+        option.value = opcion;
+        option.textContent = opcion;
+        parametroSelect.appendChild(option);
+    });
+    
+}
+
+// Mostrar u ocultar el select de ríos y el select de orden según la opción seleccionada
+document.getElementById('parametro-select').addEventListener('change', function () {
+    const rioSelect = document.getElementById('rio-select');
+    const ordenSelect = document.getElementById('orden-select');
+    const parametroSeleccionado = this.value;
+
+    // Mostrar el select de ríos si se selecciona "Filtrar por río"
+    rioSelect.style.display = parametroSeleccionado === "Busqueda por río" ? "block" : "none";
+    
+    // Mostrar el select de orden si no se selecciona "Filtrar por río"
+    ordenSelect.style.display = parametroSeleccionado !== "Busqueda por río" && parametroSeleccionado ? "block" : "none";
+});
+
+function buscarDatos() {
+    const parametroSeleccionado = document.getElementById('parametro-select').value;
+    const rioSeleccionado = document.getElementById('rio-select').value;
+    const ordenSeleccionado = document.getElementById('orden-select').value; // Obtener el tipo de orden seleccionado
+
+    // Identificar la tabla activa según la pestaña seleccionada
+    const tablaId = document.getElementById('biological-parameters-tab').classList.contains('active') ? 'tabla1' : 'tabla2';
+    const datos = tablaId === 'tabla1' ? datosBiologicos : datosFisicoquimicos;
+
+    let datosFiltrados = [...datos]; // Clonar los datos para evitar modificar el original
+
+    // Elegir el campo adecuado según el tipo de tabla
+    const campo = tablaId === 'tabla1'
+        ? mapeoCamposBiologicos[parametroSeleccionado]
+        : mapeoCamposFisicoquimicos[parametroSeleccionado];
+
+    // Filtrar por río si se selecciona "Busqueda por río" y hay un río seleccionado
+    if (parametroSeleccionado === "Busqueda por río" && rioSeleccionado) {
+        datosFiltrados = datosFiltrados.filter(dato => dato['RIO'] === rioSeleccionado);
     }
 
-    // Filtrar y mostrar las filas en tabla1
-    const filasTabla1 = Array.from(tabla1.getElementsByTagName('tbody')[0].rows);
-    filasTabla1.forEach(fila => {
-        fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
-    });
+    // Ordenar los datos si se seleccionó otro criterio válido
+    if (campo && campo !== "RIO") {
+        datosFiltrados.sort((a, b) => {
+            const valorA = a[campo] ?? 0; // Manejar valores nulos
+            const valorB = b[campo] ?? 0;
 
-    // Filtrar y mostrar las filas en tabla2
-    const filasTabla2 = Array.from(tabla2.getElementsByTagName('tbody')[0].rows);
-    filasTabla2.forEach(fila => {
-        fila.style.display = (fila.cells[1].textContent === nombreRioSeleccionado) ? '' : 'none';
-    });
+            // Ordenar según el tipo de orden seleccionado
+            return ordenSeleccionado === 'asc' ? valorA - valorB : valorB - valorA;
+        });
+    }
+
+    // Actualizar la tabla con los datos filtrados y ordenados
+    actualizarTabla(datosFiltrados, tablaId);
 }
+
+// Inicializar las opciones y cargar los ríos al cargar la página
+document.addEventListener('DOMContentLoaded', function () {
+    cargarNombresRios();
+    actualizarOpciones('biologicos'); // Inicializar con parámetros biológicos
+});
+
+
+
+// Agregar eventos a los botones de pestañas para actualizar las opciones
+document.getElementById('biological-parameters-tab').addEventListener('click', () => {
+    actualizarOpciones('biologicos');
+});
+
+document.getElementById('physicochemical-parameters-tab').addEventListener('click', () => {
+    actualizarOpciones('fisicoquimicos');
+});
+
+// Agregar evento al botón de búsqueda
+document.getElementById('buscar-btn').addEventListener('click', buscarDatos);
+
+// Inicializar las opciones y cargar los ríos al cargar la página
+document.addEventListener('DOMContentLoaded', function () {
+    cargarNombresRios();
+    actualizarOpciones('biologicos'); // Inicializar con parámetros biológicos
+});
+
 
 // Función para cargar los nombres de los ríos en el menú desplegable
 function cargarNombresRios() {
@@ -278,13 +362,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         buscarDatos();
     });
-    const toggleBtn = document.getElementById('sidebar-toggle-btn');
-    toggleBtn.addEventListener('click', function() {
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.classList.toggle('collapsed');
-        const content = document.querySelector('.content');
-        content.classList.toggle('expanded');
-    });
+   
     
 });
 
